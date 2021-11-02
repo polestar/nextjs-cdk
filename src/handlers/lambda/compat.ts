@@ -3,6 +3,10 @@ import Query from 'querystring';
 import { Stream } from 'stream';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
+/**
+ * This is a compatibility later to replace req/res methods in order to bridge to APIGateway events.
+ * @param event
+ */
 export const httpCompat = (
   event: APIGatewayProxyEvent,
 ): {
@@ -15,6 +19,7 @@ export const httpCompat = (
     body: '',
     headers: {},
   };
+  let tempResponseBody: Buffer;
 
   const newStream = new Stream.Readable();
   const req = Object.assign(newStream, IncomingMessage.prototype) as any;
@@ -59,7 +64,6 @@ export const httpCompat = (
 
   const headerNames: { [key: string]: string } = {};
   res.headers = {};
-  res.bodyBuffer = Buffer.of();
   res.writeHead = (
     status: number,
     headers: { [key: string]: string | string[] },
@@ -69,15 +73,17 @@ export const httpCompat = (
   };
 
   res.write = (chunk: Buffer | string) => {
-    // We need to handle byte arrays
-    if (Buffer.isBuffer(chunk)) {
-      res.bodyBuffer = Buffer.concat([res.bodyBuffer, chunk]);
-    } else {
-      if (!response.body) {
-        response.body = '';
-      }
-      response.body = response.body + chunk;
+    // Use tempResponseBody to buffers until needed to convert to base64-encoded
+    // string for APIGateway response
+    // Otherwise binary data (such as images) can get corrupted
+    if (!tempResponseBody) {
+      tempResponseBody = Buffer.of();
     }
+
+    tempResponseBody = Buffer.concat([
+      tempResponseBody,
+      Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk),
+    ]);
   };
   res.setHeader = (name: string, value: string) => {
     headerNames[name.toLowerCase()] = name;
@@ -106,11 +112,8 @@ export const httpCompat = (
         res.statusCode = 200;
       }
 
-      if (res.bodyBuffer) {
-        response.body = res.bodyBuffer.toString('base64');
-        response.isBase64Encoded = true;
-      } else if (response.body) {
-        response.body = Buffer.from(response.body).toString('base64');
+      if (tempResponseBody) {
+        response.body = tempResponseBody.toString('base64');
         response.isBase64Encoded = true;
       }
       res.writeHead(response.statusCode);

@@ -1,5 +1,5 @@
-import { addDefaultLocaleToPath } from '../../route/locale';
-import { PageManifest, RoutesManifest } from '../../types';
+import { addDefaultLocaleToPath } from 'handlers/core/route/locale';
+import { PageManifest, RoutesManifest } from 'types';
 
 /*
  * Dynamic SSR + dynamic SSG fallback + dynamic SSG with ISR

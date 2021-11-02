@@ -22,6 +22,8 @@ import {
 import Stream from 'stream';
 import http from 'http';
 
+export { AwsPlatformClient };
+
 /**
  * Lambda handler that wraps the platform-agnostic default handler
  * for REST API

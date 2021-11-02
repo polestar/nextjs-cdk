@@ -1,6 +1,6 @@
 import rimraf from 'rimraf';
 
-import { LambdaBuilder } from '../../../src/build/lambda-builder';
+import { LambdaBuilder } from '../../../../src/build/lambda-builder';
 
 const builder = new LambdaBuilder('.', './.nextjs_cdk');
 

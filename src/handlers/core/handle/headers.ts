@@ -1,6 +1,6 @@
 import { matchPath } from '../match';
-import { addDefaultLocaleToPath } from '../../../route/locale';
-import { Event, Headers, Route, RoutesManifest } from '../../../types';
+import { addDefaultLocaleToPath } from 'handlers/core/route/locale';
+import { Event, Headers, Route, RoutesManifest } from 'types';
 
 export const getCustomHeaders = (
   uri: string,

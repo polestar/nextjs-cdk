@@ -59,6 +59,7 @@ export class AwsPlatformClient implements PlatformClient {
     let s3Response;
 
     try {
+      console.log('getObject', pageKey);
       s3Response = await s3.send(new GetObjectCommand(s3Params));
       bodyBuffer = await getStream.buffer(s3Response.Body as Readable);
       s3StatusCode = s3Response.$metadata.httpStatusCode ?? 200; // assume OK if not set, but it should be
