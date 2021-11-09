@@ -94,6 +94,7 @@ export async function imageOptimizer(
   if (loader !== 'default') {
     res.statusCode = 404;
     res.end('default loader not found');
+
     return { finished: true };
   }
 
@@ -105,10 +106,12 @@ export async function imageOptimizer(
   if (!url) {
     res.statusCode = 400;
     res.end('"url" parameter is required');
+
     return { finished: true };
   } else if (Array.isArray(url)) {
     res.statusCode = 400;
     res.end('"url" parameter cannot be an array');
+
     return { finished: true };
   }
 
@@ -127,18 +130,21 @@ export async function imageOptimizer(
     } catch (_error) {
       res.statusCode = 400;
       res.end('"url" parameter is invalid');
+
       return { finished: true };
     }
 
     if (!['http:', 'https:'].includes(hrefParsed.protocol)) {
       res.statusCode = 400;
       res.end('"url" parameter is invalid');
+
       return { finished: true };
     }
 
     if (!domains.includes(hrefParsed.hostname)) {
       res.statusCode = 400;
       res.end('"url" parameter is not allowed');
+
       return { finished: true };
     }
   }
@@ -146,20 +152,24 @@ export async function imageOptimizer(
   if (!w) {
     res.statusCode = 400;
     res.end('"w" parameter (width) is required');
+
     return { finished: true };
   } else if (Array.isArray(w)) {
     res.statusCode = 400;
     res.end('"w" parameter (width) cannot be an array');
+
     return { finished: true };
   }
 
   if (!q) {
     res.statusCode = 400;
     res.end('"q" parameter (quality) is required');
+
     return { finished: true };
   } else if (Array.isArray(q)) {
     res.statusCode = 400;
     res.end('"q" parameter (quality) cannot be an array');
+
     return { finished: true };
   }
 
@@ -168,12 +178,14 @@ export async function imageOptimizer(
   if (!width || isNaN(width)) {
     res.statusCode = 400;
     res.end('"w" parameter (width) must be a number greater than 0');
+
     return { finished: true };
   }
 
   if (!sizes.includes(width)) {
     res.statusCode = 400;
     res.end(`"w" parameter (width) of ${width} is not allowed`);
+
     return { finished: true };
   }
 
@@ -182,6 +194,7 @@ export async function imageOptimizer(
   if (isNaN(quality) || quality < 1 || quality > 100) {
     res.statusCode = 400;
     res.end('"q" parameter (quality) must be a number between 1 and 100');
+
     return { finished: true };
   }
 
@@ -192,22 +205,28 @@ export async function imageOptimizer(
 
   if (fs.existsSync(hashDir)) {
     const files = await promises.readdir(hashDir);
+
     for (const file of files) {
       const [prefix, etag, extension] = file.split('.');
       const expireAt = Number(prefix);
       const contentType = getContentType(extension);
       const fsPath = join(hashDir, file);
+
       if (now < expireAt) {
         if (!res.getHeader('Cache-Control')) {
           res.setHeader('Cache-Control', 'public, max-age=60');
         }
+
         if (sendEtagResponse(req, res, etag)) {
           return { finished: true };
         }
+
         if (contentType) {
           res.setHeader('Content-Type', contentType);
         }
+
         createReadStream(fsPath).pipe(res);
+
         return { finished: true };
       } else {
         await promises.unlink(fsPath);
@@ -234,6 +253,7 @@ export async function imageOptimizer(
     maxAge = getMaxAge(upstreamRes.headers.get('Cache-Control') ?? undefined);
   } else {
     let objectKey;
+
     try {
       if (
         href.startsWith(`${basePath}/static`) ||
@@ -268,6 +288,7 @@ export async function imageOptimizer(
         `Error processing upstream response due to error for key: ${objectKey}. Stack trace: ` +
           err.stack,
       );
+
       return { finished: true };
     }
   }
@@ -276,8 +297,10 @@ export async function imageOptimizer(
     const vector = VECTOR_TYPES.includes(upstreamType);
     const animate =
       ANIMATABLE_TYPES.includes(upstreamType) && isAnimated(upstreamBuffer);
+
     if (vector || animate) {
       sendResponse(req, res, upstreamType, upstreamBuffer);
+
       return { finished: true };
     }
   }
@@ -300,9 +323,12 @@ export async function imageOptimizer(
       if (error.code === 'MODULE_NOT_FOUND') {
         error.message += '\n\nLearn more: https://err.sh/next.js/install-sharp';
         console.error(error.stack);
+
         sendResponse(req, res, upstreamType, upstreamBuffer);
+
         return { finished: true };
       }
+
       throw error;
     }
   }
@@ -330,10 +356,13 @@ export async function imageOptimizer(
 
     const optimizedBuffer = await transformer.toBuffer();
     await promises.mkdir(hashDir, { recursive: true });
+
     const extension = getExtension(contentType);
     const etag = getHash([optimizedBuffer]);
     const filename = join(hashDir, `${expireAt}.${etag}.${extension}`);
+
     await promises.writeFile(filename, optimizedBuffer);
+
     sendResponse(req, res, contentType, optimizedBuffer);
   } catch (error: any) {
     console.error(
@@ -353,25 +382,31 @@ function sendResponse(
   buffer: Buffer,
 ) {
   const etag = getHash([buffer]);
+
   if (!res.getHeader('Cache-Control')) {
     res.setHeader('Cache-Control', 'public, max-age=60');
   }
+
   if (sendEtagResponse(req, res, etag)) {
     return;
   }
+
   if (contentType) {
     res.setHeader('Content-Type', contentType);
   }
+
   res.end(buffer);
 }
 
 function getSupportedMimeType(options: string[], accept = ''): string {
   const mimeType = mediaType(accept, options);
+
   return accept.includes(mimeType) ? mimeType : '';
 }
 
 function getHash(items: (string | number | Buffer)[]) {
   const hash = createHash('sha256');
+
   for (const item of items) {
     if (typeof item === 'number') hash.update(String(item));
     else {

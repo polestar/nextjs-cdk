@@ -10,7 +10,7 @@ describe('Builder Tests', () => {
 
   const lambdaBuildOptions: BuildOptions = {
     bucketName: 'test-bucket',
-    bucketRegion: 'us-east-1',
+    bucketRegion: 'us-north-1',
     cmd: 'true', // to skip next build,
     cleanupDotNext: false,
   };

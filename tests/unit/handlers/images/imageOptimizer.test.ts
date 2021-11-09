@@ -5,7 +5,8 @@ import imagesManifest from './image-images-manifest.json';
 import url from 'url';
 import http from 'http';
 import Stream from 'stream';
-import { jest } from '@jest/globals';
+import { join } from 'path';
+import fse from 'fs-extra';
 
 jest.mock('node-fetch', () => require('fetch-mock-jest').sandbox());
 
@@ -33,13 +34,9 @@ jest.mock(
   },
 );
 
-describe('Image optimizer', () => {
-  const mockPlatformClient = {
-    getObject: jest.fn(),
-    triggerStaticRegeneration: jest.fn(),
-    storePage: jest.fn(),
-  };
+const cacheDir = join('/tmp', 'cache', 'images');
 
+describe('Image optimizer', () => {
   const createEventByUrl = (
     urlPath: string,
     headers?: { [key: string]: string },
@@ -102,6 +99,14 @@ describe('Image optimizer', () => {
     );
   };
 
+  const createPlatformClientMock = () => ({
+    getObject: jest.fn(),
+    triggerStaticRegeneration: jest.fn(),
+    storePage: jest.fn(),
+  });
+
+  let mockPlatformClient = createPlatformClientMock();
+
   beforeEach(async () => {
     const imageBuffer: Buffer = await sharp({
       create: {
@@ -114,6 +119,10 @@ describe('Image optimizer', () => {
       .png()
       .toBuffer();
 
+    // Reset cache dir on each test (could collide if more tests where to use the cache dir)
+    fse.removeSync(cacheDir);
+
+    mockPlatformClient = createPlatformClientMock();
     mockPlatformClient.getObject.mockReturnValue({
       body: imageBuffer,
       headers: {},
@@ -289,7 +298,7 @@ describe('Image optimizer', () => {
     });
 
     // TODO: fix this test
-    xit('return 500 response when object store throws an error', async () => {
+    it('return 500 response when object store throws an error', async () => {
       mockPlatformClient.getObject.mockRejectedValue(
         new Error('Mocked object store error'),
       );

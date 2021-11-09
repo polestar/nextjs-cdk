@@ -16,7 +16,7 @@ To be able to fully run the tests the handler code that will be run inside the d
 
 ![architecture](./img/nextjs-cdk.png)
 
-Three Cache Behaviours are created in CloudFront.
+Three Cache Behaviors are created in CloudFront.
 
 The `/*` is associated to a API Gateway (REST API) which routes the request either to the default or image lambda.
 

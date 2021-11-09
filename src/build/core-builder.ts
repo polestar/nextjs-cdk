@@ -65,8 +65,10 @@ export default abstract class CoreBuilder {
 
   public async build(debugMode?: boolean): Promise<void> {
     await this.preBuild();
+
     const { defaultBuildManifest, imageManifest, pageManifest } =
       await this.buildCore(debugMode);
+
     await this.buildPlatform(
       { defaultBuildManifest, imageManifest, pageManifest },
       debugMode,
@@ -120,14 +122,18 @@ export default abstract class CoreBuilder {
       throw new Error('No build command was given');
     }
 
+    if (!cwd) {
+      throw new Error('No working dir is provided');
+    }
+
     const { restoreUserConfig } = await createServerlessConfig(
-      cwd!,
+      cwd,
       path.join(this.nextConfigDir),
       false,
     );
 
     try {
-      const subprocess = execa(cmd!, args, {
+      const subprocess = execa(cmd, args, {
         cwd,
         env,
       });
