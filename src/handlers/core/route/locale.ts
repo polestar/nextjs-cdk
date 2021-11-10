@@ -109,6 +109,7 @@ export const getAcceptLanguageLocale = async (
       }
     }
   }
+  return undefined;
 };
 
 export function getLocalePrefixFromUri(

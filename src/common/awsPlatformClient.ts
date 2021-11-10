@@ -64,11 +64,10 @@ export class AwsPlatformClient implements PlatformClient {
       bodyBuffer = await getStream.buffer(s3Response.Body as Readable);
       s3StatusCode = s3Response.$metadata.httpStatusCode ?? 200; // assume OK if not set, but it should be
     } catch (e: any) {
-      s3StatusCode = e.$metadata.httpStatusCode;
-
-      console.info(
-        'Got error response from S3. Will default to returning empty response. Error: ' +
-          JSON.stringify(e),
+      s3StatusCode = e.$metadata ? e?.$metadata?.httpStatusCode ?? 500 : 500;
+      console.error(
+        'Got error response from S3. Will default to returning empty response. Error: ',
+        e,
       );
       return {
         body: undefined,

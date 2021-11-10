@@ -1,5 +1,10 @@
-import { getLocalePrefixFromUri } from 'handlers/core/route/locale';
-import { Event, PageManifest, RoutesManifest, StaticRoute } from 'types';
+import { getLocalePrefixFromUri } from '../route/locale';
+import {
+  Event,
+  PageManifest,
+  RoutesManifest,
+  StaticRoute,
+} from '../../../types';
 
 export const renderErrorPage = async (
   error: any,

@@ -1,4 +1,4 @@
-import { addDefaultLocaleToPath, dropLocaleFromPath } from './locale';
+import { addDefaultLocaleToPath } from './locale';
 import { matchDynamicRoute } from '../match';
 import { notFoundData } from './notfound';
 import {
