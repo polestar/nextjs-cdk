@@ -124,3 +124,5 @@ dist
 .nextjs_cdk
 
 cdk.out
+
+!tests/integration/fixtures/**/*
