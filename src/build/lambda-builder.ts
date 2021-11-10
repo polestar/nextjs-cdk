@@ -21,6 +21,7 @@ export class LambdaBuilder extends CoreBuilder {
     };
 
     await this.buildDefaultLambda(defaultBuildManifest);
+
     // If using Next.js 10 and images-manifest.json is present then image optimizer can be used
     const hasImagesManifest = await fse.pathExists(
       join(this.dotNextDir, 'images-manifest.json'),
