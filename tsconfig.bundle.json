@@ -10,11 +10,10 @@
     "sourceMap": false,
     "strict": true,
     "allowJs": true,
-    "resolveJsonModule": true,
-    "baseUrl": "./src"
+    "resolveJsonModule": true
   },
   "include": [
     "./src/handlers/lambda/default-handler.ts",
-    "./src/handlers/image-handler.ts"
+    "./src/handlers/lambda/image-handler.ts"
   ]
 }

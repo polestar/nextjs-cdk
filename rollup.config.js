@@ -13,7 +13,7 @@ const LOCAL_EXTERNALS = [
   './prerender-manifest.json',
   './images-manifest.json',
 ];
-const NPM_EXTERNALS = ['aws-lambda'];
+const NPM_EXTERNALS = ['aws-lambda', 'aws-sdk/clients/s3'];
 
 const generateConfig = (input) => ({
   input: `./src/handlers/lambda/${input.handler}.ts`,
