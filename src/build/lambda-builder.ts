@@ -125,6 +125,7 @@ export class LambdaBuilder extends CoreBuilder {
         join(this.dotNextDir, 'routes-manifest.json'),
         join(this.outputDir, DEFAULT_LAMBDA_CODE_DIR, 'routes-manifest.json'),
       ),
+      ...this.copyWebpackFiles(join(this.outputDir, DEFAULT_LAMBDA_CODE_DIR)),
     ]);
   }
 

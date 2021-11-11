@@ -318,6 +318,22 @@ export default abstract class CoreBuilder {
       : Promise.resolve();
   }
 
+  /**
+   * Copy webpack runtime files
+   * @returns Promise<void>
+   */
+  protected copyWebpackFiles(buildDir: string) {
+    const files = ['webpack-runtime.js', 'webpack-api-runtime.js'].map(
+      (file) => {
+        return this.copyIfExists(
+          join(this.serverlessDir, file),
+          join(buildDir, file),
+        );
+      },
+    );
+    return files;
+  }
+
   protected async readNextConfig(): Promise<NextConfig | undefined> {
     const nextConfigPath = path.join(this.nextConfigDir, 'next.config.js');
 
@@ -337,6 +353,14 @@ export default abstract class CoreBuilder {
     }
   }
 
+  protected async copyIfExists(
+    source: string,
+    destination: string,
+  ): Promise<void> {
+    if (await fse.pathExists(source)) {
+      await fse.copy(source, destination);
+    }
+  }
   /**
    * Build static assets such as client-side JS, public files, static pages, etc.
    * Note that the upload to S3 is done in a separate deploy step.
