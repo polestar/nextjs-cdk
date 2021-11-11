@@ -96,6 +96,7 @@ export const handleDefault = async (
     prerenderManifest,
     routesManifest,
   );
+
   if (route.querystring) {
     event.req.url = `${event.req.url}${request.querystring ? '&' : '?'}${
       route.querystring
@@ -117,8 +118,10 @@ export const handleDefault = async (
 
   if (route.isApi) {
     const { page } = route as ApiRoute;
+
     setCustomHeaders(event, routesManifest);
     getPage(page).default(event.req, event.res);
+
     return;
   }
 

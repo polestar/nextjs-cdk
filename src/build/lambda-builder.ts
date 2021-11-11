@@ -74,6 +74,7 @@ export class LambdaBuilder extends CoreBuilder {
     );
 
     await fse.copy(source, destination);
+    await this.copyWebpackRuntime(destination);
   }
 
   private async buildDefaultLambda(

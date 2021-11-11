@@ -161,7 +161,9 @@ export class NextJSAPIGateway extends cdk.Construct {
       apis &&
       (Object.keys(apis.nonDynamic).length > 0 ||
         Object.keys(apis.dynamic).length > 0);
+
     this.nextApiLambda = null;
+
     if (hasAPIPages) {
       this.nextApiLambda = new lambda.Function(this, 'NextApiLambda', {
         functionName: 'apiLambda',
@@ -184,6 +186,7 @@ export class NextJSAPIGateway extends cdk.Construct {
     }
 
     this.nextImageLambda = null;
+
     if (this.imageManifest) {
       this.nextImageLambda = new lambda.Function(this, 'NextImageLambda', {
         functionName: 'ImageLambda',

@@ -50,6 +50,7 @@ const createExternalRewriteResponse = async (
 ): Promise<void> => {
   // Set request headers
   const reqHeaders: any = {};
+
   Object.assign(reqHeaders, req.headers);
 
   // Delete host header otherwise request may fail due to host mismatch
@@ -58,6 +59,7 @@ const createExternalRewriteResponse = async (
   }
 
   let fetchResponse;
+
   if (body) {
     const decodedBody = Buffer.from(body, 'base64').toString('utf8');
 
@@ -340,11 +342,14 @@ export const defaultHandler = async ({
   const { now, log } = perfLogger(options.logExecutionTimes);
 
   let tBeforeSSR = null;
+
   const getPage = (pagePath: string) => {
     const tBeforePageRequire = now();
     const page = require(`./${pagePath}`); // eslint-disable-line
     const tAfterPageRequire = (tBeforeSSR = now());
+
     log('Require JS execution time', tBeforePageRequire, tAfterPageRequire);
+
     return page;
   };
 
@@ -414,5 +419,6 @@ export const defaultHandler = async ({
 
   const external: ExternalRoute = route;
   const { path } = external;
+
   return await externalRewrite(req, res, path, platformClient);
 };

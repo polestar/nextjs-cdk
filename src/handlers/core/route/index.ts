@@ -150,11 +150,13 @@ export const routeDefault = async (
   routesManifest: RoutesManifest,
 ): Promise<Route> => {
   const auth = handleAuth(req, manifest);
+
   if (auth) {
     return auth;
   }
 
   const domainRedirect = handleDomainRedirects(req, manifest);
+
   if (domainRedirect) {
     return domainRedirect;
   }
@@ -165,10 +167,24 @@ export const routeDefault = async (
   );
   const is404 = uri.endsWith('/404');
   const isDataReq = uri.startsWith('/_next/data');
+  const isApi = uri.startsWith('/api');
   const publicFile = handlePublicFiles(uri, manifest);
   const isPublicFile = !!publicFile;
   const nextStaticFile = handleNextStaticFiles(uri);
   const isNextStaticFile = !!nextStaticFile;
+
+  if (isApi) {
+    const apiRoute = handleApiReq(
+      req,
+      uri,
+      manifest as unknown as ApiManifest,
+
+      routesManifest,
+      false,
+    );
+
+    if (apiRoute) return apiRoute;
+  }
 
   // Only try to handle trailing slash redirects or public files if the URI isn't missing a base path.
   // This allows us to handle redirects without base paths.
@@ -180,6 +196,7 @@ export const routeDefault = async (
         manifest,
         isDataReq || isPublicFile || isNextStaticFile,
       );
+
     if (trailingSlash) {
       return trailingSlash;
     }
@@ -196,6 +213,7 @@ export const routeDefault = async (
   const otherRedirect =
     handleCustomRedirects(req, routesManifest) ||
     (await handleLanguageRedirect(req, manifest, routesManifest));
+
   if (otherRedirect) {
     return otherRedirect;
   }
