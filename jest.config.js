@@ -10,4 +10,7 @@ module.exports = {
     '^.+\\.(js)$': 'babel-jest',
   },
   transformIgnorePatterns: [],
+  collectCoverage: true,
+  collectCoverageFrom: ['<rootDir>/src/**/*.{js,ts}'],
+  coverageDirectory: '<rootDir>/coverage/',
 };

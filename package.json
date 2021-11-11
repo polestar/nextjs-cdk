@@ -18,7 +18,7 @@
     "rollup": "rollup --config",
     "pretest": "yarn build",
     "test": "yarn test:unit && yarn test:integration && yarn test:e2e",
-    "test:unit": "jest --verbose ./tests/unit",
+    "test:unit": "jest --verbose ./tests/unit --coverage",
     "test:e2e": "ts-node --project tsconfig.scripts.json ./tests/e2e/run-tests.ts",
     "test:integration": "jest --verbose ./tests/integration"
   },
