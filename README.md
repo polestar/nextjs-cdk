@@ -1,5 +1,6 @@
 # Next JS CDK
 
+[![codecov](https://codecov.io/gh/polestar/nextjs-cdk/branch/main/graph/badge.svg?token=YF0HS06CWJ)](https://codecov.io/gh/polestar/nextjs-cdk)
 [![Build](https://github.com/polestar/nextjs-cdk/actions/workflows/build.yml/badge.svg)](https://github.com/polestar/nextjs-cdk/actions/workflows/build.yml)
 
 A zero configuration Next.js 11/12 build and CDK component for AWS Lambda@Edge and AWS Lambda with API Gateway aiming for full feature parity.
