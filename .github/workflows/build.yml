@@ -1,9 +1,9 @@
 name: Build
 on:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
-    branches: [master]
+    branches: [main]
 
 jobs:
   build:
@@ -17,3 +17,8 @@ jobs:
       - uses: c-hive/gha-yarn-cache@v2
       - run: yarn install --frozen-lockfile
       - run: yarn test
+
+      - name: Upload code coverage
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        run: npx codecov
