@@ -1,5 +1,7 @@
 # Next JS CDK
 
+[![Build](https://github.com/polestar/nextjs-cdk/actions/workflows/build.yml/badge.svg)](https://github.com/polestar/nextjs-cdk/actions/workflows/build.yml)
+
 A zero configuration Next.js 11/12 build and CDK component for AWS Lambda@Edge and AWS Lambda with API Gateway aiming for full feature parity.
 
 Most of the code originates from [serverless-next](https://github.com/serverless-nextjs/serverless-next.js) which this component will try to keep even steps with.
