@@ -1,12 +1,14 @@
 {
-  "name": "nextjs-cdk",
-  "version": "1.0.0",
+  "name": "@plstr/nextjs-cdk",
+  "version": "0.0.0-development",
   "author": "Anders Quist <anders.quist@polestar.com>",
   "license": "MIT",
   "files": [
     "dist"
   ],
   "scripts": {
+    "prepare": "husky install",
+    "commit": "git-cz",
     "prebuild": "yarn clean",
     "build": "yarn build:ts && yarn copy-sharp-modules && yarn rollup",
     "build:ts": "tsc -p tsconfig.build.json && tsc -p tsconfig.module.json",
@@ -36,6 +38,8 @@
     "@babel/plugin-proposal-class-properties": "7.16.0",
     "@babel/preset-env": "7.16.0",
     "@babel/preset-typescript": "7.16.0",
+    "@commitlint/cli": "14.1.0",
+    "@commitlint/config-conventional": "14.1.0",
     "@rollup/plugin-commonjs": "18.1.0",
     "@rollup/plugin-json": "4.1.0",
     "@rollup/plugin-node-resolve": "10.0.0",
@@ -53,12 +57,15 @@
     "@types/uuid": "8.3.1",
     "@typescript-eslint/eslint-plugin": "5.2.0",
     "@typescript-eslint/parser": "5.2.0",
+    "commitizen": "4.2.4",
     "eslint": "7.32.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-prettier": "4.0.0",
     "eslint-plugin-promise": "5.1.1",
     "fetch-mock-jest": "1.5.1",
+    "husky": "7.0.4",
     "jest": "27.3.1",
+    "lint-staged": "11.2.6",
     "prettier": "2.4.1",
     "rimraf": "3.0.2",
     "rollup": "2.58.3",
@@ -102,5 +109,11 @@
     "@aws-cdk/aws-s3-deployment": "1.131.0",
     "@aws-cdk/aws-sqs": "1.131.0",
     "@aws-cdk/core": "1.131.0"
+  },
+  "lint-staged": {
+    "**/*.{js,mjs,ts}": [
+      "prettier --write",
+      "jest --findRelatedTests --coverage=false"
+    ]
   }
 }
