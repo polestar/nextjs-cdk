@@ -2,6 +2,7 @@
 
 [![codecov](https://codecov.io/gh/polestar/nextjs-cdk/branch/main/graph/badge.svg?token=YF0HS06CWJ)](https://codecov.io/gh/polestar/nextjs-cdk)
 [![Build](https://github.com/polestar/nextjs-cdk/actions/workflows/build.yml/badge.svg)](https://github.com/polestar/nextjs-cdk/actions/workflows/build.yml)
+[![semantic-release](https://img.shields.io/badge/semantic-release-e10079.svg?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
 A zero configuration Next.js 11/12 build and CDK component for AWS Lambda@Edge and AWS Lambda with API Gateway aiming for full feature parity.
 
