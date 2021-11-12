@@ -3,7 +3,11 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  modulePathIgnorePatterns: ['<rootDir>/sharp_node_modules/'],
+  modulePathIgnorePatterns: [
+    '<rootDir>/sharp_node_modules/',
+    '<rootDir>/tests/e2e/',
+    '<rootDir>/dist/',
+  ],
   moduleDirectories: ['node_modules', 'src'],
   transform: {
     '^.+\\.(ts|tsx)$': 'ts-jest',
