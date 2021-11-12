@@ -515,20 +515,4 @@ export default abstract class CoreBuilder {
       );
     }
   }
-
-  /**
-   * Copy webpack runtime from .next -> .next_cdk
-   */
-  protected async copyWebpackRuntime(destination: string) {
-    const runtimes = ['webpack-runtime.js', 'webpack-api-runtime.js'];
-
-    const res = runtimes.map((runtime) =>
-      fse.copyFile(
-        `${this.dotNextDir}/serverless/${runtime}`,
-        `${destination}/${runtime}`,
-      ),
-    );
-
-    await Promise.all(res);
-  }
 }
