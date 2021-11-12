@@ -12,6 +12,7 @@ export class NextjsCdkTestStack extends cdk.Stack {
     props?: NextjsCdkTestStackProps,
   ) {
     super(scope, id, props);
+
     const app = new NextJSAPIGateway(this, 'nextjs', {
       nextjsCDKBuildOutDir: props?.nextjsCDKBuildOutDir ?? './.nextjs_cdk',
       env: {
