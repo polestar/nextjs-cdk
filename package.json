@@ -3,8 +3,12 @@
   "version": "0.0.0-development",
   "author": "Anders Quist <anders.quist@polestar.com>",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
-    "dist"
+    "dist",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "prepare": "is-ci || husky install",
