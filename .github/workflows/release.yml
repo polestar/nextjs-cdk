@@ -1,7 +1,10 @@
-name: Build
+name: Release
 on:
-  pull_request:
-    branches: [main]
+  push:
+    branches:
+      - main
+      - next
+      - beta
 
 jobs:
   build:
@@ -20,3 +23,8 @@ jobs:
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         run: npx codecov
+
+      - run: yarn semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.SEMANTIC_RELEASE_BOT_NPM_TOKEN }}

@@ -1,0 +1,13 @@
+{
+  "branch": "main",
+  "plugins": [
+    "@semantic-release/changelog",
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/git",
+    "@semantic-release/npm",
+    "@semantic-release/release-notes-generator",
+    "semantic-release-contributors",
+    "@semantic-release/github"
+  ],
+  "tagFormat": "v${version}"
+}
