@@ -45,7 +45,6 @@ export class NextJSAPIGateway extends cdk.Construct {
   public regenerationFunction?: lambda.Function;
   public defaultNextLambda: lambda.Function;
   public nextImageLambda: lambda.Function | null;
-  public nextApiLambda: lambda.Function | null;
   public edgeLambdaRole: Role;
   public restAPI: apigateway.RestApi;
   public nextStaticsCachePolicy: cloudfront.CachePolicy;
@@ -120,7 +119,7 @@ export class NextJSAPIGateway extends cdk.Construct {
       managedPolicies: [
         ManagedPolicy.fromManagedPolicyArn(
           this,
-          'NextApiLambdaPolicy',
+          'NextLambdaPolicy',
           'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole',
         ),
       ],
@@ -154,35 +153,6 @@ export class NextJSAPIGateway extends cdk.Construct {
       this.bucket.grantReadWrite(this.regenerationFunction);
       this.regenerationQueue?.grantSendMessages(this.defaultNextLambda);
       this.regenerationFunction?.grantInvoke(this.defaultNextLambda);
-    }
-
-    const apis = this.defaultManifest.apis;
-    const hasAPIPages =
-      apis &&
-      (Object.keys(apis.nonDynamic).length > 0 ||
-        Object.keys(apis.dynamic).length > 0);
-
-    this.nextApiLambda = null;
-
-    if (hasAPIPages) {
-      this.nextApiLambda = new lambda.Function(this, 'NextApiLambda', {
-        functionName: 'apiLambda',
-        description: `Default Lambda for Next API`,
-        handler: 'index.handler',
-        currentVersionOptions: {
-          removalPolicy: RemovalPolicy.DESTROY, // destroy old versions
-          retryAttempts: 1, // async retry attempts
-        },
-        logRetention: logs.RetentionDays.THREE_DAYS,
-        code: lambda.Code.fromAsset(
-          path.join(this.props.nextjsCDKBuildOutDir, 'default-lambda'),
-        ),
-        role: this.edgeLambdaRole,
-        runtime: lambda.Runtime.NODEJS_14_X,
-        memorySize: 512,
-        timeout: Duration.seconds(10),
-      });
-      this.nextApiLambda.currentVersion.addAlias('live');
     }
 
     this.nextImageLambda = null;
