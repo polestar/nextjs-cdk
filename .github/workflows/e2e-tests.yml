@@ -104,9 +104,9 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Cache Yarn
-        uses: actions/cache@v2
+        uses: c-hive/gha-yarn-cache@v2
 
-      - name: Setup yarn
+      - name: Yarn install
         run: yarn install --frozen-lockfile
 
       - name: Run yarn build
