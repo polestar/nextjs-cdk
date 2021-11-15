@@ -7,7 +7,10 @@
     "dev": "next",
     "build": "next build",
     "start": "next start -p $PORT",
-    "deploy": "npx cdk deploy --require-approval never",
+    "deploy": "npx cdk deploy --require-approval never --outputs-file ./cdk-outputs.json",
+    "destroy": "npx cdk destroy --force",
+    "e2e": "cypress run",
+    "e2e:ci": "ts-node --project tsconfig.scripts.json ./scripts/run-e2e-ci.ts",
     "test:build": "ts-node --project ./tsconfig.scripts.json ./scripts/build.ts",
     "test": "jest --verbose"
   },
@@ -20,6 +23,7 @@
     "@types/jest": "^27.0.2",
     "@types/react": "^17.0.33",
     "aws-lambda": "^1.0.6",
+    "cypress": "9.0.0",
     "jest": "^27.3.1",
     "ts-jest": "^27.0.7",
     "ts-node": "^10.4.0"
