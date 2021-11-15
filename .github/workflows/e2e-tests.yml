@@ -88,10 +88,6 @@ jobs:
           ref: ${{ github.event.inputs.sha || github.ref }}
 
       # For manually run PRs
-      - name: Initialize empty git repository
-        if: ${{ github.event.inputs.pull_request_id != '' }}
-        run: git init --initial-branch serverless-next-js-placeholder
-
       - name: Checkout pull request
         if: ${{ github.event.inputs.pull_request_id != '' }}
         uses: dawidd6/action-checkout-pr@v1
@@ -123,8 +119,8 @@ jobs:
       - name: Run e2e tests
         working-directory: tests/e2e/${{ matrix.app }}
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_AT }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ST }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: eu-north-1
           WAIT_TIMEOUT: 900
           CYPRESS_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed for testing external rewrites to GitHub API without getting throttled
