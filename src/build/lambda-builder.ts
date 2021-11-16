@@ -5,6 +5,7 @@ import CoreBuilder from './core-builder';
 
 export const DEFAULT_LAMBDA_CODE_DIR = 'default-lambda';
 export const IMAGE_LAMBDA_CODE_DIR = 'image-lambda';
+export const EDGE_LAMBDA = 'default-edge-lambda';
 
 export class LambdaBuilder extends CoreBuilder {
   protected async buildPlatform(
@@ -20,7 +21,16 @@ export class LambdaBuilder extends CoreBuilder {
       ...imageManifest,
     };
 
-    await this.buildDefaultLambda(defaultBuildManifest);
+    await this.buildDefaultLambda(
+      defaultBuildManifest,
+      DEFAULT_LAMBDA_CODE_DIR,
+      'default-handler',
+    );
+    await this.buildDefaultLambda(
+      defaultBuildManifest,
+      EDGE_LAMBDA,
+      'default-edge-handler',
+    );
 
     // If using Next.js 10 and images-manifest.json is present then image optimizer can be used
     const hasImagesManifest = await fse.pathExists(
@@ -55,7 +65,7 @@ export class LambdaBuilder extends CoreBuilder {
    * @param shouldMinify
    */
   private async processAndCopyHandler(
-    handlerType: 'default-handler' | 'image-handler',
+    handlerType: 'default-handler' | 'image-handler' | 'default-edge-handler',
     destination: string,
     shouldMinify: boolean,
   ): Promise<void> {
@@ -78,54 +88,48 @@ export class LambdaBuilder extends CoreBuilder {
 
   private async buildDefaultLambda(
     pageManifest: PageManifest,
+    lambdaName: string,
+    handler: 'default-handler' | 'image-handler' | 'default-edge-handler',
   ): Promise<void[]> {
     const hasAPIRoutes = await fse.pathExists(
       join(this.serverlessDir, 'pages/api'),
     );
 
-    await fse.mkdir(join(this.outputDir, DEFAULT_LAMBDA_CODE_DIR));
+    await fse.mkdir(join(this.outputDir, lambdaName));
 
     return Promise.all([
       this.processAndCopyHandler(
-        'default-handler',
-        join(this.outputDir, DEFAULT_LAMBDA_CODE_DIR),
+        handler,
+        join(this.outputDir, lambdaName),
         !!this.buildOptions.minifyHandlers,
       ),
       this.buildOptions?.handler
         ? fse.copy(
             join(this.nextConfigDir, this.buildOptions.handler),
-            join(
-              this.outputDir,
-              DEFAULT_LAMBDA_CODE_DIR,
-              this.buildOptions.handler,
-            ),
+            join(this.outputDir, lambdaName, this.buildOptions.handler),
           )
         : Promise.resolve(),
       fse.writeJson(
-        join(this.outputDir, DEFAULT_LAMBDA_CODE_DIR, 'manifest.json'),
+        join(this.outputDir, lambdaName, 'manifest.json'),
         pageManifest,
       ),
       fse.copy(
         join(this.serverlessDir, 'pages'),
-        join(this.outputDir, DEFAULT_LAMBDA_CODE_DIR, 'pages'),
+        join(this.outputDir, lambdaName, 'pages'),
         {
           filter: this.getDefaultHandlerFileFilter(hasAPIRoutes, pageManifest),
         },
       ),
-      this.copyChunks(DEFAULT_LAMBDA_CODE_DIR),
+      this.copyChunks(lambdaName),
       fse.copy(
         join(this.dotNextDir, 'prerender-manifest.json'),
-        join(
-          this.outputDir,
-          DEFAULT_LAMBDA_CODE_DIR,
-          'prerender-manifest.json',
-        ),
+        join(this.outputDir, lambdaName, 'prerender-manifest.json'),
       ),
       this.processAndCopyRoutesManifest(
         join(this.dotNextDir, 'routes-manifest.json'),
-        join(this.outputDir, DEFAULT_LAMBDA_CODE_DIR, 'routes-manifest.json'),
+        join(this.outputDir, lambdaName, 'routes-manifest.json'),
       ),
-      ...this.copyWebpackFiles(join(this.outputDir, DEFAULT_LAMBDA_CODE_DIR)),
+      ...this.copyWebpackFiles(join(this.outputDir, lambdaName)),
     ]);
   }
 

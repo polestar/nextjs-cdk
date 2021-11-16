@@ -53,6 +53,8 @@ const generateConfig = (input) => ({
 });
 
 export default [
+  { handler: 'default-edge-handler', minify: false },
+  { handler: 'default-edge-handler', minify: false },
   { handler: 'default-handler', minify: false },
   { handler: 'default-handler', minify: true },
   { handler: 'image-handler', minify: false },
