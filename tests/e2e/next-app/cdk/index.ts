@@ -1,4 +1,3 @@
-export * from '../../../../src/cdk';
 import { NextJSAPIGateway, NextJSAtEdge } from '../../../../src/cdk';
 import * as cdk from '@aws-cdk/core';
 
@@ -14,7 +13,8 @@ export class NextjsCdkTestStack extends cdk.Stack {
   ) {
     super(scope, id, props);
 
-    new NextJSAtEdge(this, 'nextjs-edge', props);
+    const app = new NextJSAtEdge(this, 'edge-demo', props);
+
     // const app = new NextJSAPIGateway(this, 'nextjs', {
     //   nextjsCDKBuildOutDir: props?.nextjsCDKBuildOutDir ?? './.nextjs_cdk',
     //   env: {
@@ -23,9 +23,13 @@ export class NextjsCdkTestStack extends cdk.Stack {
     //   },
     // });
 
-    new cdk.CfnOutput(this, 'Status', {
-      value: 'OK',
+    new cdk.CfnOutput(this, 'Domain', {
+      value: app.distribution?.domainName || 'n/a',
       description: 'CloudFrontDomain',
+    });
+    new cdk.CfnOutput(this, 'ID', {
+      value: app.distribution?.distributionId || 'n/a',
+      description: 'DistributionID',
     });
   }
 }

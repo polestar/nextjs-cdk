@@ -36,7 +36,7 @@ export class NextJSConstruct extends cdk.Construct {
   protected bucket?: s3.Bucket;
   protected defaultNextLambda?: lambda.Function;
   protected region: string;
-  protected distribution?: Distribution;
+  public distribution?: Distribution;
 
   constructor(scope: cdk.Construct, id: string, protected props: Props) {
     super(scope, id);
