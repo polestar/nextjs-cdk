@@ -5,9 +5,11 @@ import * as cloudfront from '@aws-cdk/aws-cloudfront';
 import * as origins from '@aws-cdk/aws-cloudfront-origins';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as logs from '@aws-cdk/aws-logs';
+import path from 'path';
 
 import { NextJSConstruct } from '.';
 import { Props } from '../props';
+import { CustomHeaders } from '../../common';
 
 export class NextJSAtEdge extends NextJSConstruct {
   protected edgeLambdaRole?: Role;
@@ -19,26 +21,24 @@ export class NextJSAtEdge extends NextJSConstruct {
     const isISR = this.hasISRPages() || this.hasDynamicISRPages();
 
     if (isISR) {
-      console.log('isISR -> creating regeneration-queue');
       this.createRegenerationSqsAndLambda('regeneration-queue');
     }
 
     const role = this.createEdgeRole();
-    const defaultLambda = this.createEdgeLambda(
+    const edgeLambda = this.createEdgeLambda(
       'default-lambda-demo',
       role,
       'default-lambda-joel-edge-demo',
       'handles all server-side reqs for nextjs',
     );
 
-    assetsBucket.grantReadWrite(defaultLambda);
-    defaultLambda.currentVersion.addAlias('live');
+    assetsBucket.grantReadWrite(edgeLambda);
+    edgeLambda.currentVersion.addAlias('live');
 
     if (isISR && this.regenerationFunction && this.regenerationQueue) {
-      console.log('adding rights for regeneration queue');
       assetsBucket.grantReadWrite(this.regenerationFunction);
-      this.regenerationQueue.grantSendMessages(defaultLambda);
-      this.regenerationFunction.grantInvoke(defaultLambda);
+      this.regenerationQueue.grantSendMessages(edgeLambda);
+      this.regenerationFunction.grantInvoke(edgeLambda);
     }
 
     this.createEdgeDistribution();
@@ -89,16 +89,14 @@ export class NextJSAtEdge extends NextJSConstruct {
   private createEdgeDistribution() {
     if (!this.bucket || !this.defaultNextLambda) return;
 
-    const myCdnOai = new cloudfront.OriginAccessIdentity(
-      this,
-      'cdn-bucket-read',
+    this.bucket.grantRead(
+      new cloudfront.OriginAccessIdentity(this, 'cdn-bucket-read'),
     );
-    this.bucket.grantRead(myCdnOai);
 
     const bucketOrigin = new origins.S3Origin(this.bucket, {
       customHeaders: {
-        'x-aws-bucket': this.bucket.bucketName,
-        'x-aws-region': this.region || 'us-east-1',
+        [CustomHeaders.BUCKET_S3_HEADER]: this.bucket.bucketName,
+        [CustomHeaders.REGION_HEADER]: this.region || 'us-east-1',
       },
     });
 
