@@ -1,4 +1,4 @@
-import { CloudFrontRequestHandler } from 'aws-lambda';
+import { CloudFrontRequestHandler, CloudFrontRequestResult } from 'aws-lambda';
 import { ServerResponse } from 'http';
 
 // @ts-ignore
@@ -22,30 +22,49 @@ const prerenderManifest: PrerenderManifestType = PrerenderManifest;
 const routesManifest: RoutesManifest = RoutesManifestJson;
 
 export const handler: CloudFrontRequestHandler = async (event) => {
-  const { req, res, responsePromise } = cloudFrontAdapter(event.Records[0].cf);
+  try {
+    const cloudFrontEvent = event.Records[0].cf;
+    const { req, res, responsePromise } = cloudFrontAdapter(cloudFrontEvent);
+    const customHeaders = cloudFrontEvent.request.origin?.s3?.customHeaders;
 
-  const bucketName = 'next-app-stack-demoedgebucket1ffe6a6a-1gikrma7wt7sj'; // manifest.bucketName ?? process.env.BUCKET_NAME;
-  const bucketRegion = 'us-east-1'; // manifest.bucketRegion ?? process.env.BUCKET_REGION;
-  const regenerationQueueRegion = manifest.queueRegion;
-  const regenerationQueueName = manifest.queueName;
-  const awsPlatformClient = new AwsPlatformClient(
-    bucketName,
-    bucketRegion,
-    regenerationQueueName,
-    regenerationQueueRegion,
-  );
-  const serverResponse = res as unknown as ServerResponse;
+    if (!customHeaders) {
+      throw new Error("can't find custom headers on request.origin.s3");
+    }
 
-  await defaultHandler({
-    req,
-    res: serverResponse,
-    responsePromise,
-    manifest,
-    prerenderManifest,
-    routesManifest,
-    options: { logExecutionTimes: false },
-    platformClient: awsPlatformClient,
-  });
+    const bucketHeader = customHeaders['x-aws-bucket'][0];
+    const regionHeader = customHeaders['x-aws-region'][0];
 
-  return await responsePromise;
+    const bucketName = bucketHeader.value;
+    const bucketRegion = regionHeader.value;
+
+    const regenerationQueueRegion = manifest.queueRegion;
+    const regenerationQueueName = manifest.queueName;
+    const awsPlatformClient = new AwsPlatformClient(
+      bucketName,
+      bucketRegion,
+      regenerationQueueName,
+      regenerationQueueRegion,
+    );
+    const serverResponse = res as unknown as ServerResponse;
+
+    await defaultHandler({
+      req,
+      res: serverResponse,
+      responsePromise,
+      manifest,
+      prerenderManifest,
+      routesManifest,
+      options: { logExecutionTimes: false },
+      platformClient: awsPlatformClient,
+    });
+
+    return await responsePromise;
+  } catch (err) {
+    const cloudFrontResult: CloudFrontRequestResult = {
+      status: '500',
+      body: 'failed to exectute lambda@edge ' + JSON.stringify(err),
+    };
+
+    return cloudFrontResult;
+  }
 };

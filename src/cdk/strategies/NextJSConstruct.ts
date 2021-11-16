@@ -6,7 +6,6 @@ import * as logs from '@aws-cdk/aws-logs';
 import { Duration, RemovalPolicy } from '@aws-cdk/core';
 import * as s3Deploy from '@aws-cdk/aws-s3-deployment';
 import * as lambdaEventSources from '@aws-cdk/aws-lambda-event-sources';
-import { Bucket } from '@aws-cdk/aws-s3';
 import { Role } from '@aws-cdk/aws-iam';
 import fs from 'fs-extra';
 import path from 'path';
@@ -94,37 +93,6 @@ export class NextJSConstruct extends cdk.Construct {
     this.regenerationFunction.addEventSource(
       new lambdaEventSources.SqsEventSource(this.regenerationQueue),
     );
-  }
-
-  protected createDefaultLambda(
-    id: string,
-    assetsBucket: Bucket,
-    role: Role,
-    functionName = 'DefaultLambda',
-    description = 'Default Lambda for NextJD',
-  ) {
-    this.defaultNextLambda = new lambda.Function(this, id, {
-      functionName,
-      description,
-      handler: 'index.handler',
-      currentVersionOptions: {
-        removalPolicy: RemovalPolicy.DESTROY,
-      },
-      logRetention: logs.RetentionDays.THREE_DAYS,
-      code: lambda.Code.fromAsset(
-        path.join(this.props.nextjsCDKBuildOutDir, 'default-edge-lambda'),
-      ),
-      role,
-      runtime: lambda.Runtime.NODEJS_14_X,
-      memorySize: 512,
-      timeout: Duration.seconds(10),
-      // environment: {
-      //   BUCKET_NAME: assetsBucket.bucketName,
-      //   BUCKET_REGION: this.region,
-      // },
-    });
-
-    return this.defaultNextLambda;
   }
 
   protected uploadNextAssets() {
