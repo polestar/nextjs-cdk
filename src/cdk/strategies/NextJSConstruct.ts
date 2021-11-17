@@ -2,11 +2,9 @@ import * as cdk from '@aws-cdk/core';
 import * as s3 from '@aws-cdk/aws-s3';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as sqs from '@aws-cdk/aws-sqs';
-import * as logs from '@aws-cdk/aws-logs';
-import { Duration, RemovalPolicy } from '@aws-cdk/core';
+import { Duration } from '@aws-cdk/core';
 import * as s3Deploy from '@aws-cdk/aws-s3-deployment';
 import * as lambdaEventSources from '@aws-cdk/aws-lambda-event-sources';
-import { Role } from '@aws-cdk/aws-iam';
 import fs from 'fs-extra';
 import path from 'path';
 
@@ -24,6 +22,7 @@ import {
 } from '../utils';
 import { pathToPosix } from '../../build';
 import { Distribution } from '@aws-cdk/aws-cloudfront';
+import { LambdaHandlerTypes } from '../../common';
 
 export class NextJSConstruct extends cdk.Construct {
   protected defaultManifest: BuildManifest;
@@ -85,7 +84,10 @@ export class NextJSConstruct extends cdk.Construct {
         runtime: lambda.Runtime.NODEJS_14_X,
         timeout: Duration.seconds(30),
         code: lambda.Code.fromAsset(
-          path.join(this.props.nextjsCDKBuildOutDir, 'default-lambda'),
+          path.join(
+            this.props.nextjsCDKBuildOutDir,
+            LambdaHandlerTypes.DEFAULT,
+          ),
         ),
       },
     );
@@ -176,7 +178,7 @@ export class NextJSConstruct extends cdk.Construct {
     return fs.readJSONSync(
       path.join(
         this.props.nextjsCDKBuildOutDir,
-        'default-lambda/routes-manifest.json',
+        LambdaHandlerTypes.DEFAULT + '/routes-manifest.json',
       ),
     );
   }
@@ -185,7 +187,7 @@ export class NextJSConstruct extends cdk.Construct {
     return fs.readJSONSync(
       path.join(
         this.props.nextjsCDKBuildOutDir,
-        'default-lambda/prerender-manifest.json',
+        LambdaHandlerTypes.DEFAULT + '/prerender-manifest.json',
       ),
     );
   }
@@ -194,7 +196,7 @@ export class NextJSConstruct extends cdk.Construct {
     return fs.readJSONSync(
       path.join(
         this.props.nextjsCDKBuildOutDir,
-        'default-lambda/manifest.json',
+        LambdaHandlerTypes.DEFAULT + '/manifest.json',
       ),
     );
   }
@@ -202,7 +204,7 @@ export class NextJSConstruct extends cdk.Construct {
   protected readImageBuildManifest(): ImageBuildManifest | null {
     const imageLambdaPath = path.join(
       this.props.nextjsCDKBuildOutDir,
-      'image-lambda/manifest.json',
+      LambdaHandlerTypes.IMAGE + '/manifest.json',
     );
 
     return fs.existsSync(imageLambdaPath)

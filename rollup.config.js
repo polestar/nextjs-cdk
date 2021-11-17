@@ -52,11 +52,26 @@ const generateConfig = (input) => ({
   external: [...NPM_EXTERNALS, ...LOCAL_EXTERNALS],
 });
 
-export default [
-  { handler: 'default-edge-handler', minify: false },
-  { handler: 'default-edge-handler', minify: false },
-  { handler: 'default-handler', minify: false },
-  { handler: 'default-handler', minify: true },
-  { handler: 'image-handler', minify: false },
-  { handler: 'image-handler', minify: true },
-].map(generateConfig);
+const handlers = {
+  // Must match src/common/LambdaHandlerTypes.ts
+  DEFAULT: 'default-handler',
+  IMAGE: 'image-handler',
+  EDGE: 'edge-handler',
+};
+
+const buildList = Object.values(handlers)
+  .map((handler) => {
+    return [
+      {
+        handler,
+        minify: true,
+      },
+      {
+        handler,
+        minify: false,
+      },
+    ];
+  })
+  .flat();
+
+export default buildList.map(generateConfig);

@@ -33,6 +33,7 @@ import {
   readInvalidationPathsFromManifest,
 } from '../utils';
 import { pathToPosix } from '../../build/lib';
+import { LambdaHandlerTypes } from '../../common';
 
 export class NextJSAPIGateway extends cdk.Construct {
   private defaultManifest: BuildManifest;
@@ -101,7 +102,10 @@ export class NextJSAPIGateway extends cdk.Construct {
           runtime: lambda.Runtime.NODEJS_14_X,
           timeout: Duration.seconds(30),
           code: lambda.Code.fromAsset(
-            path.join(this.props.nextjsCDKBuildOutDir, 'default-lambda'),
+            path.join(
+              this.props.nextjsCDKBuildOutDir,
+              LambdaHandlerTypes.DEFAULT,
+            ),
           ),
         },
       );
@@ -134,7 +138,7 @@ export class NextJSAPIGateway extends cdk.Construct {
       },
       logRetention: logs.RetentionDays.THREE_DAYS,
       code: lambda.Code.fromAsset(
-        path.join(this.props.nextjsCDKBuildOutDir, 'default-lambda'),
+        path.join(this.props.nextjsCDKBuildOutDir, LambdaHandlerTypes.DEFAULT),
       ),
       role: this.edgeLambdaRole,
       runtime: lambda.Runtime.NODEJS_14_X,
@@ -167,7 +171,7 @@ export class NextJSAPIGateway extends cdk.Construct {
         },
         logRetention: logs.RetentionDays.THREE_DAYS,
         code: lambda.Code.fromAsset(
-          path.join(this.props.nextjsCDKBuildOutDir, 'image-lambda'),
+          path.join(this.props.nextjsCDKBuildOutDir, LambdaHandlerTypes.IMAGE),
         ),
         role: this.edgeLambdaRole,
         runtime: lambda.Runtime.NODEJS_14_X,
@@ -339,7 +343,7 @@ export class NextJSAPIGateway extends cdk.Construct {
     return fs.readJSONSync(
       path.join(
         this.props.nextjsCDKBuildOutDir,
-        'default-lambda/routes-manifest.json',
+        LambdaHandlerTypes.DEFAULT + '/routes-manifest.json',
       ),
     );
   }
@@ -348,7 +352,7 @@ export class NextJSAPIGateway extends cdk.Construct {
     return fs.readJSONSync(
       path.join(
         this.props.nextjsCDKBuildOutDir,
-        'default-lambda/prerender-manifest.json',
+        LambdaHandlerTypes.DEFAULT + '/prerender-manifest.json',
       ),
     );
   }
@@ -357,7 +361,7 @@ export class NextJSAPIGateway extends cdk.Construct {
     return fs.readJSONSync(
       path.join(
         this.props.nextjsCDKBuildOutDir,
-        'default-lambda/manifest.json',
+        LambdaHandlerTypes.DEFAULT + '/manifest.json',
       ),
     );
   }
@@ -365,7 +369,7 @@ export class NextJSAPIGateway extends cdk.Construct {
   private readImageBuildManifest(): ImageBuildManifest | null {
     const imageLambdaPath = path.join(
       this.props.nextjsCDKBuildOutDir,
-      'image-lambda/manifest.json',
+      LambdaHandlerTypes.IMAGE + '/manifest.json',
     );
 
     return fs.existsSync(imageLambdaPath)

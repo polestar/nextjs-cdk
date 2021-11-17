@@ -108,7 +108,6 @@ export const handleDefault = async (
   }
 
   if (route.isRender) {
-    console.log('isRender');
     return renderRoute(
       event,
       route as RenderRoute,
@@ -119,8 +118,6 @@ export const handleDefault = async (
   }
 
   if (route.isApi) {
-    console.log('is api route');
-
     const { page } = route as ApiRoute;
 
     setCustomHeaders(event, routesManifest);
