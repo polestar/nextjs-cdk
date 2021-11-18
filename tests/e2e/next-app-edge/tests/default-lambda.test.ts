@@ -29,8 +29,8 @@ const getObjectMock = (body: string) => {
   });
 };
 
-describe('default-lambda', () => {
-  const handlerModule = require(path.join(BUILD_PATH, 'default-lambda'));
+describe('edge-lambda', () => {
+  const handlerModule = require(path.join(BUILD_PATH, 'edge-lambda'));
 
   it('should return index content on GET /', async () => {
     const body =

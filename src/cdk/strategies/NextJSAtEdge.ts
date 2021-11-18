@@ -9,7 +9,7 @@ import path from 'path';
 
 import { NextJSConstruct } from '.';
 import { Props } from '../props';
-import { CustomHeaders, LambdaHandlerTypes } from '../../common';
+import { CustomHeaders, LambdaHandler } from '../../common';
 
 export class NextJSAtEdge extends NextJSConstruct {
   protected edgeLambdaRole?: Role;
@@ -64,7 +64,7 @@ export class NextJSAtEdge extends NextJSConstruct {
       },
       logRetention: logs.RetentionDays.THREE_DAYS,
       code: lambda.Code.fromAsset(
-        path.join(this.props.nextjsCDKBuildOutDir, LambdaHandlerTypes.EDGE),
+        path.join(this.props.nextjsCDKBuildOutDir, LambdaHandler.EDGE),
       ),
       role,
       runtime: lambda.Runtime.NODEJS_14_X,

@@ -1,4 +1,4 @@
-export enum LambdaHandlerTypes {
+export enum LambdaHandler {
   DEFAULT = 'default-handler',
   IMAGE = 'image-handler',
   EDGE = 'edge-handler',

@@ -1,6 +1,6 @@
 import { PageManifest, Manifest } from '../types';
 import { LambdaBuilder } from './lambda-builder';
-import { LambdaHandlerTypes } from '../common';
+import { LambdaHandler } from '../common';
 
 export class LambdaEdgeBuilder extends LambdaBuilder {
   protected async buildPlatform(
@@ -16,11 +16,8 @@ export class LambdaEdgeBuilder extends LambdaBuilder {
       ...imageManifest,
     };
 
-    await this.buildNextJsLambda(
-      defaultBuildManifest,
-      LambdaHandlerTypes.DEFAULT,
-    );
-    await this.buildNextJsLambda(defaultBuildManifest, LambdaHandlerTypes.EDGE);
+    await this.buildNextJsLambda(defaultBuildManifest, LambdaHandler.DEFAULT);
+    await this.buildNextJsLambda(defaultBuildManifest, LambdaHandler.EDGE);
 
     this.buildImageOptimizer(imageBuildManifest);
   }

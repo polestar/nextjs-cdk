@@ -22,7 +22,7 @@ import {
 } from '../utils';
 import { pathToPosix } from '../../build';
 import { Distribution } from '@aws-cdk/aws-cloudfront';
-import { LambdaHandlerTypes } from '../../common';
+import { LambdaHandler } from '../../common';
 
 export class NextJSConstruct extends cdk.Construct {
   protected defaultManifest: BuildManifest;
@@ -84,10 +84,7 @@ export class NextJSConstruct extends cdk.Construct {
         runtime: lambda.Runtime.NODEJS_14_X,
         timeout: Duration.seconds(30),
         code: lambda.Code.fromAsset(
-          path.join(
-            this.props.nextjsCDKBuildOutDir,
-            LambdaHandlerTypes.DEFAULT,
-          ),
+          path.join(this.props.nextjsCDKBuildOutDir, LambdaHandler.DEFAULT),
         ),
       },
     );
@@ -178,7 +175,7 @@ export class NextJSConstruct extends cdk.Construct {
     return fs.readJSONSync(
       path.join(
         this.props.nextjsCDKBuildOutDir,
-        LambdaHandlerTypes.DEFAULT + '/routes-manifest.json',
+        LambdaHandler.DEFAULT + '/routes-manifest.json',
       ),
     );
   }
@@ -187,7 +184,7 @@ export class NextJSConstruct extends cdk.Construct {
     return fs.readJSONSync(
       path.join(
         this.props.nextjsCDKBuildOutDir,
-        LambdaHandlerTypes.DEFAULT + '/prerender-manifest.json',
+        LambdaHandler.DEFAULT + '/prerender-manifest.json',
       ),
     );
   }
@@ -196,7 +193,7 @@ export class NextJSConstruct extends cdk.Construct {
     return fs.readJSONSync(
       path.join(
         this.props.nextjsCDKBuildOutDir,
-        LambdaHandlerTypes.DEFAULT + '/manifest.json',
+        LambdaHandler.DEFAULT + '/manifest.json',
       ),
     );
   }
@@ -204,7 +201,7 @@ export class NextJSConstruct extends cdk.Construct {
   protected readImageBuildManifest(): ImageBuildManifest | null {
     const imageLambdaPath = path.join(
       this.props.nextjsCDKBuildOutDir,
-      LambdaHandlerTypes.IMAGE + '/manifest.json',
+      LambdaHandler.IMAGE + '/manifest.json',
     );
 
     return fs.existsSync(imageLambdaPath)
