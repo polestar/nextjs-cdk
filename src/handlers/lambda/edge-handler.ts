@@ -21,6 +21,8 @@ const manifest: BuildManifest = Manifest;
 const prerenderManifest: PrerenderManifestType = PrerenderManifest;
 const routesManifest: RoutesManifest = RoutesManifestJson;
 
+export { AwsPlatformClient };
+
 export const handler: CloudFrontRequestHandler = async (event) => {
   try {
     const cloudFrontEvent = event.Records[0].cf;
@@ -55,7 +57,7 @@ export const handler: CloudFrontRequestHandler = async (event) => {
   } catch (err) {
     const cloudFrontResult: CloudFrontRequestResult = {
       status: '500',
-      body: 'failed to execute lambda@edge ' + JSON.stringify(err),
+      body: 'failed to execute lambda@edge ' + err,
     };
 
     return cloudFrontResult;

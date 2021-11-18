@@ -4,7 +4,7 @@ const BUILD_PATH = path.resolve('./.nextjs_cdk');
 const DEFAULT_EVENT = require('./requests/default.json');
 
 const getObjectMock = (body: string) => {
-  return jest.fn(async () => {
+  return jest.fn(() => {
     return {
       body: Buffer.from(body),
       headers: {
@@ -30,16 +30,20 @@ const getObjectMock = (body: string) => {
 };
 
 describe('edge-lambda', () => {
-  const handlerModule = require(path.join(BUILD_PATH, 'edge-lambda'));
+  const handlerModule = require(path.join(BUILD_PATH, 'edge-handler'));
 
   it('should return index content on GET /', async () => {
     const body =
       '<html><head><title>Test</title></head><body><h1>TEST!</h1></body></html>';
     handlerModule.AwsPlatformClient.prototype.getObject = getObjectMock(body);
 
+    console.log(DEFAULT_EVENT);
+
     const response = await handlerModule.handler(DEFAULT_EVENT);
 
-    expect(response.statusCode).toBe(200);
+    console.log(response);
+
+    expect(response.status).toBe('200');
     expect(Buffer.from(response.body, 'base64').toString('utf-8')).toEqual(
       body,
     );
