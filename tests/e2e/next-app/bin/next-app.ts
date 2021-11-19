@@ -1,7 +1,8 @@
 import rimraf from 'rimraf';
+import * as cdk from '@aws-cdk/core';
+
 import { LambdaBuilder } from '../../../../src/build/lambda-builder';
 import { NextjsCdkTestStack } from '../cdk/index';
-import * as cdk from '@aws-cdk/core';
 
 const nextjsCDKBuildOutDir = './.nextjs_cdk';
 
@@ -18,7 +19,7 @@ builder
   .then(() => {
     const app = new cdk.App();
 
-    new NextjsCdkTestStack(app, 'next-app-stack', { nextjsCDKBuildOutDir });
+    new NextjsCdkTestStack(app, 'next-app-gw-stack', { nextjsCDKBuildOutDir });
   })
   .catch((e) => {
     console.log(e);

@@ -102,6 +102,7 @@ export const handleDefault = async (
       route.querystring
     }`;
   }
+
   if (route.isRedirect) {
     return redirect(event, route as RedirectRoute);
   }

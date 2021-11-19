@@ -1,0 +1,80 @@
+{
+  "Records": [
+    {
+      "cf": {
+        "config": {
+          "distributionDomainName": "test.cloudfront.net",
+          "distributionId": "E1FM6HNVM0G8F6",
+          "eventType": "origin-request",
+          "requestId": "u0MJYLe3wL3WrR1UW35mX7V7yBBXDe03QmPbUPTIOh8iiCbhM8kt5A=="
+        },
+        "request": {
+          "clientIp": "2.248.12.176",
+          "headers": {
+            "x-forwarded-for": [
+              {
+                "key": "X-Forwarded-For",
+                "value": "2.248.12.176"
+              }
+            ],
+            "user-agent": [
+              {
+                "key": "User-Agent",
+                "value": "Amazon CloudFront"
+              }
+            ],
+            "via": [
+              {
+                "key": "Via",
+                "value": "2.0 test.cloudfront.net (CloudFront)"
+              }
+            ],
+            "accept-encoding": [
+              {
+                "key": "Accept-Encoding",
+                "value": "br,gzip"
+              }
+            ],
+            "host": [
+              {
+                "key": "Host",
+                "value": "next-app-stack-test.s3.us-east-1.amazonaws.com"
+              }
+            ],
+            "cache-control": [
+              {
+                "key": "Cache-Control",
+                "value": "max-age=0"
+              }
+            ]
+          },
+          "method": "GET",
+          "origin": {
+            "s3": {
+              "authMethod": "origin-access-identity",
+              "customHeaders": {
+                "x-nextjs-cdk-s3-bucket": [
+                  {
+                    "key": "x-nextjs-cdk-s3-bucket",
+                    "value": "next-app-stack-test"
+                  }
+                ],
+                "x-nextjs-cdk-region": [
+                  {
+                    "key": "x-nextjs-cdk-region",
+                    "value": "us-east-1"
+                  }
+                ]
+              },
+              "domainName": "next-app-stack-test.s3.us-east-1.amazonaws.com",
+              "path": "",
+              "region": "us-east-1"
+            }
+          },
+          "querystring": "",
+          "uri": "/"
+        }
+      }
+    }
+  ]
+}

@@ -374,15 +374,11 @@ export default abstract class CoreBuilder {
     const basePath = routesManifest.basePath;
     const nextConfigDir = this.nextConfigDir;
     const nextStaticDir = this.nextStaticDir;
-
     const dotNextDirectory = path.join(this.nextConfigDir, '.next');
-
     const assetOutputDirectory = path.join(this.outputDir, ASSETS_DIR);
-
     const normalizedBasePath = basePath ? basePath.slice(1) : '';
     const withBasePath = (key: string): string =>
       path.join(normalizedBasePath, key);
-
     const copyIfExists = async (
       source: string,
       destination: string,

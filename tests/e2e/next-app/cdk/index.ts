@@ -9,7 +9,7 @@ export class NextjsCdkTestStack extends cdk.Stack {
   constructor(
     scope: cdk.Construct,
     id: string,
-    props?: NextjsCdkTestStackProps,
+    props: NextjsCdkTestStackProps,
   ) {
     super(scope, id, props);
 
@@ -20,12 +20,13 @@ export class NextjsCdkTestStack extends cdk.Stack {
         account: process.env.CDK_DEFAULT_ACCOUNT,
       },
     });
+
     new cdk.CfnOutput(this, 'Domain', {
       value: app.distribution.domainName,
       description: 'CloudFrontDomain',
     });
     new cdk.CfnOutput(this, 'ID', {
-      value: app.distribution.distributionId,
+      value: app.distribution?.distributionId,
       description: 'DistributionID',
     });
   }
