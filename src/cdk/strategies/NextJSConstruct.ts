@@ -82,7 +82,7 @@ export class NextJSConstruct extends cdk.Construct {
       {
         handler: 'index.handler',
         runtime: lambda.Runtime.NODEJS_14_X,
-        // timeout: Duration.seconds(30),
+        timeout: Duration.seconds(30),
         code: lambda.Code.fromAsset(
           path.join(this.props.nextjsCDKBuildOutDir, LambdaHandler.DEFAULT),
         ),

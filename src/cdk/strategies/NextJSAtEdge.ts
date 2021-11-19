@@ -1,6 +1,7 @@
 import { CompositePrincipal, Role, ServicePrincipal } from '@aws-cdk/aws-iam';
 import * as cdk from '@aws-cdk/core';
-import { Duration, RemovalPolicy } from '@aws-cdk/core';
+import { Duration } from '@aws-cdk/core';
+import { RemovalPolicy } from '@aws-cdk/core';
 import * as cloudfront from '@aws-cdk/aws-cloudfront';
 import * as origins from '@aws-cdk/aws-cloudfront-origins';
 import * as lambda from '@aws-cdk/aws-lambda';
@@ -69,7 +70,7 @@ export class NextJSAtEdge extends NextJSConstruct {
       role,
       runtime: lambda.Runtime.NODEJS_14_X,
       memorySize: 512,
-      // timeout: Duration.seconds(10),
+      timeout: Duration.seconds(10),
     });
 
     return this.defaultNextLambda;

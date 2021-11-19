@@ -796,7 +796,7 @@ Object {
               Object {
                 "EventType": "origin-request",
                 "LambdaFunctionARN": Object {
-                  "Ref": "testedgeconstructdefaultlambdademoCurrentVersion3C7CD0C2da80e9bf384a9e838215fab3322a0c7b",
+                  "Ref": "testedgeconstructdefaultlambdademoCurrentVersion3C7CD0C279c6d0d6ac82ac5b49dbf2595d1ac308",
                 },
               },
             ],
@@ -907,6 +907,7 @@ Object {
           ],
         },
         "Runtime": "nodejs14.x",
+        "Timeout": 30,
       },
       "Type": "AWS::Lambda::Function",
     },
@@ -1083,10 +1084,11 @@ Object {
           ],
         },
         "Runtime": "nodejs14.x",
+        "Timeout": 10,
       },
       "Type": "AWS::Lambda::Function",
     },
-    "testedgeconstructdefaultlambdademoCurrentVersion3C7CD0C2da80e9bf384a9e838215fab3322a0c7b": Object {
+    "testedgeconstructdefaultlambdademoCurrentVersion3C7CD0C279c6d0d6ac82ac5b49dbf2595d1ac308": Object {
       "DeletionPolicy": "Delete",
       "Properties": Object {
         "FunctionName": Object {
@@ -1103,7 +1105,7 @@ Object {
         },
         "FunctionVersion": Object {
           "Fn::GetAtt": Array [
-            "testedgeconstructdefaultlambdademoCurrentVersion3C7CD0C2da80e9bf384a9e838215fab3322a0c7b",
+            "testedgeconstructdefaultlambdademoCurrentVersion3C7CD0C279c6d0d6ac82ac5b49dbf2595d1ac308",
             "Version",
           ],
         },
