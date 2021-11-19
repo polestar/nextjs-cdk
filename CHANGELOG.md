@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/polestar/nextjs-cdk/compare/v1.1.0...v1.1.1) (2021-11-19)
+
+
+### Bug Fixes
+
+* **NextJSAtEdge,NextJSConstruct:** re-adds timeouts for lambdas ([a93735e](https://github.com/polestar/nextjs-cdk/commit/a93735ef83715a3824702d2d7741d72acffe5eee))
+
 # [1.1.0](https://github.com/polestar/nextjs-cdk/compare/v1.0.1...v1.1.0) (2021-11-19)
 
 
