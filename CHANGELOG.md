@@ -1,3 +1,17 @@
+# [1.1.0](https://github.com/polestar/nextjs-cdk/compare/v1.0.1...v1.1.0) (2021-11-19)
+
+
+### Bug Fixes
+
+* **cdk:** adds default export for strategies ([9d62069](https://github.com/polestar/nextjs-cdk/commit/9d6206930194f3c94ecbd6b1b85ece895f699450))
+* **src/cdk:** index reset ([8ada2eb](https://github.com/polestar/nextjs-cdk/commit/8ada2eb71910b2471ab638e5ae882d488cb4e3fb))
+
+
+### Features
+
+* **adapter:** lambda@edge ([1d3e4c8](https://github.com/polestar/nextjs-cdk/commit/1d3e4c8a9f133b0f407d428ed2266b03a2c0cb36))
+* **cloudFrontAdapter:** now reads s3 bucket and region from s3-custom-origin-headers ([e251bdd](https://github.com/polestar/nextjs-cdk/commit/e251bddecc6707fada04539a125137192be6caa7))
+
 ## [1.0.1](https://github.com/polestar/nextjs-cdk/compare/v1.0.0...v1.0.1) (2021-11-16)
 
 
