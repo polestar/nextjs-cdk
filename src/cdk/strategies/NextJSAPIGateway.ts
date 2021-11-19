@@ -23,16 +23,16 @@ import {
   ImageBuildManifest,
   BuildManifest,
   RoutesManifest,
-} from '../types';
-import { Props } from './props';
-export * from './props';
+} from '../../types';
+import { Props } from '../props';
+export * from '../props';
 
 import {
   readAssetsDirectory,
   reduceInvalidationPaths,
   readInvalidationPathsFromManifest,
-} from './utils';
-import { pathToPosix } from '../build/lib';
+} from '../utils';
+import { pathToPosix } from '../../build/lib';
 
 export class NextJSAPIGateway extends cdk.Construct {
   private defaultManifest: BuildManifest;
