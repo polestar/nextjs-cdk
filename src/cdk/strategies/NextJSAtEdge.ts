@@ -69,7 +69,7 @@ export class NextJSAtEdge extends NextJSConstruct {
       role,
       runtime: lambda.Runtime.NODEJS_14_X,
       memorySize: 512,
-      timeout: Duration.seconds(10),
+      // timeout: Duration.seconds(10),
     });
 
     return this.defaultNextLambda;
@@ -96,7 +96,7 @@ export class NextJSAtEdge extends NextJSConstruct {
     const bucketOrigin = new origins.S3Origin(this.bucket, {
       customHeaders: {
         [CustomHeaders.BUCKET_S3_HEADER]: this.bucket.bucketName,
-        [CustomHeaders.REGION_HEADER]: this.region || 'us-east-1',
+        [CustomHeaders.REGION_HEADER]: 'us-east-1',
       },
     });
 
