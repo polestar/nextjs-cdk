@@ -18,7 +18,7 @@ builder
   .then(() => {
     const app = new cdk.App();
 
-    new NextjsCdkTestStack(app, 'next-app-edge-stack', {
+    new NextjsCdkTestStack(app, 'next-cdk-test-stack', {
       nextjsCDKBuildOutDir,
       env: {
         region: 'us-east-1',

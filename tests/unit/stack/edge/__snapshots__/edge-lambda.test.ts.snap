@@ -239,7 +239,7 @@ Object {
               "Resource": Array [
                 Object {
                   "Fn::GetAtt": Array [
-                    "demoedgebucket1FFE6A6A",
+                    "unittestedgelambdaassetbucketDD62E0F5",
                     "Arn",
                   ],
                 },
@@ -249,7 +249,7 @@ Object {
                     Array [
                       Object {
                         "Fn::GetAtt": Array [
-                          "demoedgebucket1FFE6A6A",
+                          "unittestedgelambdaassetbucketDD62E0F5",
                           "Arn",
                         ],
                       },
@@ -328,7 +328,7 @@ Object {
             Array [
               "Lambda function for auto-deleting objects in ",
               Object {
-                "Ref": "demoedgebucket1FFE6A6A",
+                "Ref": "unittestedgelambdaassetbucketDD62E0F5",
               },
               " S3 bucket.",
             ],
@@ -479,153 +479,6 @@ Object {
       },
       "Type": "AWS::IAM::Policy",
     },
-    "demoedgebucket1FFE6A6A": Object {
-      "DeletionPolicy": "Delete",
-      "Properties": Object {
-        "Tags": Array [
-          Object {
-            "Key": "aws-cdk:auto-delete-objects",
-            "Value": "true",
-          },
-        ],
-      },
-      "Type": "AWS::S3::Bucket",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "demoedgebucketAutoDeleteObjectsCustomResource652C1AE6": Object {
-      "DeletionPolicy": "Delete",
-      "DependsOn": Array [
-        "demoedgebucketPolicyE2354396",
-      ],
-      "Properties": Object {
-        "BucketName": Object {
-          "Ref": "demoedgebucket1FFE6A6A",
-        },
-        "ServiceToken": Object {
-          "Fn::GetAtt": Array [
-            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "Custom::S3AutoDeleteObjects",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "demoedgebucketPolicyE2354396": Object {
-      "Properties": Object {
-        "Bucket": Object {
-          "Ref": "demoedgebucket1FFE6A6A",
-        },
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "s3:GetBucket*",
-                "s3:List*",
-                "s3:DeleteObject*",
-              ],
-              "Effect": "Allow",
-              "Principal": Object {
-                "AWS": Object {
-                  "Fn::GetAtt": Array [
-                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
-                    "Arn",
-                  ],
-                },
-              },
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
-                    "demoedgebucket1FFE6A6A",
-                    "Arn",
-                  ],
-                },
-                Object {
-                  "Fn::Join": Array [
-                    "",
-                    Array [
-                      Object {
-                        "Fn::GetAtt": Array [
-                          "demoedgebucket1FFE6A6A",
-                          "Arn",
-                        ],
-                      },
-                      "/*",
-                    ],
-                  ],
-                },
-              ],
-            },
-            Object {
-              "Action": Array [
-                "s3:GetObject*",
-                "s3:GetBucket*",
-                "s3:List*",
-              ],
-              "Effect": "Allow",
-              "Principal": Object {
-                "CanonicalUser": Object {
-                  "Fn::GetAtt": Array [
-                    "testedgeconstructcdnbucketreadC13AE162",
-                    "S3CanonicalUserId",
-                  ],
-                },
-              },
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
-                    "demoedgebucket1FFE6A6A",
-                    "Arn",
-                  ],
-                },
-                Object {
-                  "Fn::Join": Array [
-                    "",
-                    Array [
-                      Object {
-                        "Fn::GetAtt": Array [
-                          "demoedgebucket1FFE6A6A",
-                          "Arn",
-                        ],
-                      },
-                      "/*",
-                    ],
-                  ],
-                },
-              ],
-            },
-            Object {
-              "Action": "s3:GetObject",
-              "Effect": "Allow",
-              "Principal": Object {
-                "CanonicalUser": Object {
-                  "Fn::GetAtt": Array [
-                    "testedgeconstructNextJSDistributionEdgeOrigin1S3OriginF0DB88A3",
-                    "S3CanonicalUserId",
-                  ],
-                },
-              },
-              "Resource": Object {
-                "Fn::Join": Array [
-                  "",
-                  Array [
-                    Object {
-                      "Fn::GetAtt": Array [
-                        "demoedgebucket1FFE6A6A",
-                        "Arn",
-                      ],
-                    },
-                    "/*",
-                  ],
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::S3::BucketPolicy",
-    },
     "testedgeconstructAssetDeploymentBuildIDAwsCliLayer24733DA9": Object {
       "Properties": Object {
         "Content": Object {
@@ -675,10 +528,10 @@ Object {
       "Properties": Object {
         "DestinationBucketKeyPrefix": "/BUILD_ID",
         "DestinationBucketName": Object {
-          "Ref": "demoedgebucket1FFE6A6A",
+          "Ref": "unittestedgelambdaassetbucketDD62E0F5",
         },
         "DistributionId": Object {
-          "Ref": "testedgeconstructNextJSDistributionEdge0211C3BF",
+          "Ref": "testedgeconstructunittestedgelambdanextjsdistributionedgeC3A47666",
         },
         "DistributionPaths": Array [
           "/404",
@@ -750,7 +603,16 @@ Object {
       "Type": "Custom::CDKBucketDeployment",
       "UpdateReplacePolicy": "Delete",
     },
-    "testedgeconstructNextJSDistributionEdge0211C3BF": Object {
+    "testedgeconstructunittestedgelambdacdnbucketread4268E975": Object {
+      "Properties": Object {
+        "CloudFrontOriginAccessIdentityConfig": Object {
+          "Comment": "Allows CloudFront to reach the bucket",
+        },
+      },
+      "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
+    },
+    "testedgeconstructunittestedgelambdanextjsdistributionedgeC3A47666": Object {
+      "DeletionPolicy": "Delete",
       "Properties": Object {
         "DistributionConfig": Object {
           "CacheBehaviors": Array [
@@ -768,7 +630,7 @@ Object {
               ],
               "Compress": true,
               "PathPattern": "_next/static/*",
-              "TargetOriginId": "testedgeconstructNextJSDistributionEdgeOrigin15D65E736",
+              "TargetOriginId": "testedgeconstructunittestedgelambdanextjsdistributionedgeOrigin19C5B1AA2",
               "ViewerProtocolPolicy": "redirect-to-https",
             },
             Object {
@@ -785,7 +647,7 @@ Object {
               ],
               "Compress": true,
               "PathPattern": "static/*",
-              "TargetOriginId": "testedgeconstructNextJSDistributionEdgeOrigin15D65E736",
+              "TargetOriginId": "testedgeconstructunittestedgelambdanextjsdistributionedgeOrigin19C5B1AA2",
               "ViewerProtocolPolicy": "redirect-to-https",
             },
           ],
@@ -796,11 +658,11 @@ Object {
               Object {
                 "EventType": "origin-request",
                 "LambdaFunctionARN": Object {
-                  "Ref": "testedgeconstructdefaultlambdademoCurrentVersion3C7CD0C279c6d0d6ac82ac5b49dbf2595d1ac308",
+                  "Ref": "testedgeconstructunittestedgelambdanextjsedgelambdaCurrentVersion175BD3B7dabf1b43339ae41a87e49c6ed8626cfe",
                 },
               },
             ],
-            "TargetOriginId": "testedgeconstructNextJSDistributionEdgeOrigin15D65E736",
+            "TargetOriginId": "testedgeconstructunittestedgelambdanextjsdistributionedgeOrigin19C5B1AA2",
             "ViewerProtocolPolicy": "allow-all",
           },
           "DefaultRootObject": "",
@@ -811,16 +673,16 @@ Object {
             Object {
               "DomainName": Object {
                 "Fn::GetAtt": Array [
-                  "demoedgebucket1FFE6A6A",
+                  "unittestedgelambdaassetbucketDD62E0F5",
                   "RegionalDomainName",
                 ],
               },
-              "Id": "testedgeconstructNextJSDistributionEdgeOrigin15D65E736",
+              "Id": "testedgeconstructunittestedgelambdanextjsdistributionedgeOrigin19C5B1AA2",
               "OriginCustomHeaders": Array [
                 Object {
                   "HeaderName": "x-nextjs-cdk-s3-bucket",
                   "HeaderValue": Object {
-                    "Ref": "demoedgebucket1FFE6A6A",
+                    "Ref": "unittestedgelambdaassetbucketDD62E0F5",
                   },
                 },
                 Object {
@@ -835,7 +697,7 @@ Object {
                     Array [
                       "origin-access-identity/cloudfront/",
                       Object {
-                        "Ref": "testedgeconstructNextJSDistributionEdgeOrigin1S3OriginF0DB88A3",
+                        "Ref": "testedgeconstructunittestedgelambdanextjsdistributionedgeOrigin1S3Origin17052620",
                       },
                     ],
                   ],
@@ -846,72 +708,17 @@ Object {
         },
       },
       "Type": "AWS::CloudFront::Distribution",
+      "UpdateReplacePolicy": "Delete",
     },
-    "testedgeconstructNextJSDistributionEdgeOrigin1S3OriginF0DB88A3": Object {
+    "testedgeconstructunittestedgelambdanextjsdistributionedgeOrigin1S3Origin17052620": Object {
       "Properties": Object {
         "CloudFrontOriginAccessIdentityConfig": Object {
-          "Comment": "Identity for testedgeconstructNextJSDistributionEdgeOrigin15D65E736",
+          "Comment": "Identity for testedgeconstructunittestedgelambdanextjsdistributionedgeOrigin19C5B1AA2",
         },
       },
       "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
     },
-    "testedgeconstructRegenerationFunction7C6DBA5F": Object {
-      "DependsOn": Array [
-        "testedgeconstructRegenerationFunctionServiceRoleDefaultPolicy3CA8CF9E",
-        "testedgeconstructRegenerationFunctionServiceRole6DEB1A87",
-      ],
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": Object {
-            "Ref": "AssetParameters875e6791bc5d4d638710541b92529b8db4bce3e6e705545abfa91bf833ca0b81S3Bucket00099459",
-          },
-          "S3Key": Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                Object {
-                  "Fn::Select": Array [
-                    0,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameters875e6791bc5d4d638710541b92529b8db4bce3e6e705545abfa91bf833ca0b81S3VersionKey0D3AF51D",
-                        },
-                      ],
-                    },
-                  ],
-                },
-                Object {
-                  "Fn::Select": Array [
-                    1,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameters875e6791bc5d4d638710541b92529b8db4bce3e6e705545abfa91bf833ca0b81S3VersionKey0D3AF51D",
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            ],
-          },
-        },
-        "Handler": "index.handler",
-        "Role": Object {
-          "Fn::GetAtt": Array [
-            "testedgeconstructRegenerationFunctionServiceRole6DEB1A87",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs14.x",
-        "Timeout": 30,
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "testedgeconstructRegenerationFunctionServiceRole6DEB1A87": Object {
+    "testedgeconstructunittestedgelambdanextjsedgeexecutionrole9F0533E9": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -919,49 +726,29 @@ Object {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
               "Principal": Object {
-                "Service": "lambda.amazonaws.com",
+                "Service": Array [
+                  "lambda.amazonaws.com",
+                  "edgelambda.amazonaws.com",
+                ],
+              },
+            },
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "edgelambda.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                "arn:",
-                Object {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
-          },
-        ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "testedgeconstructRegenerationFunctionServiceRoleDefaultPolicy3CA8CF9E": Object {
+    "testedgeconstructunittestedgelambdanextjsedgeexecutionroleDefaultPolicyCC98C371": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
-            Object {
-              "Action": Array [
-                "sqs:ReceiveMessage",
-                "sqs:ChangeMessageVisibility",
-                "sqs:GetQueueUrl",
-                "sqs:DeleteMessage",
-                "sqs:GetQueueAttributes",
-              ],
-              "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
-                  "testedgeconstructregenerationqueue2DAA9107",
-                  "Arn",
-                ],
-              },
-            },
             Object {
               "Action": Array [
                 "s3:GetObject*",
@@ -975,7 +762,7 @@ Object {
               "Resource": Array [
                 Object {
                   "Fn::GetAtt": Array [
-                    "demoedgebucket1FFE6A6A",
+                    "unittestedgelambdaassetbucketDD62E0F5",
                     "Arn",
                   ],
                 },
@@ -985,7 +772,7 @@ Object {
                     Array [
                       Object {
                         "Fn::GetAtt": Array [
-                          "demoedgebucket1FFE6A6A",
+                          "unittestedgelambdaassetbucketDD62E0F5",
                           "Arn",
                         ],
                       },
@@ -995,44 +782,46 @@ Object {
                 },
               ],
             },
+            Object {
+              "Action": Array [
+                "sqs:SendMessage",
+                "sqs:GetQueueAttributes",
+                "sqs:GetQueueUrl",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "testedgeconstructunittestedgelambdaregenerationqueue92D78538",
+                  "Arn",
+                ],
+              },
+            },
+            Object {
+              "Action": "lambda:InvokeFunction",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "testedgeconstructunittestedgelambdaregenerationFC6E35FD",
+                  "Arn",
+                ],
+              },
+            },
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "testedgeconstructRegenerationFunctionServiceRoleDefaultPolicy3CA8CF9E",
+        "PolicyName": "testedgeconstructunittestedgelambdanextjsedgeexecutionroleDefaultPolicyCC98C371",
         "Roles": Array [
           Object {
-            "Ref": "testedgeconstructRegenerationFunctionServiceRole6DEB1A87",
+            "Ref": "testedgeconstructunittestedgelambdanextjsedgeexecutionrole9F0533E9",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "testedgeconstructRegenerationFunctionSqsEventSourcetestedgeconstructregenerationqueueE05D6A0F62008CCD": Object {
-      "Properties": Object {
-        "EventSourceArn": Object {
-          "Fn::GetAtt": Array [
-            "testedgeconstructregenerationqueue2DAA9107",
-            "Arn",
-          ],
-        },
-        "FunctionName": Object {
-          "Ref": "testedgeconstructRegenerationFunction7C6DBA5F",
-        },
-      },
-      "Type": "AWS::Lambda::EventSourceMapping",
-    },
-    "testedgeconstructcdnbucketreadC13AE162": Object {
-      "Properties": Object {
-        "CloudFrontOriginAccessIdentityConfig": Object {
-          "Comment": "Allows CloudFront to reach the bucket",
-        },
-      },
-      "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
-    },
-    "testedgeconstructdefaultlambdademo9BF90D24": Object {
+    "testedgeconstructunittestedgelambdanextjsedgelambda716211C1": Object {
       "DependsOn": Array [
-        "testedgeconstructnextedgelambdaroleDefaultPolicy31E1E209",
-        "testedgeconstructnextedgelambdaroleE339B088",
+        "testedgeconstructunittestedgelambdanextjsedgeexecutionroleDefaultPolicyCC98C371",
+        "testedgeconstructunittestedgelambdanextjsedgeexecutionrole9F0533E9",
       ],
       "Properties": Object {
         "Code": Object {
@@ -1073,13 +862,13 @@ Object {
             ],
           },
         },
-        "Description": "handles all server-side reqs for nextjs",
-        "FunctionName": "default-lambda-edge-demo",
+        "Description": "Handles nextjs edge requests",
+        "FunctionName": "unit-test-edge-lambda-nextjs-edge-lambda",
         "Handler": "index.handler",
         "MemorySize": 512,
         "Role": Object {
           "Fn::GetAtt": Array [
-            "testedgeconstructnextedgelambdaroleE339B088",
+            "testedgeconstructunittestedgelambdanextjsedgeexecutionrole9F0533E9",
             "Arn",
           ],
         },
@@ -1088,24 +877,24 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "testedgeconstructdefaultlambdademoCurrentVersion3C7CD0C279c6d0d6ac82ac5b49dbf2595d1ac308": Object {
-      "DeletionPolicy": "Delete",
+    "testedgeconstructunittestedgelambdanextjsedgelambdaCurrentVersion175BD3B7dabf1b43339ae41a87e49c6ed8626cfe": Object {
+      "DeletionPolicy": "Retain",
       "Properties": Object {
         "FunctionName": Object {
-          "Ref": "testedgeconstructdefaultlambdademo9BF90D24",
+          "Ref": "testedgeconstructunittestedgelambdanextjsedgelambda716211C1",
         },
       },
       "Type": "AWS::Lambda::Version",
-      "UpdateReplacePolicy": "Delete",
+      "UpdateReplacePolicy": "Retain",
     },
-    "testedgeconstructdefaultlambdademoCurrentVersionAliasliveF046F271": Object {
+    "testedgeconstructunittestedgelambdanextjsedgelambdaCurrentVersionAliaslive81D7183F": Object {
       "Properties": Object {
         "FunctionName": Object {
-          "Ref": "testedgeconstructdefaultlambdademo9BF90D24",
+          "Ref": "testedgeconstructunittestedgelambdanextjsedgelambda716211C1",
         },
         "FunctionVersion": Object {
           "Fn::GetAtt": Array [
-            "testedgeconstructdefaultlambdademoCurrentVersion3C7CD0C279c6d0d6ac82ac5b49dbf2595d1ac308",
+            "testedgeconstructunittestedgelambdanextjsedgelambdaCurrentVersion175BD3B7dabf1b43339ae41a87e49c6ed8626cfe",
             "Version",
           ],
         },
@@ -1113,7 +902,7 @@ Object {
       },
       "Type": "AWS::Lambda::Alias",
     },
-    "testedgeconstructdefaultlambdademoLogRetention4AF4D7A7": Object {
+    "testedgeconstructunittestedgelambdanextjsedgelambdaLogRetention3804206A": Object {
       "Properties": Object {
         "LogGroupName": Object {
           "Fn::Join": Array [
@@ -1121,7 +910,7 @@ Object {
             Array [
               "/aws/lambda/",
               Object {
-                "Ref": "testedgeconstructdefaultlambdademo9BF90D24",
+                "Ref": "testedgeconstructunittestedgelambdanextjsedgelambda716211C1",
               },
             ],
           ],
@@ -1136,10 +925,114 @@ Object {
       },
       "Type": "Custom::LogRetention",
     },
-    "testedgeconstructnextedgelambdaroleDefaultPolicy31E1E209": Object {
+    "testedgeconstructunittestedgelambdaregenerationFC6E35FD": Object {
+      "DependsOn": Array [
+        "testedgeconstructunittestedgelambdaregenerationServiceRoleDefaultPolicy268D5478",
+        "testedgeconstructunittestedgelambdaregenerationServiceRole31A0B7EB",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Ref": "AssetParameters875e6791bc5d4d638710541b92529b8db4bce3e6e705545abfa91bf833ca0b81S3Bucket00099459",
+          },
+          "S3Key": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::Select": Array [
+                    0,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters875e6791bc5d4d638710541b92529b8db4bce3e6e705545abfa91bf833ca0b81S3VersionKey0D3AF51D",
+                        },
+                      ],
+                    },
+                  ],
+                },
+                Object {
+                  "Fn::Select": Array [
+                    1,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters875e6791bc5d4d638710541b92529b8db4bce3e6e705545abfa91bf833ca0b81S3VersionKey0D3AF51D",
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            ],
+          },
+        },
+        "FunctionName": "unit-test-edge-lambda-regeneration-function",
+        "Handler": "index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "testedgeconstructunittestedgelambdaregenerationServiceRole31A0B7EB",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+        "Timeout": 30,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "testedgeconstructunittestedgelambdaregenerationServiceRole31A0B7EB": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "testedgeconstructunittestedgelambdaregenerationServiceRoleDefaultPolicy268D5478": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
+            Object {
+              "Action": Array [
+                "sqs:ReceiveMessage",
+                "sqs:ChangeMessageVisibility",
+                "sqs:GetQueueUrl",
+                "sqs:DeleteMessage",
+                "sqs:GetQueueAttributes",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "testedgeconstructunittestedgelambdaregenerationqueue92D78538",
+                  "Arn",
+                ],
+              },
+            },
             Object {
               "Action": Array [
                 "s3:GetObject*",
@@ -1153,7 +1046,7 @@ Object {
               "Resource": Array [
                 Object {
                   "Fn::GetAtt": Array [
-                    "demoedgebucket1FFE6A6A",
+                    "unittestedgelambdaassetbucketDD62E0F5",
                     "Arn",
                   ],
                 },
@@ -1163,7 +1056,129 @@ Object {
                     Array [
                       Object {
                         "Fn::GetAtt": Array [
-                          "demoedgebucket1FFE6A6A",
+                          "unittestedgelambdaassetbucketDD62E0F5",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "testedgeconstructunittestedgelambdaregenerationServiceRoleDefaultPolicy268D5478",
+        "Roles": Array [
+          Object {
+            "Ref": "testedgeconstructunittestedgelambdaregenerationServiceRole31A0B7EB",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "testedgeconstructunittestedgelambdaregenerationSqsEventSourcetestedgeconstructunittestedgelambdaregenerationqueueF0D09FDBA7288C9B": Object {
+      "Properties": Object {
+        "EventSourceArn": Object {
+          "Fn::GetAtt": Array [
+            "testedgeconstructunittestedgelambdaregenerationqueue92D78538",
+            "Arn",
+          ],
+        },
+        "FunctionName": Object {
+          "Ref": "testedgeconstructunittestedgelambdaregenerationFC6E35FD",
+        },
+      },
+      "Type": "AWS::Lambda::EventSourceMapping",
+    },
+    "testedgeconstructunittestedgelambdaregenerationqueue92D78538": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "FifoQueue": true,
+        "QueueName": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              Object {
+                "Ref": "unittestedgelambdaassetbucketDD62E0F5",
+              },
+              ".fifo",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::SQS::Queue",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "unittestedgelambdaassetbucketAutoDeleteObjectsCustomResourceB1E4E1F5": Object {
+      "DeletionPolicy": "Delete",
+      "DependsOn": Array [
+        "unittestedgelambdaassetbucketPolicy73B89EB7",
+      ],
+      "Properties": Object {
+        "BucketName": Object {
+          "Ref": "unittestedgelambdaassetbucketDD62E0F5",
+        },
+        "ServiceToken": Object {
+          "Fn::GetAtt": Array [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::S3AutoDeleteObjects",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "unittestedgelambdaassetbucketDD62E0F5": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:auto-delete-objects",
+            "Value": "true",
+          },
+        ],
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "unittestedgelambdaassetbucketPolicy73B89EB7": Object {
+      "Properties": Object {
+        "Bucket": Object {
+          "Ref": "unittestedgelambdaassetbucketDD62E0F5",
+        },
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+              ],
+              "Effect": "Allow",
+              "Principal": Object {
+                "AWS": Object {
+                  "Fn::GetAtt": Array [
+                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+                    "Arn",
+                  ],
+                },
+              },
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "unittestedgelambdaassetbucketDD62E0F5",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "unittestedgelambdaassetbucketDD62E0F5",
                           "Arn",
                         ],
                       },
@@ -1175,85 +1190,73 @@ Object {
             },
             Object {
               "Action": Array [
-                "sqs:SendMessage",
-                "sqs:GetQueueAttributes",
-                "sqs:GetQueueUrl",
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
               ],
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
-                  "testedgeconstructregenerationqueue2DAA9107",
-                  "Arn",
-                ],
+              "Principal": Object {
+                "CanonicalUser": Object {
+                  "Fn::GetAtt": Array [
+                    "testedgeconstructunittestedgelambdacdnbucketread4268E975",
+                    "S3CanonicalUserId",
+                  ],
+                },
               },
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "unittestedgelambdaassetbucketDD62E0F5",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "unittestedgelambdaassetbucketDD62E0F5",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
             },
             Object {
-              "Action": "lambda:InvokeFunction",
+              "Action": "s3:GetObject",
               "Effect": "Allow",
+              "Principal": Object {
+                "CanonicalUser": Object {
+                  "Fn::GetAtt": Array [
+                    "testedgeconstructunittestedgelambdanextjsdistributionedgeOrigin1S3Origin17052620",
+                    "S3CanonicalUserId",
+                  ],
+                },
+              },
               "Resource": Object {
-                "Fn::GetAtt": Array [
-                  "testedgeconstructRegenerationFunction7C6DBA5F",
-                  "Arn",
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "unittestedgelambdaassetbucketDD62E0F5",
+                        "Arn",
+                      ],
+                    },
+                    "/*",
+                  ],
                 ],
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "testedgeconstructnextedgelambdaroleDefaultPolicy31E1E209",
-        "Roles": Array [
-          Object {
-            "Ref": "testedgeconstructnextedgelambdaroleE339B088",
-          },
-        ],
       },
-      "Type": "AWS::IAM::Policy",
-    },
-    "testedgeconstructnextedgelambdaroleE339B088": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": Array [
-                  "lambda.amazonaws.com",
-                  "edgelambda.amazonaws.com",
-                ],
-              },
-            },
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "edgelambda.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "testedgeconstructregenerationqueue2DAA9107": Object {
-      "DeletionPolicy": "Delete",
-      "Properties": Object {
-        "FifoQueue": true,
-        "QueueName": Object {
-          "Fn::Join": Array [
-            "",
-            Array [
-              Object {
-                "Ref": "demoedgebucket1FFE6A6A",
-              },
-              ".fifo",
-            ],
-          ],
-        },
-      },
-      "Type": "AWS::SQS::Queue",
-      "UpdateReplacePolicy": "Delete",
+      "Type": "AWS::S3::BucketPolicy",
     },
   },
 }

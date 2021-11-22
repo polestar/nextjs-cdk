@@ -15,6 +15,7 @@ export class NextjsCdkTestStack extends cdk.Stack {
 
     const app = new NextJSAPIGateway(this, 'nextjs', {
       nextjsCDKBuildOutDir: props?.nextjsCDKBuildOutDir ?? './.nextjs_cdk',
+      namespace: 'next-app-api-gw-test-namespace',
       env: {
         region: process.env.CDK_DEFAULT_REGION,
         account: process.env.CDK_DEFAULT_ACCOUNT,

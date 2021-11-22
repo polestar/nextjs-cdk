@@ -18,20 +18,16 @@ export class NextJSAtEdge extends NextJSConstruct {
   constructor(scope: cdk.Construct, id: string, props: Props) {
     super(scope, id, props);
 
-    const assetsBucket = this.createAssetsBucket('demo-edge-bucket');
+    const { namespace } = props;
+    const assetsBucket = this.createAssetsBucket(namespace);
     const isISR = this.hasISRPages() || this.hasDynamicISRPages();
 
     if (isISR) {
-      this.createRegenerationSqsAndLambda('regeneration-queue');
+      this.createRegenerationSqsAndLambda(namespace);
     }
 
-    const role = this.createEdgeRole();
-    const edgeLambda = this.createEdgeLambda(
-      'default-lambda-demo',
-      role,
-      'default-lambda-edge-demo',
-      'handles all server-side reqs for nextjs',
-    );
+    const role = this.createEdgeRole(namespace);
+    const edgeLambda = this.createEdgeLambda(namespace, role);
 
     assetsBucket.grantReadWrite(edgeLambda);
     edgeLambda.currentVersion.addAlias('live');
@@ -42,26 +38,23 @@ export class NextJSAtEdge extends NextJSConstruct {
       this.regenerationFunction.grantInvoke(edgeLambda);
     }
 
-    this.createEdgeDistribution();
-    this.uploadNextAssets();
+    this.createEdgeDistribution(namespace);
+    this.uploadNextJSAssets();
 
     // cache policies (next, static, lambda)
     // DNS / domain / cloudfront + s3 origin
-    // Cloudfront dist and match patterns
   }
 
-  protected createEdgeLambda(
-    id: string,
-    role: Role,
-    functionName = 'DefaultLambda',
-    description = 'Default Lambda edge for NextJS',
-  ) {
+  protected createEdgeLambda(namespace: string, role: Role) {
+    const id = `${namespace}-nextjs-edge-lambda`;
+
     this.defaultNextLambda = new lambda.Function(this, id, {
-      functionName,
-      description,
+      functionName: id,
+      description: 'Handles nextjs edge requests',
       handler: 'index.handler',
       currentVersionOptions: {
-        removalPolicy: RemovalPolicy.DESTROY,
+        // lambdas must be manually removed after destroy, since edge versions will be dangling.
+        removalPolicy: RemovalPolicy.RETAIN,
       },
       logRetention: logs.RetentionDays.THREE_DAYS,
       code: lambda.Code.fromAsset(
@@ -76,22 +69,26 @@ export class NextJSAtEdge extends NextJSConstruct {
     return this.defaultNextLambda;
   }
 
-  private createEdgeRole() {
-    this.edgeLambdaRole = new Role(this, 'next-edge-lambda-role', {
-      assumedBy: new CompositePrincipal(
-        new ServicePrincipal('lambda.amazonaws.com'),
-        new ServicePrincipal('edgelambda.amazonaws.com'),
-      ),
-    });
+  private createEdgeRole(namespace: string) {
+    this.edgeLambdaRole = new Role(
+      this,
+      `${namespace}-nextjs-edge-execution-role`,
+      {
+        assumedBy: new CompositePrincipal(
+          new ServicePrincipal('lambda.amazonaws.com'),
+          new ServicePrincipal('edgelambda.amazonaws.com'),
+        ),
+      },
+    );
 
     return this.edgeLambdaRole;
   }
 
-  private createEdgeDistribution() {
+  private createEdgeDistribution(namespace: string) {
     if (!this.bucket || !this.defaultNextLambda) return;
 
     this.bucket.grantRead(
-      new cloudfront.OriginAccessIdentity(this, 'cdn-bucket-read'),
+      new cloudfront.OriginAccessIdentity(this, `${namespace}-cdn-bucket-read`),
     );
 
     const bucketOrigin = new origins.S3Origin(this.bucket, {
@@ -103,7 +100,7 @@ export class NextJSAtEdge extends NextJSConstruct {
 
     this.distribution = new cloudfront.Distribution(
       this,
-      'NextJSDistributionEdge',
+      `${namespace}-nextjs-distribution-edge`,
       {
         defaultRootObject: '',
         defaultBehavior: {
@@ -135,5 +132,6 @@ export class NextJSAtEdge extends NextJSConstruct {
         },
       },
     );
+    this.distribution.applyRemovalPolicy(cdk.RemovalPolicy.DESTROY);
   }
 }

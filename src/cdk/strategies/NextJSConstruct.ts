@@ -48,8 +48,8 @@ export class NextJSConstruct extends cdk.Construct {
     this.defaultManifest = this.readDefaultBuildManifest();
   }
 
-  protected createAssetsBucket(id: string) {
-    this.bucket = new s3.Bucket(this.scope, id, {
+  protected createAssetsBucket(namespace: string) {
+    this.bucket = new s3.Bucket(this.scope, `${namespace}-asset-bucket`, {
       publicReadAccess: false, // CloudFront/Lambdas are granted access so we don't want it publicly available
 
       // Given this resource is created internally and also should only contain
@@ -62,12 +62,13 @@ export class NextJSConstruct extends cdk.Construct {
     return this.bucket;
   }
 
-  protected createRegenerationSqsAndLambda(id: string) {
+  protected createRegenerationSqsAndLambda(namespace: string) {
     if (!this.bucket) {
       throw Error('a bucket must be configured before an sqs may be created');
     }
+    const regName = `${namespace}-regeneration`;
 
-    this.regenerationQueue = new sqs.Queue(this, id, {
+    this.regenerationQueue = new sqs.Queue(this, `${regName}-queue`, {
       // We call the queue the same name as the bucket so that we can easily
       // reference it from within the Lambda, given we can't use env vars
       // in a lambda
@@ -76,29 +77,25 @@ export class NextJSConstruct extends cdk.Construct {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
-    this.regenerationFunction = new lambda.Function(
-      this,
-      'RegenerationFunction',
-      {
-        handler: 'index.handler',
-        runtime: lambda.Runtime.NODEJS_14_X,
-        timeout: Duration.seconds(30),
-        code: lambda.Code.fromAsset(
-          path.join(this.props.nextjsCDKBuildOutDir, LambdaHandler.DEFAULT),
-        ),
-      },
-    );
+    this.regenerationFunction = new lambda.Function(this, regName, {
+      handler: 'index.handler',
+      functionName: `${regName}-function`,
+      runtime: lambda.Runtime.NODEJS_14_X,
+      timeout: Duration.seconds(30),
+      code: lambda.Code.fromAsset(
+        path.join(this.props.nextjsCDKBuildOutDir, LambdaHandler.DEFAULT),
+      ),
+    });
 
     this.regenerationFunction.addEventSource(
       new lambdaEventSources.SqsEventSource(this.regenerationQueue),
     );
   }
 
-  protected uploadNextAssets() {
+  protected uploadNextJSAssets() {
     if (!this.bucket || !this.distribution) return;
 
     const destinationBucket = this.bucket;
-
     const assetsDirectory = path.join(
       this.props.nextjsCDKBuildOutDir,
       'assets',

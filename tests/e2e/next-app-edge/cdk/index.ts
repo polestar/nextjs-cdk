@@ -13,7 +13,10 @@ export class NextjsCdkTestStack extends cdk.Stack {
   ) {
     super(scope, id, props);
 
-    const app = new NextJSAtEdge(this, id, props);
+    const app = new NextJSAtEdge(this, id, {
+      ...props,
+      namespace: 'next-app-edge-test-namespace',
+    });
 
     new cdk.CfnOutput(this, 'Domain', {
       value: app.distribution?.domainName || 'n/a',

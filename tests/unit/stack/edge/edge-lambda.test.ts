@@ -12,6 +12,7 @@ test('Lambda@Edge Stack', () => {
 
   new NextjsCdkTestStack(stack, 'test-edge-stack', {
     nextjsCDKBuildOutDir: path.join(__dirname, 'edge-fixtures'),
+    namespace: 'unit-test-edge-lambda',
   });
 
   expect(SynthUtils.toCloudFormation(stack)).toMatchSnapshot();

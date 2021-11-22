@@ -7,4 +7,5 @@ export interface Props extends StackProps {
    * i.e. `nextjsCDKBuildOutDir: new Builder(entry, outDir, {...}).outputDir`
    */
   nextjsCDKBuildOutDir: string;
+  namespace: string;
 }
