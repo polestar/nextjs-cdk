@@ -99,11 +99,16 @@ export class NextJSAPIGateway extends cdk.Construct {
         'RegenerationFunction',
         {
           handler: 'index.handler',
+          description: `SQS Regeneration Lambda for NextJS`,
           runtime: lambda.Runtime.NODEJS_14_X,
           timeout: Duration.seconds(30),
           code: lambda.Code.fromAsset(
             path.join(this.props.nextjsCDKBuildOutDir, LambdaHandler.DEFAULT),
           ),
+          environment: {
+            BUCKET_NAME: this.bucket.bucketName,
+            BUCKET_REGION: region,
+          },
         },
       );
 
