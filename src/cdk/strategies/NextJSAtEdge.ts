@@ -8,7 +8,7 @@ import * as lambda from '@aws-cdk/aws-lambda';
 import * as logs from '@aws-cdk/aws-logs';
 import path from 'path';
 
-import { NextJSConstruct } from '.';
+import { NextJSConstruct } from './NextJSConstruct';
 import { Props } from '../props';
 import { CustomHeaders, LambdaHandler } from '../../common';
 

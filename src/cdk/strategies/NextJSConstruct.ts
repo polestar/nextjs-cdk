@@ -1,10 +1,14 @@
 import * as cdk from '@aws-cdk/core';
 import * as s3 from '@aws-cdk/aws-s3';
+import * as cloudfront from '@aws-cdk/aws-cloudfront';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as sqs from '@aws-cdk/aws-sqs';
-import { Duration } from '@aws-cdk/core';
+import * as logs from '@aws-cdk/aws-logs';
+import { Duration, RemovalPolicy } from '@aws-cdk/core';
 import * as s3Deploy from '@aws-cdk/aws-s3-deployment';
 import * as lambdaEventSources from '@aws-cdk/aws-lambda-event-sources';
+import { IRole } from '@aws-cdk/aws-iam';
+import { Distribution } from '@aws-cdk/aws-cloudfront';
 import fs from 'fs-extra';
 import path from 'path';
 
@@ -21,7 +25,6 @@ import {
   readInvalidationPathsFromManifest,
 } from '../utils';
 import { pathToPosix } from '../../build';
-import { Distribution } from '@aws-cdk/aws-cloudfront';
 import { LambdaHandler } from '../../common';
 
 export class NextJSConstruct extends cdk.Construct {
@@ -35,6 +38,7 @@ export class NextJSConstruct extends cdk.Construct {
   protected bucket?: s3.Bucket;
   protected defaultNextLambda?: lambda.Function;
   protected region: string;
+  public nextImageLambda?: lambda.Function | null;
   public distribution?: Distribution;
 
   constructor(scope: cdk.Construct, id: string, protected props: Props) {
@@ -60,6 +64,27 @@ export class NextJSConstruct extends cdk.Construct {
     });
 
     return this.bucket;
+  }
+
+  protected createImageLambda(role: IRole) {
+    this.nextImageLambda = new lambda.Function(this, 'NextImageLambda', {
+      functionName: 'ImageLambda',
+      description: `Default Lambda for Next Image services`,
+      handler: 'index.handler',
+      currentVersionOptions: {
+        removalPolicy: RemovalPolicy.DESTROY, // destroy old versions
+        retryAttempts: 1, // async retry attempts
+      },
+      logRetention: logs.RetentionDays.THREE_DAYS,
+      code: lambda.Code.fromAsset(
+        path.join(this.props.nextjsCDKBuildOutDir, LambdaHandler.IMAGE),
+      ),
+      role,
+      runtime: lambda.Runtime.NODEJS_14_X,
+      memorySize: 512,
+      timeout: Duration.seconds(10),
+    });
+    this.nextImageLambda.currentVersion.addAlias('live');
   }
 
   protected createRegenerationSqsAndLambda(namespace: string) {
@@ -204,5 +229,57 @@ export class NextJSConstruct extends cdk.Construct {
     return fs.existsSync(imageLambdaPath)
       ? fs.readJSONSync(imageLambdaPath)
       : null;
+  }
+
+  protected getDefaultCachePolicies(namespace: string) {
+    return {
+      staticCachePolicy: new cloudfront.CachePolicy(
+        this,
+        `${namespace}-next-static-cache`,
+        {
+          cachePolicyName: `${namespace}-next-statics-cache`,
+          queryStringBehavior: cloudfront.CacheQueryStringBehavior.none(),
+          headerBehavior: cloudfront.CacheHeaderBehavior.none(),
+          cookieBehavior: cloudfront.CacheCookieBehavior.none(),
+          defaultTtl: Duration.days(30),
+          maxTtl: Duration.days(30),
+          minTtl: Duration.days(30),
+          enableAcceptEncodingBrotli: true,
+          enableAcceptEncodingGzip: true,
+        },
+      ),
+      nextImageCachePolicy: new cloudfront.CachePolicy(
+        this,
+        `${namespace}-next-image-cache`,
+        {
+          cachePolicyName: 'next-image-cache',
+          queryStringBehavior: cloudfront.CacheQueryStringBehavior.all(),
+          headerBehavior: cloudfront.CacheHeaderBehavior.allowList('Accept'),
+          cookieBehavior: cloudfront.CacheCookieBehavior.none(),
+          defaultTtl: Duration.days(1),
+          maxTtl: Duration.days(365),
+          minTtl: Duration.days(0),
+          enableAcceptEncodingBrotli: true,
+          enableAcceptEncodingGzip: true,
+        },
+      ),
+      nextLambdaCachePolicy: new cloudfront.CachePolicy(
+        this,
+        `${namespace}-next-lambda-cache`,
+        {
+          cachePolicyName: 'next-lambda-cache',
+          queryStringBehavior: cloudfront.CacheQueryStringBehavior.all(),
+          headerBehavior: cloudfront.CacheHeaderBehavior.none(),
+          cookieBehavior: {
+            behavior: 'all',
+          },
+          defaultTtl: Duration.seconds(0),
+          maxTtl: Duration.days(365),
+          minTtl: Duration.seconds(0),
+          enableAcceptEncodingBrotli: true,
+          enableAcceptEncodingGzip: true,
+        },
+      ),
+    };
   }
 }
