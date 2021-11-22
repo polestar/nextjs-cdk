@@ -26,10 +26,12 @@ export const regenerationHandler = async ({
   );
 
   // The triggering event can be a json request as well
-  const normalizedUri = regenerationEvent.pageKey
-    .replace(`static-pages/${manifest.buildId}`, '')
-    .replace('.json', '')
-    .replace('.js', '');
+  const normalizedUri = decodeURI(
+    regenerationEvent.pageKey
+      .replace(`static-pages/${manifest.buildId}`, '')
+      .replace('.json', '')
+      .replace('.js', ''),
+  );
 
   await platformClient.storePage({
     html,
