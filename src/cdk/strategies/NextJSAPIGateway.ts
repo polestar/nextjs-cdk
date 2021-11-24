@@ -34,12 +34,14 @@ import {
   readInvalidationPathsFromManifest,
 } from '../utils';
 import { pathToPosix } from '../../build/lib';
+import { EndpointType } from '@aws-cdk/aws-apigateway';
 
 export class NextJSAPIGateway extends cdk.Construct {
   private defaultManifest: BuildManifest;
   private prerenderManifest: PreRenderedManifest;
   private imageManifest: ImageBuildManifest | null;
   private routesManifest: RoutesManifest | null;
+  private region: string;
 
   public bucket: s3.Bucket;
   public regenerationQueue?: sqs.Queue;
@@ -48,9 +50,9 @@ export class NextJSAPIGateway extends cdk.Construct {
   public nextImageLambda: lambda.Function | null;
   public edgeLambdaRole: Role;
   public restAPI: apigateway.RestApi;
-  public nextStaticsCachePolicy: cloudfront.CachePolicy;
-  public nextImageCachePolicy: cloudfront.CachePolicy;
-  public nextLambdaCachePolicy: cloudfront.CachePolicy;
+  public nextStaticsCachePolicy?: cloudfront.CachePolicy;
+  public nextImageCachePolicy?: cloudfront.CachePolicy;
+  public nextLambdaCachePolicy?: cloudfront.CachePolicy;
   public distribution: cloudfront.Distribution;
 
   constructor(scope: cdk.Construct, id: string, private props: Props) {
@@ -60,7 +62,7 @@ export class NextJSAPIGateway extends cdk.Construct {
     this.imageManifest = this.readImageBuildManifest();
     this.defaultManifest = this.readDefaultBuildManifest();
 
-    const region = cdk.Stack.of(this).region;
+    this.region = process.env.CDK_DEFAULT_REGION!; //cdk.Stack.of(this).region;
 
     this.bucket = new s3.Bucket(this, 'PublicAssets', {
       publicReadAccess: false, // CloudFront/Lambdas are granted access so we don't want it publicly available
@@ -107,7 +109,7 @@ export class NextJSAPIGateway extends cdk.Construct {
           ),
           environment: {
             BUCKET_NAME: this.bucket.bucketName,
-            BUCKET_REGION: region,
+            BUCKET_REGION: this.region,
           },
         },
       );
@@ -117,10 +119,9 @@ export class NextJSAPIGateway extends cdk.Construct {
       );
     }
 
-    this.edgeLambdaRole = new Role(this, 'NextEdgeLambdaRole', {
+    this.edgeLambdaRole = new Role(this, 'NextLambdaRole', {
       assumedBy: new CompositePrincipal(
         new ServicePrincipal('lambda.amazonaws.com'),
-        new ServicePrincipal('edgelambda.amazonaws.com'),
       ),
       managedPolicies: [
         ManagedPolicy.fromManagedPolicyArn(
@@ -148,7 +149,7 @@ export class NextJSAPIGateway extends cdk.Construct {
       timeout: Duration.seconds(10),
       environment: {
         BUCKET_NAME: this.bucket.bucketName,
-        BUCKET_REGION: region,
+        BUCKET_REGION: this.region,
       },
     });
 
@@ -191,59 +192,65 @@ export class NextJSAPIGateway extends cdk.Construct {
       defaultMethodOptions: {
         methodResponses: [],
       },
+      endpointConfiguration: {
+        types: [EndpointType.REGIONAL],
+      },
     });
 
-    this.nextStaticsCachePolicy = new cloudfront.CachePolicy(
-      this,
-      'NextStaticsCache',
-      {
-        cachePolicyName: 'next-statics-cache',
-        queryStringBehavior: cloudfront.CacheQueryStringBehavior.none(),
-        headerBehavior: cloudfront.CacheHeaderBehavior.none(),
-        cookieBehavior: cloudfront.CacheCookieBehavior.none(),
-        defaultTtl: Duration.days(30),
-        maxTtl: Duration.days(30),
-        minTtl: Duration.days(30),
-        enableAcceptEncodingBrotli: true,
-        enableAcceptEncodingGzip: true,
-      },
-    );
-
-    this.nextImageCachePolicy = new cloudfront.CachePolicy(
-      this,
-      'NextImageCache',
-      {
-        cachePolicyName: 'next-image-cache',
-        queryStringBehavior: cloudfront.CacheQueryStringBehavior.all(),
-        headerBehavior: cloudfront.CacheHeaderBehavior.allowList('Accept'),
-        cookieBehavior: cloudfront.CacheCookieBehavior.none(),
-        defaultTtl: Duration.days(1),
-        maxTtl: Duration.days(365),
-        minTtl: Duration.days(0),
-        enableAcceptEncodingBrotli: true,
-        enableAcceptEncodingGzip: true,
-      },
-    );
-
-    this.nextLambdaCachePolicy = new cloudfront.CachePolicy(
-      this,
-      'NextLambdaCache',
-      {
-        cachePolicyName: 'next-lambda-cache',
-        queryStringBehavior: cloudfront.CacheQueryStringBehavior.all(),
-        headerBehavior: cloudfront.CacheHeaderBehavior.none(),
-        cookieBehavior: {
-          behavior: 'all',
+    if (!this.isChina()) {
+      this.nextStaticsCachePolicy = new cloudfront.CachePolicy(
+        this,
+        'NextStaticsCache',
+        {
+          cachePolicyName: 'next-statics-cache',
+          queryStringBehavior: cloudfront.CacheQueryStringBehavior.none(),
+          headerBehavior: cloudfront.CacheHeaderBehavior.none(),
+          cookieBehavior: cloudfront.CacheCookieBehavior.none(),
+          defaultTtl: Duration.days(30),
+          maxTtl: Duration.days(30),
+          minTtl: Duration.days(30),
+          enableAcceptEncodingBrotli: true,
+          enableAcceptEncodingGzip: true,
         },
-        defaultTtl: Duration.seconds(0),
-        maxTtl: Duration.days(365),
-        minTtl: Duration.seconds(0),
-        enableAcceptEncodingBrotli: true,
-        enableAcceptEncodingGzip: true,
-      },
-    );
+      );
 
-    const restApiDomainName = `${this.restAPI.restApiId}.execute-api.${region}.amazonaws.com`;
+      this.nextImageCachePolicy = new cloudfront.CachePolicy(
+        this,
+        'NextImageCache',
+        {
+          cachePolicyName: 'next-image-cache',
+          queryStringBehavior: cloudfront.CacheQueryStringBehavior.all(),
+          headerBehavior: cloudfront.CacheHeaderBehavior.allowList('Accept'),
+          cookieBehavior: cloudfront.CacheCookieBehavior.none(),
+          defaultTtl: Duration.days(1),
+          maxTtl: Duration.days(365),
+          minTtl: Duration.days(0),
+          enableAcceptEncodingBrotli: true,
+          enableAcceptEncodingGzip: true,
+        },
+      );
+
+      this.nextLambdaCachePolicy = new cloudfront.CachePolicy(
+        this,
+        'NextLambdaCache',
+        {
+          cachePolicyName: 'next-lambda-cache',
+          queryStringBehavior: cloudfront.CacheQueryStringBehavior.all(),
+          headerBehavior: cloudfront.CacheHeaderBehavior.none(),
+          cookieBehavior: {
+            behavior: 'all',
+          },
+          defaultTtl: Duration.seconds(0),
+          maxTtl: Duration.days(365),
+          minTtl: Duration.seconds(0),
+          enableAcceptEncodingBrotli: true,
+          enableAcceptEncodingGzip: true,
+        },
+      );
+    }
+
+    const tld = this.isChina() ? 'com.cn' : 'com';
+    const restApiDomainName = `${this.restAPI.restApiId}.execute-api.${this.region}.amazonaws.${tld}`;
 
     const defaultOrigin = new origins.HttpOrigin(restApiDomainName, {
       originPath: `/${this.restAPI.deploymentStage.stageName}`,
@@ -257,6 +264,7 @@ export class NextJSAPIGateway extends cdk.Construct {
       'NextJSDistribution',
       {
         defaultRootObject: '',
+        enableIpv6: this.isChina() ? false : true,
         defaultBehavior: {
           viewerProtocolPolicy:
             cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
@@ -288,6 +296,41 @@ export class NextJSAPIGateway extends cdk.Construct {
         },
       },
     );
+
+    if (this.isChina()) {
+      const cfnDist = this.distribution.node
+        .defaultChild as cloudfront.CfnDistribution;
+      cfnDist.addPropertyDeletionOverride(
+        'DistributionConfig.DefaultCacheBehavior.CachePolicyId',
+      );
+      cfnDist.addPropertyOverride(
+        'DistributionConfig.DefaultCacheBehavior.ForwardedValues',
+        {
+          QueryString: false,
+        },
+      );
+
+      cfnDist.addPropertyDeletionOverride(
+        'DistributionConfig.CacheBehaviors.0.CachePolicyId',
+      );
+      cfnDist.addPropertyOverride(
+        'DistributionConfig.CacheBehaviors.0.ForwardedValues',
+        {
+          QueryString: false,
+        },
+      );
+
+      cfnDist.addPropertyDeletionOverride(
+        'DistributionConfig.CacheBehaviors.1.CachePolicyId',
+      );
+
+      cfnDist.addPropertyOverride(
+        'DistributionConfig.CacheBehaviors.1.ForwardedValues',
+        {
+          QueryString: false,
+        },
+      );
+    }
 
     const assetsDirectory = path.join(props.nextjsCDKBuildOutDir, 'assets');
     const assets = readAssetsDirectory({ assetsDirectory });
@@ -382,5 +425,12 @@ export class NextJSAPIGateway extends cdk.Construct {
     return fs.existsSync(imageLambdaPath)
       ? fs.readJSONSync(imageLambdaPath)
       : null;
+  }
+
+  private isChina() {
+    // Perhaps a naive check to see if we are in china
+    return this.region !== undefined
+      ? this.region.toLowerCase().startsWith('cn-')
+      : false;
   }
 }
