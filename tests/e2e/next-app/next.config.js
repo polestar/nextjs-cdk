@@ -1,3 +1,5 @@
+const APP_NAMESPACE = 'manual-testing';
+
 module.exports = {
   eslint: {
     ignoreDuringBuilds: true,
@@ -5,6 +7,7 @@ module.exports = {
   images: {
     domains: ['raw.githubusercontent.com'],
   },
+  assetPrefix: `/${APP_NAMESPACE}`,
   async redirects() {
     return [
       {
@@ -154,6 +157,14 @@ module.exports = {
       {
         source: '/api/external-rewrite-internal-api',
         destination: '/api/basic-api',
+      },
+      {
+        source: `/:market/${APP_NAMESPACE}`,
+        destination: '/',
+      },
+      {
+        source: `/:market/${APP_NAMESPACE}/:path*`,
+        destination: '/:path*',
       },
     ];
   },

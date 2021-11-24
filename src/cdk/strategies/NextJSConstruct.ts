@@ -208,4 +208,19 @@ export class NextJSConstruct extends cdk.Construct {
       ? fs.readJSONSync(imageLambdaPath)
       : null;
   }
+
+  protected readRequiredServerFiles(handler: LambdaHandler) {
+    const targetPath = path.join(
+      this.props.nextjsCDKBuildOutDir,
+      handler + '/required-server-files.json',
+    );
+
+    return fs.existsSync(targetPath) ? fs.readJSONSync(targetPath) : null;
+  }
+
+  protected getAssetPrefix(handler: LambdaHandler) {
+    const serverManifest = this.readRequiredServerFiles(handler);
+
+    return serverManifest.config.assetPrefix;
+  }
 }

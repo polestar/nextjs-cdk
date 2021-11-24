@@ -20,10 +20,10 @@ export default function SSGPage(props: any): JSX.Element {
 export async function getStaticProps(
   ctx: GetStaticPropsContext,
 ): Promise<{ props: SSGPageProps }> {
-  return {
+  return await Promise.resolve({
     props: {
       name: 'serverless-next.js',
       preview: !!ctx.preview,
     },
-  };
+  });
 }

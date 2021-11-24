@@ -17,6 +17,7 @@ import {
   ServicePrincipal,
   CompositePrincipal,
 } from '@aws-cdk/aws-iam';
+import { logger } from '../../common';
 
 import {
   PreRenderedManifest,
@@ -258,6 +259,12 @@ export class NextJSAPIGateway extends cdk.Construct {
     });
 
     const s3Origin = new origins.S3Origin(this.bucket);
+    const s3AssetPrefix =
+      this.readRequiredServerFile().config.assetPrefix.replace('/', '');
+
+    logger.debug(
+      `uploading assets in bucket using assetPrefix: ${s3AssetPrefix}`,
+    );
 
     this.distribution = new cloudfront.Distribution(
       this,
@@ -275,7 +282,7 @@ export class NextJSAPIGateway extends cdk.Construct {
           cachePolicy: this.nextLambdaCachePolicy,
         },
         additionalBehaviors: {
-          [this.pathPattern('_next/static/*')]: {
+          [this.pathPattern(`${s3AssetPrefix}/_next/static/*`)]: {
             viewerProtocolPolicy:
               cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
             origin: s3Origin,
@@ -284,7 +291,7 @@ export class NextJSAPIGateway extends cdk.Construct {
             compress: true,
             cachePolicy: this.nextStaticsCachePolicy,
           },
-          [this.pathPattern('static/*')]: {
+          [this.pathPattern(`${s3AssetPrefix}/static/*`)]: {
             viewerProtocolPolicy:
               cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
             origin: s3Origin,
@@ -358,6 +365,12 @@ export class NextJSAPIGateway extends cdk.Construct {
 
     Object.keys(assets).forEach((key) => {
       const { path: assetPath, cacheControl } = assets[key];
+      const targetPath = pathToPosix(
+        path.join(s3AssetPrefix, path.relative(assetsDirectory, assetPath)),
+      );
+
+      logger.debug(`uploading ${key} to : ${targetPath}`);
+
       new s3Deploy.BucketDeployment(this, `AssetDeployment_${key}`, {
         destinationBucket: this.bucket,
         sources: [s3Deploy.Source.asset(assetPath)],
@@ -366,9 +379,7 @@ export class NextJSAPIGateway extends cdk.Construct {
         // The source contents will be unzipped to and loaded into the S3 bucket
         // at the root '/', we don't want this, we want to maintain the same
         // path on S3 as their local path. Note that this should be a posix path.
-        destinationKeyPrefix: pathToPosix(
-          path.relative(assetsDirectory, assetPath),
-        ),
+        destinationKeyPrefix: targetPath,
 
         // Source directories are uploaded with `--sync` this means that any
         // files that don't exist in the source directory, but do in the S3

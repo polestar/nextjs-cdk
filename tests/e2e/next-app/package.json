@@ -16,7 +16,9 @@
     "build-lambdas": "ts-node ./bin/next-app.ts"
   },
   "dependencies": {
+    "chalk": "^4.1.2",
     "next": "^12.0.4",
+    "node-color-log": "^7.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },

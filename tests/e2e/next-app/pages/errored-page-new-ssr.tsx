@@ -15,7 +15,7 @@ export default function ErroredPageNewSsr(
   );
 }
 
-export async function getServerSideProps(
+export function getServerSideProps(
   ctx: NextPageContext,
 ): Promise<{ props: ErroredPageNewSsrProps }> {
   throw new Error('Error occurred!');

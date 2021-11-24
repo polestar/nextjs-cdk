@@ -3,7 +3,7 @@ import path, { join } from 'path';
 
 import { ImageBuildManifest, PageManifest, Manifest } from '../types';
 import CoreBuilder from './core-builder';
-import { LambdaHandler } from '../common';
+import { LambdaHandler, logger } from '../common';
 
 export class LambdaBuilder extends CoreBuilder {
   protected async buildPlatform(
@@ -83,31 +83,33 @@ export class LambdaBuilder extends CoreBuilder {
     pageManifest: PageManifest,
     handler: LambdaHandler,
   ): Promise<void[]> {
+    logger.debug('building lambda using handler: ', handler);
     const hasAPIRoutes = await fse.pathExists(
       join(this.serverlessDir, 'pages/api'),
     );
+
+    const targetBuildFolder = join(this.outputDir, handler);
+
+    logger.debug('asset files will be copied to: ', targetBuildFolder);
 
     await fse.mkdir(join(this.outputDir, handler));
 
     return Promise.all([
       this.processAndCopyHandler(
         handler,
-        join(this.outputDir, handler),
+        targetBuildFolder,
         !!this.buildOptions.minifyHandlers,
       ),
       this.buildOptions?.handler
         ? fse.copy(
             join(this.nextConfigDir, this.buildOptions.handler),
-            join(this.outputDir, handler, this.buildOptions.handler),
+            join(targetBuildFolder, this.buildOptions.handler),
           )
         : Promise.resolve(),
-      fse.writeJson(
-        join(this.outputDir, handler, 'manifest.json'),
-        pageManifest,
-      ),
+      fse.writeJson(join(targetBuildFolder, 'manifest.json'), pageManifest),
       fse.copy(
         join(this.serverlessDir, 'pages'),
-        join(this.outputDir, handler, 'pages'),
+        join(targetBuildFolder, 'pages'),
         {
           filter: this.getDefaultHandlerFileFilter(hasAPIRoutes, pageManifest),
         },
@@ -115,13 +117,14 @@ export class LambdaBuilder extends CoreBuilder {
       this.copyChunks(handler),
       fse.copy(
         join(this.dotNextDir, 'prerender-manifest.json'),
-        join(this.outputDir, handler, 'prerender-manifest.json'),
+        join(targetBuildFolder, 'prerender-manifest.json'),
       ),
       this.processAndCopyRoutesManifest(
         join(this.dotNextDir, 'routes-manifest.json'),
-        join(this.outputDir, handler, 'routes-manifest.json'),
+        join(targetBuildFolder, 'routes-manifest.json'),
       ),
-      ...this.copyWebpackFiles(join(this.outputDir, handler)),
+      ...this.copyWebpackFiles(targetBuildFolder),
+      this.copyRequiredServerFiles(targetBuildFolder),
     ]);
   }
 

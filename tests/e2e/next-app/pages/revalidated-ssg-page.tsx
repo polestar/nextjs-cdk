@@ -17,10 +17,10 @@ export default function RevalidatedSSGPage(props: SSGPageProps): JSX.Element {
 export async function getStaticProps(): Promise<
   GetStaticPropsResult<SSGPageProps>
 > {
-  return {
+  return await Promise.resolve({
     revalidate: 10,
     props: {
       date: new Date().toJSON(),
     },
-  };
+  });
 }

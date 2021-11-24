@@ -29,7 +29,7 @@ const getObjectMock = (body: string) => {
   });
 };
 
-describe('default-lambda', () => {
+describe('default-handler', () => {
   const handlerModule = require(path.join(BUILD_PATH, 'default-handler'));
 
   it('should return index content on GET /', async () => {

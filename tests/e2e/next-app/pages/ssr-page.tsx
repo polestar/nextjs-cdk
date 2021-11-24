@@ -17,5 +17,5 @@ export default function SSRPage(props: SSRPageProps): JSX.Element {
 SSRPage.getInitialProps = async (
   ctx: NextPageContext,
 ): Promise<SSRPageProps> => {
-  return { name: 'serverless-next.js' };
+  return await Promise.resolve({ name: 'serverless-next.js' });
 };

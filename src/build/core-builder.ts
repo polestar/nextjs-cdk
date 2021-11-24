@@ -19,6 +19,7 @@ import {
   RoutesManifest,
   NextConfig,
 } from '../types';
+import { logger } from '../common';
 
 export const ASSETS_DIR = 'assets';
 
@@ -88,6 +89,8 @@ export default abstract class CoreBuilder {
       this.cleanupDotNext(cleanupDotNext),
       fse.emptyDir(join(this.outputDir)),
     ]);
+
+    logger.debug(`removed assets from ${this.outputDir}`);
   }
 
   /**
@@ -199,6 +202,7 @@ export default abstract class CoreBuilder {
     assetIgnorePatterns: string[] = [],
   ): Promise<string[]> {
     const dirExists = await fse.pathExists(join(this.nextConfigDir, 'public'));
+
     if (dirExists) {
       const files = await readDirectoryFiles(
         join(this.nextConfigDir, 'public'),
@@ -334,6 +338,28 @@ export default abstract class CoreBuilder {
     return files;
   }
 
+  protected copyRequiredServerFiles(buildDir: string): Promise<void> {
+    return this.copyFile(
+      join(this.nextConfigDir, '.next'),
+      buildDir,
+      'required-server-files.json',
+    );
+  }
+
+  protected async copyFile(
+    srcDir: string,
+    targetDir: string,
+    fileName: string,
+  ): Promise<void> {
+    const requiredServerFilesFile = join(srcDir, fileName);
+    const target = join(targetDir, fileName);
+
+    logger.debug(`copying ${requiredServerFilesFile} to ${target}`);
+
+    return (await fse.pathExists(requiredServerFilesFile))
+      ? fse.copy(requiredServerFilesFile, target)
+      : Promise.resolve();
+  }
   protected async readNextConfig(): Promise<NextConfig | undefined> {
     const nextConfigPath = path.join(this.nextConfigDir, 'next.config.js');
 
@@ -388,10 +414,22 @@ export default abstract class CoreBuilder {
       }
     };
 
+    logger.debug(
+      `copying nextjs assets from ${dotNextDirectory} to ${assetOutputDirectory}`,
+    );
+
     // Copy BUILD_ID file
     const copyBuildId = copyIfExists(
       path.join(dotNextDirectory, 'BUILD_ID'),
       path.join(assetOutputDirectory, withBasePath('BUILD_ID')),
+    );
+
+    const copyRequiredServerfiles = copyIfExists(
+      path.join(dotNextDirectory, 'required-server-files.json'),
+      path.join(
+        assetOutputDirectory,
+        withBasePath('required-server-files.json'),
+      ),
     );
 
     const buildStaticFiles = await readDirectoryFiles(
@@ -484,6 +522,7 @@ export default abstract class CoreBuilder {
 
     return Promise.all([
       copyBuildId, // BUILD_ID
+      copyRequiredServerfiles, // .next/required-server-files.json
       ...staticFileAssets, // .next/static
       ...htmlAssets, // prerendered html pages
       ...jsonAssets, // SSG json files

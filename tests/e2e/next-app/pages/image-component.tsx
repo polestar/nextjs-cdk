@@ -20,10 +20,10 @@ export default function ImageComponentPage(props: any): JSX.Element {
   );
 }
 
-export async function getStaticProps(
+export function getStaticProps(
   ctx: GetStaticPropsContext,
 ): Promise<{ props: ImageComponentProps }> {
-  return {
+  return Promise.resolve({
     props: { name: 'serverless-next.js' },
-  };
+  });
 }
