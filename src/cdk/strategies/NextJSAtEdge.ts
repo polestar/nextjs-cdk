@@ -10,7 +10,7 @@ import path from 'path';
 
 import { NextJSConstruct } from '.';
 import { Props } from '../props';
-import { CustomHeaders, LambdaHandler } from '../../common';
+import { CustomHeaders, LambdaHandler, logger } from '../../common';
 
 export class NextJSAtEdge extends NextJSConstruct {
   protected edgeLambdaRole?: Role;
@@ -94,6 +94,12 @@ export class NextJSAtEdge extends NextJSConstruct {
       new cloudfront.OriginAccessIdentity(this, 'cdn-bucket-read'),
     );
 
+    const s3AssetPrefix = this.getNamespace();
+
+    logger.debug(
+      `uploading assets in bucket using assetPrefix: ${s3AssetPrefix}`,
+    );
+
     const bucketOrigin = new origins.S3Origin(this.bucket, {
       customHeaders: {
         [CustomHeaders.BUCKET_S3_HEADER]: this.bucket.bucketName,
@@ -116,7 +122,7 @@ export class NextJSAtEdge extends NextJSConstruct {
           ],
         },
         additionalBehaviors: {
-          [this.pathPattern('_next/static/*')]: {
+          [this.pathPattern(`${s3AssetPrefix}_next/static/*`)]: {
             viewerProtocolPolicy:
               cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
             origin: bucketOrigin,
@@ -124,7 +130,7 @@ export class NextJSAtEdge extends NextJSConstruct {
             cachedMethods: cloudfront.CachedMethods.CACHE_GET_HEAD_OPTIONS,
             compress: true,
           },
-          [this.pathPattern('static/*')]: {
+          [this.pathPattern(`${s3AssetPrefix}static/*`)]: {
             viewerProtocolPolicy:
               cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
             origin: bucketOrigin,

@@ -1,4 +1,5 @@
-const APP_NAMESPACE = 'manual-testing';
+const APP_NAMESPACE = 'manual-testing-edge';
+const isProd = process.env.NODE_ENV === 'production';
 
 module.exports = {
   eslint: {
@@ -7,7 +8,7 @@ module.exports = {
   images: {
     domains: ['raw.githubusercontent.com'],
   },
-  assetPrefix: `/${APP_NAMESPACE}`,
+  assetPrefix: isProd ? `/${APP_NAMESPACE}` : '',
   async redirects() {
     return [
       {

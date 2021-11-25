@@ -2,11 +2,11 @@ import chalk from 'chalk';
 
 class Logger {
   info(message: string) {
-    console.log(chalk.dim(message));
+    this.log('INFO', chalk.dim(message));
   }
 
   warn(message: string) {
-    console.log(chalk.yellow(message));
+    this.log('WARNING', chalk.yellow(message));
   }
 
   error(message: string, data?: any) {

@@ -260,7 +260,7 @@ export class NextJSAPIGateway extends cdk.Construct {
 
     const s3Origin = new origins.S3Origin(this.bucket);
     const s3AssetPrefix =
-      this.readRequiredServerFile().config.assetPrefix.replace('/', '');
+      this.readRequiredServerFile().config.assetPrefix.replace('/', '') + '/';
 
     logger.debug(
       `uploading assets in bucket using assetPrefix: ${s3AssetPrefix}`,
@@ -282,7 +282,7 @@ export class NextJSAPIGateway extends cdk.Construct {
           cachePolicy: this.nextLambdaCachePolicy,
         },
         additionalBehaviors: {
-          [this.pathPattern(`${s3AssetPrefix}/_next/static/*`)]: {
+          [this.pathPattern(`${s3AssetPrefix}_next/static/*`)]: {
             viewerProtocolPolicy:
               cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
             origin: s3Origin,
@@ -291,7 +291,7 @@ export class NextJSAPIGateway extends cdk.Construct {
             compress: true,
             cachePolicy: this.nextStaticsCachePolicy,
           },
-          [this.pathPattern(`${s3AssetPrefix}/static/*`)]: {
+          [this.pathPattern(`${s3AssetPrefix}static/*`)]: {
             viewerProtocolPolicy:
               cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
             origin: s3Origin,
@@ -369,7 +369,7 @@ export class NextJSAPIGateway extends cdk.Construct {
         path.join(s3AssetPrefix, path.relative(assetsDirectory, assetPath)),
       );
 
-      logger.debug(`uploading ${key} to : ${targetPath}`);
+      logger.debug(`will upload ${key} to : ${targetPath}`);
 
       new s3Deploy.BucketDeployment(this, `AssetDeployment_${key}`, {
         destinationBucket: this.bucket,

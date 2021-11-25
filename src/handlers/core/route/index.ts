@@ -24,6 +24,7 @@ import {
   RoutesManifest,
   UnauthorizedRoute,
 } from '../../../types';
+import { SettingsFileReader, logger } from '../../../common';
 
 export const handleAuth = (
   req: Request,
@@ -167,11 +168,21 @@ export const routeDefault = async (
   );
   const is404 = uri.endsWith('/404');
   const isDataReq = uri.startsWith('/_next/data');
-  const isApi = uri.startsWith('/api');
+  const namespace = SettingsFileReader.getAppNamespace();
   const publicFile = handlePublicFiles(uri, manifest);
   const isPublicFile = !!publicFile;
   const nextStaticFile = handleNextStaticFiles(uri);
   const isNextStaticFile = !!nextStaticFile;
+
+  let isApi = uri.startsWith(`/api`);
+
+  if (namespace) {
+    const namespaceApiMatch = new RegExp(
+      `\\w/${SettingsFileReader.getAppNamespace()}/api`,
+    );
+
+    isApi = namespaceApiMatch.test(uri);
+  }
 
   if (isApi) {
     const apiRoute = handleApiReq(

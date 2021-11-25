@@ -15,6 +15,7 @@ import {
   Request,
   ApiRoute,
 } from '../../../types';
+import { logger } from '../../../common';
 
 const pageHtml = (localeUri: string) => {
   if (localeUri == '/') {
@@ -31,6 +32,8 @@ export const handlePageReq = (
   isPreview: boolean,
   isRewrite?: boolean,
 ): ExternalRoute | PageRoute | ApiRoute => {
+  logger.debug('handling page request');
+
   const { pages } = manifest;
   const { normalisedUri: localeUri, missingExpectedBasePath } = normalise(
     addDefaultLocaleToPath(

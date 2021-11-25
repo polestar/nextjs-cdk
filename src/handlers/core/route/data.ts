@@ -7,6 +7,7 @@ import {
   RoutesManifest,
   StaticRoute,
 } from '../../../types';
+import { logger } from '../../../common';
 
 /*
  * Get page name from data route
@@ -42,6 +43,8 @@ export const handleDataReq = (
   routesManifest: RoutesManifest,
   isPreview: boolean,
 ): DataRoute | StaticRoute => {
+  logger.debug(`handling data request`);
+
   const { buildId, pages } = manifest;
   const localeUri = addDefaultLocaleToPath(
     normaliseDataUri(uri, buildId),

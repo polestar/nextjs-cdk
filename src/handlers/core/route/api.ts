@@ -9,6 +9,7 @@ import {
   RoutesManifest,
   Request,
 } from '../../../types';
+import { logger } from '../../../common';
 
 export const handleApiReq = (
   req: Request,
@@ -17,6 +18,8 @@ export const handleApiReq = (
   routesManifest: RoutesManifest,
   isRewrite?: boolean,
 ): ExternalRoute | ApiRoute | undefined => {
+  logger.debug(`handling api request`);
+
   const { apis } = manifest;
   const { normalisedUri, missingExpectedBasePath } = normalise(
     uri,

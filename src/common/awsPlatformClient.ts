@@ -14,6 +14,8 @@ import {
   S3Client,
 } from '@aws-sdk/client-s3';
 import { SendMessageCommand, SQSClient } from '@aws-sdk/client-sqs';
+import { SettingsFileReader } from '../common';
+
 // FIXME: using static imports for AWS clients instead of dynamic imports are
 // not imported correctly
 // (if (1) imported from root @aws-sdk/client-sqs it works but isn't treeshook and
@@ -51,9 +53,10 @@ export class AwsPlatformClient implements PlatformClient {
     });
     // S3 Body is stream per: https://github.com/aws/aws-sdk-js-v3/issues/1096
     const getStream = await import('get-stream');
-    const assetPrefix =
-      require('required-server-files.json').config.assetPrefix || '';
-    const targetObject = path.join(assetPrefix, pageKey);
+    const targetObject = path.join(
+      SettingsFileReader.getAppNamespace(),
+      pageKey,
+    );
     const s3Params = {
       Bucket: this.bucketName,
       Key: targetObject,
@@ -65,6 +68,7 @@ export class AwsPlatformClient implements PlatformClient {
 
     try {
       logger.debug('getObject', targetObject);
+
       s3Response = await s3.send(new GetObjectCommand(s3Params));
       bodyBuffer = await getStream.buffer(s3Response.Body as Readable);
       s3StatusCode = s3Response.$metadata.httpStatusCode ?? 200; // assume OK if not set, but it should be
@@ -74,6 +78,7 @@ export class AwsPlatformClient implements PlatformClient {
         'Got error response from S3. Will default to returning empty response. Error: ',
         e,
       );
+
       return {
         body: undefined,
         headers: {},

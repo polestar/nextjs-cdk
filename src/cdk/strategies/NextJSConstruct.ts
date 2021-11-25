@@ -22,7 +22,7 @@ import {
 } from '../utils';
 import { pathToPosix } from '../../build';
 import { Distribution } from '@aws-cdk/aws-cloudfront';
-import { LambdaHandler } from '../../common';
+import { LambdaHandler, logger } from '../../common';
 
 export class NextJSConstruct extends cdk.Construct {
   protected defaultManifest: BuildManifest;
@@ -128,6 +128,14 @@ export class NextJSConstruct extends cdk.Construct {
 
     Object.keys(assets).forEach((key) => {
       const { path: assetPath, cacheControl } = assets[key];
+      const targetPath = pathToPosix(
+        path.join(
+          this.getNamespace(),
+          path.relative(assetsDirectory, assetPath),
+        ),
+      );
+
+      logger.debug(`will upload ${key} to : ${targetPath}`);
 
       new s3Deploy.BucketDeployment(this, `AssetDeployment_${key}`, {
         destinationBucket,
@@ -137,9 +145,7 @@ export class NextJSConstruct extends cdk.Construct {
         // The source contents will be unzipped to and loaded into the S3 bucket
         // at the root '/', we don't want this, we want to maintain the same
         // path on S3 as their local path. Note that this should be a posix path.
-        destinationKeyPrefix: pathToPosix(
-          path.relative(assetsDirectory, assetPath),
-        ),
+        destinationKeyPrefix: targetPath,
 
         // Source directories are uploaded with `--sync` this means that any
         // files that don't exist in the source directory, but do in the S3
@@ -222,5 +228,13 @@ export class NextJSConstruct extends cdk.Construct {
     const serverManifest = this.readRequiredServerFiles(handler);
 
     return serverManifest.config.assetPrefix;
+  }
+
+  protected getNamespace() {
+    return (
+      this.readRequiredServerFiles(
+        LambdaHandler.EDGE,
+      ).config.assetPrefix.replace('/', '') + '/'
+    );
   }
 }
