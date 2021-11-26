@@ -1,3 +1,10 @@
+## [1.1.4](https://github.com/polestar/nextjs-cdk/compare/v1.1.3...v1.1.4) (2021-11-26)
+
+
+### Bug Fixes
+
+* file path spelling and expose cdk at the root ([d6d551f](https://github.com/polestar/nextjs-cdk/commit/d6d551f806c1ff3906a593c0199a004bd065fa4b))
+
 ## [1.1.3](https://github.com/polestar/nextjs-cdk/compare/v1.1.2...v1.1.3) (2021-11-26)
 
 
