@@ -1,3 +1,13 @@
+## [1.1.3](https://github.com/polestar/nextjs-cdk/compare/v1.1.2...v1.1.3) (2021-11-26)
+
+
+### Bug Fixes
+
+* **apigw,cdk:** fix to make it deployable in china ([328cc95](https://github.com/polestar/nextjs-cdk/commit/328cc95643f2eb801d5203324e35cf0a8de6ad6a))
+* **apigw:** various isr fixes ([84f4041](https://github.com/polestar/nextjs-cdk/commit/84f404138a6350a46aac12400072d39514658e6b))
+* wrong file name on regeneration ([9eafbbc](https://github.com/polestar/nextjs-cdk/commit/9eafbbc2c24efcec4c57345f311020ace3c76727))
+* wrong path to lambda handlers ([e819392](https://github.com/polestar/nextjs-cdk/commit/e819392b53770b9f13c1e82e31c66bab84689429))
+
 ## [1.1.2](https://github.com/polestar/nextjs-cdk/compare/v1.1.1...v1.1.2) (2021-11-26)
 
 
