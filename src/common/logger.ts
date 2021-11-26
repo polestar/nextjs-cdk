@@ -1,12 +1,10 @@
-import chalk from 'chalk';
-
 class Logger {
   info(message: string) {
-    this.log('INFO', chalk.dim(message));
+    this.log('INFO', message);
   }
 
   warn(message: string) {
-    this.log('WARNING', chalk.yellow(message));
+    this.log('WARNING', message);
   }
 
   error(message: string, data?: unknown) {
@@ -14,14 +12,14 @@ class Logger {
   }
 
   debug(message: string, data?: unknown) {
-    this.log(chalk.blue('DEBUG'), message, data);
+    this.log('DEBUG', message, data);
   }
 
   log(label: string, message: string, data: unknown = '') {
     const now = new Date().toISOString();
     const body = typeof data === 'string' ? data : JSON.stringify(data);
 
-    console.log(`${chalk.dim(now)} ${`[${label}]`}: ${message + body}`);
+    console.log(`${now} ${`[${label}]`}: ${message + body}`);
   }
 }
 
