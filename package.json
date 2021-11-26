@@ -7,7 +7,7 @@
     "access": "public"
   },
   "module": "dist/index.js",
-  "types": "Dist/index.d.ts",
+  "types": "dist/index.d.ts",
   "files": [
     "dist",
     "CHANGELOG.md"
