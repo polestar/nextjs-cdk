@@ -24,6 +24,19 @@ import http from 'http';
 
 export { AwsPlatformClient };
 
+const createPlatformClient = (manifest: BuildManifest) => {
+  const bucketName = manifest.bucketName ?? process.env.BUCKET_NAME;
+  const bucketRegion = manifest.bucketRegion ?? process.env.BUCKET_REGION;
+  const regenerationQueueRegion =
+    manifest.queueRegion ?? process.env.AWS_REGION;
+  const regenerationQueueName = manifest.queueName ?? `${bucketName}.fifo`;
+  return new AwsPlatformClient(
+    bucketName,
+    bucketRegion,
+    regenerationQueueName,
+    regenerationQueueRegion,
+  );
+};
 /**
  * Lambda handler that wraps the platform-agnostic default handler
  * for REST API
@@ -41,16 +54,7 @@ export const handleRequest = async (
 
   // Initialize AWS platform specific client
   // Defaulting to environment variables since it might be run in API Gateway
-  const bucketName = manifest.bucketName ?? process.env.BUCKET_NAME;
-  const bucketRegion = manifest.bucketRegion ?? process.env.BUCKET_REGION;
-  const regenerationQueueRegion = manifest.queueRegion;
-  const regenerationQueueName = manifest.queueName;
-  const awsPlatformClient = new AwsPlatformClient(
-    bucketName,
-    bucketRegion,
-    regenerationQueueName,
-    regenerationQueueRegion,
-  );
+  const awsPlatformClient = createPlatformClient(manifest);
 
   // Handle request with platform-agnostic handler
   await defaultHandler({
@@ -75,10 +79,12 @@ export const handleRequest = async (
  * @param event
  */
 export const handleRegeneration = async (event: SQSEvent): Promise<void> => {
+  const manifest: BuildManifest = Manifest;
+  const awsPlatformClient = createPlatformClient(manifest);
+
   await Promise.all(
     event.Records.map(async (record) => {
       const regenerationEvent: RegenerationEvent = JSON.parse(record.body);
-      const manifest: BuildManifest = Manifest;
 
       // This is needed to build the original req/res Node.js objects to be passed into pages.
       const originalRequest: RegenerationEventRequest =
@@ -92,15 +98,6 @@ export const handleRegeneration = async (event: SQSEvent): Promise<void> => {
       const res = Object.assign(
         new Stream.Readable(),
         http.ServerResponse.prototype,
-      );
-
-      // TODO: In the future we may want to have bucket details in a manifest instead of the regen event.
-      //  Though it will have to be updated at deploy time since we do not know randomly generated names until deployed unless user set a custom one.
-      const awsPlatformClient = new AwsPlatformClient(
-        manifest.bucketName,
-        manifest.bucketRegion,
-        manifest.queueName, // we don't need to call the SQS queue as of now, but passing this for future uses
-        manifest.queueRegion,
       );
 
       await regenerationHandler({

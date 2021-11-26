@@ -448,7 +448,7 @@ export default abstract class CoreBuilder {
       const source = path.join(dotNextDirectory, `serverless/pages${file}`);
       const destination = path.join(
         assetOutputDirectory,
-        withBasePath(`_next/data/${buildId}${file}`),
+        withBasePath(`_next/data/${buildId}${encodeURI(file)}`),
       );
 
       return copyIfExists(source, destination);
