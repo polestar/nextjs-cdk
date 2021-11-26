@@ -426,6 +426,20 @@ export class NextJSAPIGateway extends cdk.Construct {
     );
   }
 
+  private readRequiredServerFile(): {
+    config: {
+      assetPrefix: string;
+    };
+  } {
+    return fs.readJSONSync(
+      path.join(
+        this.props.nextjsCDKBuildOutDir,
+        'assets',
+        'required-server-files.json',
+      ),
+    );
+  }
+
   private readImageBuildManifest(): ImageBuildManifest | null {
     const imageLambdaPath = path.join(
       this.props.nextjsCDKBuildOutDir,

@@ -181,7 +181,8 @@ export class NextJSConstruct extends cdk.Construct {
     return fs.readJSONSync(
       path.join(
         this.props.nextjsCDKBuildOutDir,
-        LambdaHandler.DEFAULT + '/routes-manifest.json',
+        LambdaHandler.DEFAULT,
+        'routes-manifest.json',
       ),
     );
   }
@@ -190,7 +191,8 @@ export class NextJSConstruct extends cdk.Construct {
     return fs.readJSONSync(
       path.join(
         this.props.nextjsCDKBuildOutDir,
-        LambdaHandler.DEFAULT + '/prerender-manifest.json',
+        LambdaHandler.DEFAULT,
+        'prerender-manifest.json',
       ),
     );
   }
@@ -199,7 +201,8 @@ export class NextJSConstruct extends cdk.Construct {
     return fs.readJSONSync(
       path.join(
         this.props.nextjsCDKBuildOutDir,
-        LambdaHandler.DEFAULT + '/manifest.json',
+        LambdaHandler.DEFAULT,
+        'manifest.json',
       ),
     );
   }
@@ -207,7 +210,8 @@ export class NextJSConstruct extends cdk.Construct {
   protected readImageBuildManifest(): ImageBuildManifest | null {
     const imageLambdaPath = path.join(
       this.props.nextjsCDKBuildOutDir,
-      LambdaHandler.IMAGE + '/manifest.json',
+      LambdaHandler.IMAGE,
+      'manifest.json',
     );
 
     return fs.existsSync(imageLambdaPath)
@@ -218,7 +222,8 @@ export class NextJSConstruct extends cdk.Construct {
   protected readRequiredServerFiles(handler: LambdaHandler) {
     const targetPath = path.join(
       this.props.nextjsCDKBuildOutDir,
-      handler + '/required-server-files.json',
+      handler,
+      'required-server-files.json',
     );
 
     return fs.existsSync(targetPath) ? fs.readJSONSync(targetPath) : null;
