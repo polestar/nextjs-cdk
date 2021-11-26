@@ -94,7 +94,7 @@ export class NextJSAtEdge extends NextJSConstruct {
       new cloudfront.OriginAccessIdentity(this, 'cdn-bucket-read'),
     );
 
-    const s3AssetPrefix = this.getNamespace();
+    const s3AssetPrefix = path.join(this.getNamespace(), '/');
 
     logger.debug(
       `uploading assets in bucket using assetPrefix: ${s3AssetPrefix}`,

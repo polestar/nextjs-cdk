@@ -219,6 +219,12 @@ export class NextJSConstruct extends cdk.Construct {
       : null;
   }
 
+  protected getNamespace() {
+    return this.readRequiredServerFiles(
+      LambdaHandler.EDGE,
+    ).config.assetPrefix.replace('/', '');
+  }
+
   protected readRequiredServerFiles(handler: LambdaHandler) {
     const targetPath = path.join(
       this.props.nextjsCDKBuildOutDir,
@@ -227,19 +233,5 @@ export class NextJSConstruct extends cdk.Construct {
     );
 
     return fs.existsSync(targetPath) ? fs.readJSONSync(targetPath) : null;
-  }
-
-  protected getAssetPrefix(handler: LambdaHandler) {
-    const serverManifest = this.readRequiredServerFiles(handler);
-
-    return serverManifest.config.assetPrefix;
-  }
-
-  protected getNamespace() {
-    return (
-      this.readRequiredServerFiles(
-        LambdaHandler.EDGE,
-      ).config.assetPrefix.replace('/', '') + '/'
-    );
   }
 }
