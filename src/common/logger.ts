@@ -9,17 +9,17 @@ class Logger {
     this.log('WARNING', chalk.yellow(message));
   }
 
-  error(message: string, data?: any) {
+  error(message: string, data?: unknown) {
     this.log('ERROR', message, data);
   }
 
-  debug(message: string, data?: any) {
+  debug(message: string, data?: unknown) {
     this.log(chalk.blue('DEBUG'), message, data);
   }
 
-  log(label: string, message: string, data?: any) {
+  log(label: string, message: string, data: unknown = '') {
     const now = new Date().toISOString();
-    const body = JSON.stringify(data) || '';
+    const body = typeof data === 'string' ? data : JSON.stringify(data);
 
     console.log(`${chalk.dim(now)} ${`[${label}]`}: ${message + body}`);
   }
