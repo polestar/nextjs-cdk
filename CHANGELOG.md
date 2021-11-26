@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/polestar/nextjs-cdk/compare/v1.1.1...v1.1.2) (2021-11-26)
+
+
+### Bug Fixes
+
+* removed dist from the consumer path ([ec30014](https://github.com/polestar/nextjs-cdk/commit/ec3001422e234e22295dc392bbce8c92bc29d889))
+
 ## [1.1.1](https://github.com/polestar/nextjs-cdk/compare/v1.1.0...v1.1.1) (2021-11-19)
 
 
