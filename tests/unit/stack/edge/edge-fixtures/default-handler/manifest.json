@@ -1,1 +1,86 @@
-{"apis":{"dynamic":[{"file":"pages/api/nested/[id].js","regex":"^\\/api\\/nested(?:\\/([^\\/#\\?]+?))[\\/#\\?]?$"}],"nonDynamic":{"/api/basic-api":"pages/api/basic-api.js","/api/preview/disabled":"pages/api/preview/disabled.js","/api/preview/enabled":"pages/api/preview/enabled.js"}},"domainRedirects":{},"buildId":"41HWxO7oDjedQ9zeahKPv","pages":{"dynamic":[{"route":"/revalidated-ssg-pages/[id]","regex":"^\\/revalidated-ssg-pages(?:\\/([^\\/#\\?]+?))[\\/#\\?]?$"}],"ssr":{"dynamic":{"/revalidated-ssg-pages/[id]":"pages/revalidated-ssg-pages/[id].js"},"nonDynamic":{"/errored-page-new-ssr":"pages/errored-page-new-ssr.js","/errored-page":"pages/errored-page.js","/image-component":"pages/image-component.js","/":"pages/index.js","/revalidated-ssg-page":"pages/revalidated-ssg-page.js","/ssg-page":"pages/ssg-page.js","/ssr-page-2":"pages/ssr-page-2.js","/ssr-page":"pages/ssr-page.js","/_error":"pages/_error.js"}},"html":{"dynamic":{},"nonDynamic":{"/404":"pages/404.html","/500":"pages/500.html"}},"ssg":{"dynamic":{"/revalidated-ssg-pages/[id]":{"fallback":null}},"nonDynamic":{"/":{"initialRevalidateSeconds":false,"srcRoute":null},"/image-component":{"initialRevalidateSeconds":false,"srcRoute":null},"/revalidated-ssg-pages/101":{"initialRevalidateSeconds":10,"srcRoute":"/revalidated-ssg-pages/[id]"},"/revalidated-ssg-pages/102":{"initialRevalidateSeconds":10,"srcRoute":"/revalidated-ssg-pages/[id]"},"/revalidated-ssg-pages/103":{"initialRevalidateSeconds":10,"srcRoute":"/revalidated-ssg-pages/[id]"},"/revalidated-ssg-pages/104":{"initialRevalidateSeconds":10,"srcRoute":"/revalidated-ssg-pages/[id]"},"/ssg-page":{"initialRevalidateSeconds":false,"srcRoute":null},"/revalidated-ssg-page":{"initialRevalidateSeconds":10,"srcRoute":null}},"notFound":{}}},"publicFiles":{"/app-store-badge.png":"app-store-badge.png","/example.html":"example.html","/ignored.txt":"ignored.txt","/.well-known/test.txt":".well-known/test.txt"},"trailingSlash":false,"hasApiPages":true}
+{
+  "namespace": "manual-testing-edge",
+  "apis": {
+    "dynamic": [
+      {
+        "file": "pages/api/nested/[id].js",
+        "regex": "^\\/api\\/nested(?:\\/([^\\/#\\?]+?))[\\/#\\?]?$"
+      }
+    ],
+    "nonDynamic": {
+      "/api/basic-api": "pages/api/basic-api.js",
+      "/api/preview/disabled": "pages/api/preview/disabled.js",
+      "/api/preview/enabled": "pages/api/preview/enabled.js"
+    }
+  },
+  "domainRedirects": {},
+  "buildId": "41HWxO7oDjedQ9zeahKPv",
+  "pages": {
+    "dynamic": [
+      {
+        "route": "/revalidated-ssg-pages/[id]",
+        "regex": "^\\/revalidated-ssg-pages(?:\\/([^\\/#\\?]+?))[\\/#\\?]?$"
+      }
+    ],
+    "ssr": {
+      "dynamic": {
+        "/revalidated-ssg-pages/[id]": "pages/revalidated-ssg-pages/[id].js"
+      },
+      "nonDynamic": {
+        "/errored-page-new-ssr": "pages/errored-page-new-ssr.js",
+        "/errored-page": "pages/errored-page.js",
+        "/image-component": "pages/image-component.js",
+        "/": "pages/index.js",
+        "/revalidated-ssg-page": "pages/revalidated-ssg-page.js",
+        "/ssg-page": "pages/ssg-page.js",
+        "/ssr-page-2": "pages/ssr-page-2.js",
+        "/ssr-page": "pages/ssr-page.js",
+        "/_error": "pages/_error.js"
+      }
+    },
+    "html": {
+      "dynamic": {},
+      "nonDynamic": { "/404": "pages/404.html", "/500": "pages/500.html" }
+    },
+    "ssg": {
+      "dynamic": { "/revalidated-ssg-pages/[id]": { "fallback": null } },
+      "nonDynamic": {
+        "/": { "initialRevalidateSeconds": false, "srcRoute": null },
+        "/image-component": {
+          "initialRevalidateSeconds": false,
+          "srcRoute": null
+        },
+        "/revalidated-ssg-pages/101": {
+          "initialRevalidateSeconds": 10,
+          "srcRoute": "/revalidated-ssg-pages/[id]"
+        },
+        "/revalidated-ssg-pages/102": {
+          "initialRevalidateSeconds": 10,
+          "srcRoute": "/revalidated-ssg-pages/[id]"
+        },
+        "/revalidated-ssg-pages/103": {
+          "initialRevalidateSeconds": 10,
+          "srcRoute": "/revalidated-ssg-pages/[id]"
+        },
+        "/revalidated-ssg-pages/104": {
+          "initialRevalidateSeconds": 10,
+          "srcRoute": "/revalidated-ssg-pages/[id]"
+        },
+        "/ssg-page": { "initialRevalidateSeconds": false, "srcRoute": null },
+        "/revalidated-ssg-page": {
+          "initialRevalidateSeconds": 10,
+          "srcRoute": null
+        }
+      },
+      "notFound": {}
+    }
+  },
+  "publicFiles": {
+    "/app-store-badge.png": "app-store-badge.png",
+    "/example.html": "example.html",
+    "/ignored.txt": "ignored.txt",
+    "/.well-known/test.txt": ".well-known/test.txt"
+  },
+  "trailingSlash": false,
+  "hasApiPages": true
+}

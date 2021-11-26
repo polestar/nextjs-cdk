@@ -2,7 +2,7 @@ import { PrerenderManifest } from 'next/dist/build';
 import { ApiManifest, PageManifest, RoutesManifest } from 'types';
 import { handleApi, handleDefault } from 'handlers';
 import { prepareBuildManifests } from 'build';
-import { mockEvent } from './utils';
+import { createRequiredServerFilesMock, mockEvent } from './utils';
 
 const authHeaders = {
   Authorization: 'Basic dGVzdC11c2VyOnRlc3QtcGFzcw==',
@@ -60,6 +60,7 @@ describe('Basic authentication', () => {
       pagesManifest,
       prerenderManifest,
       publicFiles,
+      createRequiredServerFilesMock(),
     );
     apiManifest = manifests.apiManifest;
     pageManifest = manifests.pageManifest;

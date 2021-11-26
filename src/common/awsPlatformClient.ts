@@ -14,7 +14,6 @@ import {
   S3Client,
 } from '@aws-sdk/client-s3';
 import { SendMessageCommand, SQSClient } from '@aws-sdk/client-sqs';
-import { SettingsFileReader } from '../common';
 
 // FIXME: using static imports for AWS clients instead of dynamic imports are
 // not imported correctly
@@ -33,17 +32,20 @@ export class AwsPlatformClient implements PlatformClient {
   private readonly bucketName: string;
   private readonly regenerationQueueRegion: string | undefined;
   private readonly regenerationQueueName: string | undefined;
+  private readonly namespace: string;
 
   constructor(
     bucketName: string,
     bucketRegion: string,
     regenerationQueueName: string | undefined,
     regenerationQueueRegion: string | undefined,
+    namespace = '',
   ) {
     this.bucketName = bucketName;
     this.bucketRegion = bucketRegion;
     this.regenerationQueueName = regenerationQueueName;
     this.regenerationQueueRegion = regenerationQueueRegion;
+    this.namespace = namespace;
   }
 
   public async getObject(pageKey: string): Promise<ObjectResponse> {
@@ -53,10 +55,7 @@ export class AwsPlatformClient implements PlatformClient {
     });
     // S3 Body is stream per: https://github.com/aws/aws-sdk-js-v3/issues/1096
     const getStream = await import('get-stream');
-    const targetObject = path.join(
-      SettingsFileReader.getAppNamespace(),
-      pageKey,
-    );
+    const targetObject = path.join(this.namespace.replace('/', ''), pageKey);
     const s3Params = {
       Bucket: this.bucketName,
       Key: targetObject,
@@ -67,7 +66,7 @@ export class AwsPlatformClient implements PlatformClient {
     let s3Response;
 
     try {
-      logger.debug('getObject', targetObject);
+      logger.debug('getObject: ', targetObject);
 
       s3Response = await s3.send(new GetObjectCommand(s3Params));
       bodyBuffer = await getStream.buffer(s3Response.Body as Readable);

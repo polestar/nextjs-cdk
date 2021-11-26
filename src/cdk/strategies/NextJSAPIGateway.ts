@@ -259,8 +259,7 @@ export class NextJSAPIGateway extends cdk.Construct {
     });
 
     const s3Origin = new origins.S3Origin(this.bucket);
-    const s3AssetPrefix =
-      this.readRequiredServerFile().config.assetPrefix.replace('/', '') + '/';
+    const s3AssetPrefix = this.defaultManifest.namespace.replace('/', '') + '/';
 
     logger.debug(
       `uploading assets in bucket using assetPrefix: ${s3AssetPrefix}`,

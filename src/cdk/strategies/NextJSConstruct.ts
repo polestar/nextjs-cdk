@@ -220,18 +220,6 @@ export class NextJSConstruct extends cdk.Construct {
   }
 
   protected getNamespace() {
-    return this.readRequiredServerFiles(
-      LambdaHandler.EDGE,
-    ).config.assetPrefix.replace('/', '');
-  }
-
-  protected readRequiredServerFiles(handler: LambdaHandler) {
-    const targetPath = path.join(
-      this.props.nextjsCDKBuildOutDir,
-      handler,
-      'required-server-files.json',
-    );
-
-    return fs.existsSync(targetPath) ? fs.readJSONSync(targetPath) : null;
+    return this.defaultManifest.namespace.replace('/', '');
   }
 }

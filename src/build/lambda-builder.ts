@@ -124,7 +124,6 @@ export class LambdaBuilder extends CoreBuilder {
         join(targetBuildFolder, 'routes-manifest.json'),
       ),
       ...this.copyWebpackFiles(targetBuildFolder),
-      this.copyRequiredServerFiles(targetBuildFolder),
     ]);
   }
 

@@ -63,6 +63,7 @@ describe('Rewriter Tests', () => {
 
       pageManifest = {
         publicFiles: {},
+        namespace: '',
         trailingSlash: false,
         buildId: 'test-build-id',
         pages: {

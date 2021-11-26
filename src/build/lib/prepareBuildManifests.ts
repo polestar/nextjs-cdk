@@ -14,20 +14,22 @@ import type {
   BuildOptions,
   NextConfig,
   DynamicPageKeyValue,
+  RequiredServerFilesFiles,
 } from '../../types';
 
-export const prepareBuildManifests = async (
+export const prepareBuildManifests = (
   buildOptions: BuildOptions,
   nextConfig: NextConfig | undefined,
   routesManifest: RoutesManifest,
   pagesManifest: { [key: string]: string },
   prerenderManifest: PrerenderManifest,
   publicFiles: string[],
-): Promise<{
+  requiredServerFilesFiles: RequiredServerFilesFiles,
+): {
   pageManifest: PageManifest;
   apiManifest: ApiManifest;
   imageManifest: Manifest;
-}> => {
+} => {
   const {
     authentication,
     buildId,
@@ -44,6 +46,7 @@ export const prepareBuildManifests = async (
 
   const pageManifest: PageManifest = {
     buildId,
+    namespace: '',
     pages: {
       dynamic: [],
       ssr: {
@@ -269,6 +272,8 @@ export const prepareBuildManifests = async (
     authentication,
     domainRedirects: domainRedirects,
   };
+
+  pageManifest.namespace = requiredServerFilesFiles.config.assetPrefix;
 
   return {
     pageManifest,

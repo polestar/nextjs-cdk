@@ -95,17 +95,16 @@ export class NextJSAtEdge extends NextJSConstruct {
     );
 
     const s3AssetPrefix = path.join(this.getNamespace(), '/');
-
-    logger.debug(
-      `uploading assets in bucket using assetPrefix: ${s3AssetPrefix}`,
-    );
-
     const bucketOrigin = new origins.S3Origin(this.bucket, {
       customHeaders: {
         [CustomHeaders.BUCKET_S3_HEADER]: this.bucket.bucketName,
         [CustomHeaders.REGION_HEADER]: 'us-east-1',
       },
     });
+
+    logger.debug(
+      `uploading assets in bucket using assetPrefix: ${s3AssetPrefix}`,
+    );
 
     this.distribution = new cloudfront.Distribution(
       this,

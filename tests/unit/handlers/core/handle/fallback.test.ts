@@ -3,7 +3,7 @@ import { PrerenderManifest } from 'next/dist/build';
 import { PageManifest, RoutesManifest } from 'types';
 import { handleFallback, routeDefault, toRequest } from 'handlers';
 import { prepareBuildManifests } from 'build';
-import { mockEvent } from './utils';
+import { createRequiredServerFilesMock, mockEvent } from './utils';
 
 describe('Fallback handler', () => {
   let pagesManifest: { [key: string]: string };
@@ -127,6 +127,7 @@ describe('Fallback handler', () => {
       pagesManifest,
       prerenderManifest,
       publicFiles,
+      createRequiredServerFilesMock(),
     );
     manifest = manifests.pageManifest;
   });

@@ -18,6 +18,7 @@ import {
   PageManifest,
   RoutesManifest,
   NextConfig,
+  RequiredServerFilesFiles,
 } from '../types';
 import { logger } from '../common';
 
@@ -177,6 +178,7 @@ export default abstract class CoreBuilder {
         await this.readPagesManifest(),
         prerenderManifest,
         await this.readPublicFiles(assetIgnorePatterns),
+        await this.readRequiredServerFiles(),
       );
 
     const { regenerationQueueName } = this.buildOptions;
@@ -218,17 +220,39 @@ export default abstract class CoreBuilder {
     }
   }
 
-  protected async readPagesManifest(): Promise<{ [key: string]: string }> {
-    const path = join(this.serverlessDir, 'pages-manifest.json');
-    const hasServerlessPageManifest = await fse.pathExists(path);
+  protected async readJson<T>(filePath: string): Promise<T | null> {
+    try {
+      return await fse.readJson(filePath);
+    } catch (err) {
+      logger.error('failed to read: ' + filePath);
+    }
 
-    if (!hasServerlessPageManifest) {
+    return null;
+  }
+
+  protected async readRequiredServerFiles() {
+    const target = path.join(this.dotNextDir, 'required-server-files.json');
+    const serverFiles = await this.readJson<RequiredServerFilesFiles>(target);
+
+    if (!serverFiles) {
+      return Promise.reject('failed to read: ' + target);
+    }
+
+    return serverFiles;
+  }
+
+  protected async readPagesManifest() {
+    const pageManifest = await this.readJson<Record<string, string>>(
+      path.join(this.serverlessDir, 'pages-manifest.json'),
+    );
+
+    if (!pageManifest) {
       return Promise.reject(
         "pages-manifest not found. Check if `next.config.js` target is set to 'serverless'",
       );
     }
 
-    return await fse.readJSON(path);
+    return pageManifest;
   }
 
   /**
@@ -338,28 +362,21 @@ export default abstract class CoreBuilder {
     return files;
   }
 
-  protected copyRequiredServerFiles(buildDir: string): Promise<void> {
-    return this.copyFile(
-      join(this.nextConfigDir, '.next'),
-      buildDir,
-      'required-server-files.json',
-    );
-  }
-
   protected async copyFile(
     srcDir: string,
     targetDir: string,
     fileName: string,
   ): Promise<void> {
-    const requiredServerFilesFile = join(srcDir, fileName);
+    const file = join(srcDir, fileName);
     const target = join(targetDir, fileName);
 
-    logger.debug(`copying ${requiredServerFilesFile} to ${target}`);
+    logger.debug(`copying ${file} to ${target}`);
 
-    return (await fse.pathExists(requiredServerFilesFile))
-      ? fse.copy(requiredServerFilesFile, target)
+    return (await fse.pathExists(file))
+      ? fse.copy(file, target)
       : Promise.resolve();
   }
+
   protected async readNextConfig(): Promise<NextConfig | undefined> {
     const nextConfigPath = path.join(this.nextConfigDir, 'next.config.js');
 
