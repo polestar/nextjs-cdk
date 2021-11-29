@@ -1,3 +1,18 @@
+# [1.2.0](https://github.com/polestar/nextjs-cdk/compare/v1.1.4...v1.2.0) (2021-11-29)
+
+
+### Bug Fixes
+
+* **cdk:** manifest files are now resolved using path ([5dd8964](https://github.com/polestar/nextjs-cdk/commit/5dd89647ac9b6562bdb2737326aec411b92c02cb))
+* **default-handler:** pass namespace to aws-s3-client ([5696130](https://github.com/polestar/nextjs-cdk/commit/5696130c705dd8f8006c007bc420fed0f8f43084))
+* **logger:** only stringigy on non-string obj ([00af1af](https://github.com/polestar/nextjs-cdk/commit/00af1af702181f6d429ce3548c3df8ba296e8e44))
+
+
+### Features
+
+* **namespace:** adds initial implementation ([e0339d2](https://github.com/polestar/nextjs-cdk/commit/e0339d26660fb651c4ee0dfff1004e9b7e674f2f))
+* **NextJSAPIGateway, NextJSEdge:** now supports namespace ([ae1afb8](https://github.com/polestar/nextjs-cdk/commit/ae1afb8979caaa009ccdbb343379d0ca3993deaf))
+
 ## [1.1.4](https://github.com/polestar/nextjs-cdk/compare/v1.1.3...v1.1.4) (2021-11-26)
 
 
