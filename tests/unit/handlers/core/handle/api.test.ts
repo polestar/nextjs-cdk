@@ -1,9 +1,9 @@
 import { PrerenderManifest } from 'next/dist/build';
-import { ApiManifest, RoutesManifest } from 'types';
+import { ApiManifest, RoutesManifest, RequiredServerFilesFiles } from 'types';
 import { handleApi } from 'handlers';
 import { prepareBuildManifests } from 'build';
 
-import { mockEvent } from './utils';
+import { createRequiredServerFilesMock, mockEvent } from './utils';
 
 describe('Api handler', () => {
   let pagesManifest: { [key: string]: string };
@@ -23,6 +23,7 @@ describe('Api handler', () => {
         previewModeSigningKey: 'test-sig-key',
       },
     };
+
     routesManifest = {
       basePath: '',
       headers: [
@@ -96,6 +97,7 @@ describe('Api handler', () => {
       pagesManifest,
       prerenderManifest,
       publicFiles,
+      createRequiredServerFilesMock(),
     );
     manifest = manifests.apiManifest;
   });

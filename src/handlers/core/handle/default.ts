@@ -19,6 +19,7 @@ import {
   UnauthorizedRoute,
 } from '../../../types';
 import { unauthorized } from './unauthorized';
+import { logger } from '../../../common';
 
 export const renderRoute = async (
   event: Event,
@@ -90,6 +91,11 @@ export const handleDefault = async (
   ExternalRoute | PublicFileRoute | NextStaticFileRoute | StaticRoute | void
 > => {
   const request = toRequest(event);
+
+  logger.debug(
+    `handling route request: ${request.uri}, query_string: ${request.querystring}`,
+  );
+
   const route = await routeDefault(
     request,
     manifest,

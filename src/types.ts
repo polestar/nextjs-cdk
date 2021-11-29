@@ -101,6 +101,7 @@ export type ApiManifest = Manifest & {
 
 export type PageManifest = Manifest & {
   buildId: string;
+  namespace: string;
   pages: {
     dynamic: DynamicRoute[];
     html: {
@@ -300,6 +301,12 @@ export type ImageBuildManifest = {
 
 export type NextConfig = {
   trailingSlash?: boolean;
+};
+
+export type RequiredServerFilesFiles = {
+  config: {
+    assetPrefix: string;
+  };
 };
 
 export type DynamicPageKeyValue = {

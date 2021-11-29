@@ -1,4 +1,4 @@
-import { Event } from 'types';
+import { Event, RequiredServerFilesFiles } from 'types';
 
 export const mockEvent = (
   url: string,
@@ -14,5 +14,20 @@ export const mockEvent = (
       setHeader: jest.fn(),
     } as any,
     responsePromise: new Promise(() => ({})),
+  };
+};
+
+export const createRequiredServerFilesMock = (
+  opt: Partial<RequiredServerFilesFiles> = {
+    config: {
+      assetPrefix: '',
+    },
+  },
+): RequiredServerFilesFiles => {
+  return {
+    config: {
+      assetPrefix: '',
+    },
+    ...opt,
   };
 };

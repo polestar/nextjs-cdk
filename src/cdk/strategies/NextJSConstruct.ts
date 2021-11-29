@@ -22,7 +22,7 @@ import {
 } from '../utils';
 import { pathToPosix } from '../../build';
 import { Distribution } from '@aws-cdk/aws-cloudfront';
-import { LambdaHandler } from '../../common';
+import { LambdaHandler, logger } from '../../common';
 
 export class NextJSConstruct extends cdk.Construct {
   protected defaultManifest: BuildManifest;
@@ -128,6 +128,14 @@ export class NextJSConstruct extends cdk.Construct {
 
     Object.keys(assets).forEach((key) => {
       const { path: assetPath, cacheControl } = assets[key];
+      const targetPath = pathToPosix(
+        path.join(
+          this.getNamespace(),
+          path.relative(assetsDirectory, assetPath),
+        ),
+      );
+
+      logger.debug(`will upload ${key} to : ${targetPath}`);
 
       new s3Deploy.BucketDeployment(this, `AssetDeployment_${key}`, {
         destinationBucket,
@@ -137,9 +145,7 @@ export class NextJSConstruct extends cdk.Construct {
         // The source contents will be unzipped to and loaded into the S3 bucket
         // at the root '/', we don't want this, we want to maintain the same
         // path on S3 as their local path. Note that this should be a posix path.
-        destinationKeyPrefix: pathToPosix(
-          path.relative(assetsDirectory, assetPath),
-        ),
+        destinationKeyPrefix: targetPath,
 
         // Source directories are uploaded with `--sync` this means that any
         // files that don't exist in the source directory, but do in the S3
@@ -175,7 +181,8 @@ export class NextJSConstruct extends cdk.Construct {
     return fs.readJSONSync(
       path.join(
         this.props.nextjsCDKBuildOutDir,
-        LambdaHandler.DEFAULT + '/routes-manifest.json',
+        LambdaHandler.DEFAULT,
+        'routes-manifest.json',
       ),
     );
   }
@@ -184,7 +191,8 @@ export class NextJSConstruct extends cdk.Construct {
     return fs.readJSONSync(
       path.join(
         this.props.nextjsCDKBuildOutDir,
-        LambdaHandler.DEFAULT + '/prerender-manifest.json',
+        LambdaHandler.DEFAULT,
+        'prerender-manifest.json',
       ),
     );
   }
@@ -193,7 +201,8 @@ export class NextJSConstruct extends cdk.Construct {
     return fs.readJSONSync(
       path.join(
         this.props.nextjsCDKBuildOutDir,
-        LambdaHandler.DEFAULT + '/manifest.json',
+        LambdaHandler.DEFAULT,
+        'manifest.json',
       ),
     );
   }
@@ -201,11 +210,16 @@ export class NextJSConstruct extends cdk.Construct {
   protected readImageBuildManifest(): ImageBuildManifest | null {
     const imageLambdaPath = path.join(
       this.props.nextjsCDKBuildOutDir,
-      LambdaHandler.IMAGE + '/manifest.json',
+      LambdaHandler.IMAGE,
+      'manifest.json',
     );
 
     return fs.existsSync(imageLambdaPath)
       ? fs.readJSONSync(imageLambdaPath)
       : null;
+  }
+
+  protected getNamespace() {
+    return this.defaultManifest.namespace.replace('/', '');
   }
 }

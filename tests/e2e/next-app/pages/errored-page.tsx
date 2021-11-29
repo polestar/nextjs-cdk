@@ -14,7 +14,7 @@ export default function ErroredPageProps(props: ErroredPageProps): JSX.Element {
 }
 
 // getInitialProps() is the old way of doing SSR
-ErroredPageProps.getInitialProps = async (
+ErroredPageProps.getInitialProps = (
   ctx: NextPageContext,
 ): Promise<ErroredPageProps> => {
   // Simulate a server-side error by always throwing an error.

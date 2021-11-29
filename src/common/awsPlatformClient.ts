@@ -1,3 +1,4 @@
+import path from 'path';
 import {
   ObjectResponse,
   PlatformClient,
@@ -5,6 +6,7 @@ import {
   TriggerStaticRegenerationOptions,
   RegenerationEvent,
 } from '../types';
+import { logger } from '../common';
 import type { Readable } from 'stream';
 import {
   GetObjectCommand,
@@ -12,6 +14,7 @@ import {
   S3Client,
 } from '@aws-sdk/client-s3';
 import { SendMessageCommand, SQSClient } from '@aws-sdk/client-sqs';
+
 // FIXME: using static imports for AWS clients instead of dynamic imports are
 // not imported correctly
 // (if (1) imported from root @aws-sdk/client-sqs it works but isn't treeshook and
@@ -29,17 +32,20 @@ export class AwsPlatformClient implements PlatformClient {
   private readonly bucketName: string;
   private readonly regenerationQueueRegion: string | undefined;
   private readonly regenerationQueueName: string | undefined;
+  private readonly namespace: string;
 
   constructor(
     bucketName: string,
     bucketRegion: string,
     regenerationQueueName: string | undefined,
     regenerationQueueRegion: string | undefined,
+    namespace = '',
   ) {
     this.bucketName = bucketName;
     this.bucketRegion = bucketRegion;
     this.regenerationQueueName = regenerationQueueName;
     this.regenerationQueueRegion = regenerationQueueRegion;
+    this.namespace = namespace;
   }
 
   public async getObject(pageKey: string): Promise<ObjectResponse> {
@@ -49,9 +55,10 @@ export class AwsPlatformClient implements PlatformClient {
     });
     // S3 Body is stream per: https://github.com/aws/aws-sdk-js-v3/issues/1096
     const getStream = await import('get-stream');
+    const targetObject = path.join(this.namespace.replace('/', ''), pageKey);
     const s3Params = {
       Bucket: this.bucketName,
-      Key: pageKey,
+      Key: targetObject,
     };
 
     let s3StatusCode;
@@ -59,16 +66,18 @@ export class AwsPlatformClient implements PlatformClient {
     let s3Response;
 
     try {
-      console.log('getObject', pageKey);
+      logger.debug('getObject: ', targetObject);
+
       s3Response = await s3.send(new GetObjectCommand(s3Params));
       bodyBuffer = await getStream.buffer(s3Response.Body as Readable);
       s3StatusCode = s3Response.$metadata.httpStatusCode ?? 200; // assume OK if not set, but it should be
     } catch (e: any) {
       s3StatusCode = e.$metadata ? e?.$metadata?.httpStatusCode ?? 500 : 500;
-      console.error(
+      logger.error(
         'Got error response from S3. Will default to returning empty response. Error: ',
         e,
       );
+
       return {
         body: undefined,
         headers: {},

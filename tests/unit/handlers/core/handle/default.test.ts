@@ -3,7 +3,7 @@ import { PrerenderManifest } from 'next/dist/build';
 import { PageManifest, RoutesManifest } from 'types';
 import { handleDefault } from 'handlers';
 import { prepareBuildManifests } from 'build';
-import { mockEvent } from './utils';
+import { createRequiredServerFilesMock, mockEvent } from './utils';
 
 const previewModeCookies = {
   Cookie:
@@ -126,6 +126,7 @@ describe('Default handler', () => {
       pagesManifest,
       prerenderManifest,
       publicFiles,
+      createRequiredServerFilesMock(),
     );
     manifest = manifests.pageManifest;
   });

@@ -18,7 +18,9 @@ import {
   PageManifest,
   RoutesManifest,
   NextConfig,
+  RequiredServerFilesFiles,
 } from '../types';
+import { logger } from '../common';
 
 export const ASSETS_DIR = 'assets';
 
@@ -88,6 +90,8 @@ export default abstract class CoreBuilder {
       this.cleanupDotNext(cleanupDotNext),
       fse.emptyDir(join(this.outputDir)),
     ]);
+
+    logger.debug(`removed assets from ${this.outputDir}`);
   }
 
   /**
@@ -174,6 +178,7 @@ export default abstract class CoreBuilder {
         await this.readPagesManifest(),
         prerenderManifest,
         await this.readPublicFiles(assetIgnorePatterns),
+        await this.readRequiredServerFiles(),
       );
 
     const { regenerationQueueName } = this.buildOptions;
@@ -199,6 +204,7 @@ export default abstract class CoreBuilder {
     assetIgnorePatterns: string[] = [],
   ): Promise<string[]> {
     const dirExists = await fse.pathExists(join(this.nextConfigDir, 'public'));
+
     if (dirExists) {
       const files = await readDirectoryFiles(
         join(this.nextConfigDir, 'public'),
@@ -214,17 +220,39 @@ export default abstract class CoreBuilder {
     }
   }
 
-  protected async readPagesManifest(): Promise<{ [key: string]: string }> {
-    const path = join(this.serverlessDir, 'pages-manifest.json');
-    const hasServerlessPageManifest = await fse.pathExists(path);
+  protected async readJson<T>(filePath: string): Promise<T | null> {
+    try {
+      return await fse.readJson(filePath);
+    } catch (err) {
+      logger.error('failed to read: ' + filePath);
+    }
 
-    if (!hasServerlessPageManifest) {
+    return null;
+  }
+
+  protected async readRequiredServerFiles() {
+    const target = path.join(this.dotNextDir, 'required-server-files.json');
+    const serverFiles = await this.readJson<RequiredServerFilesFiles>(target);
+
+    if (!serverFiles) {
+      return Promise.reject('failed to read: ' + target);
+    }
+
+    return serverFiles;
+  }
+
+  protected async readPagesManifest() {
+    const pageManifest = await this.readJson<Record<string, string>>(
+      path.join(this.serverlessDir, 'pages-manifest.json'),
+    );
+
+    if (!pageManifest) {
       return Promise.reject(
         "pages-manifest not found. Check if `next.config.js` target is set to 'serverless'",
       );
     }
 
-    return await fse.readJSON(path);
+    return pageManifest;
   }
 
   /**
@@ -334,6 +362,21 @@ export default abstract class CoreBuilder {
     return files;
   }
 
+  protected async copyFile(
+    srcDir: string,
+    targetDir: string,
+    fileName: string,
+  ): Promise<void> {
+    const file = join(srcDir, fileName);
+    const target = join(targetDir, fileName);
+
+    logger.debug(`copying ${file} to ${target}`);
+
+    return (await fse.pathExists(file))
+      ? fse.copy(file, target)
+      : Promise.resolve();
+  }
+
   protected async readNextConfig(): Promise<NextConfig | undefined> {
     const nextConfigPath = path.join(this.nextConfigDir, 'next.config.js');
 
@@ -388,10 +431,22 @@ export default abstract class CoreBuilder {
       }
     };
 
+    logger.debug(
+      `copying nextjs assets from ${dotNextDirectory} to ${assetOutputDirectory}`,
+    );
+
     // Copy BUILD_ID file
     const copyBuildId = copyIfExists(
       path.join(dotNextDirectory, 'BUILD_ID'),
       path.join(assetOutputDirectory, withBasePath('BUILD_ID')),
+    );
+
+    const copyRequiredServerfiles = copyIfExists(
+      path.join(dotNextDirectory, 'required-server-files.json'),
+      path.join(
+        assetOutputDirectory,
+        withBasePath('required-server-files.json'),
+      ),
     );
 
     const buildStaticFiles = await readDirectoryFiles(
@@ -484,6 +539,7 @@ export default abstract class CoreBuilder {
 
     return Promise.all([
       copyBuildId, // BUILD_ID
+      copyRequiredServerfiles, // .next/required-server-files.json
       ...staticFileAssets, // .next/static
       ...htmlAssets, // prerendered html pages
       ...jsonAssets, // SSG json files

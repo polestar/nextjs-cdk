@@ -10,6 +10,7 @@ describe('notFoundPage()', () => {
   beforeAll(() => {
     htmlManifest = {
       buildId: 'test-build-id',
+      namespace: '',
       pages: {
         dynamic: [],
         html: {
@@ -34,6 +35,7 @@ describe('notFoundPage()', () => {
       hasApiPages: false,
     };
     ssgManifest = {
+      namespace: '',
       buildId: 'test-build-id',
       pages: {
         dynamic: [],

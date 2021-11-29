@@ -167,11 +167,18 @@ export const routeDefault = async (
   );
   const is404 = uri.endsWith('/404');
   const isDataReq = uri.startsWith('/_next/data');
-  const isApi = uri.startsWith('/api');
   const publicFile = handlePublicFiles(uri, manifest);
   const isPublicFile = !!publicFile;
   const nextStaticFile = handleNextStaticFiles(uri);
   const isNextStaticFile = !!nextStaticFile;
+
+  let isApi = uri.startsWith(`/api`);
+
+  if (manifest.namespace) {
+    const namespaceApiMatch = new RegExp(`\\w${manifest.namespace}/api`);
+
+    isApi = namespaceApiMatch.test(uri);
+  }
 
   if (isApi) {
     const apiRoute = handleApiReq(

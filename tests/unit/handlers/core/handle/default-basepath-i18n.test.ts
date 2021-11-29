@@ -2,7 +2,7 @@ import { PrerenderManifest } from 'next/dist/build';
 import { PageManifest, RoutesManifest } from 'types';
 import { handleDefault } from 'handlers';
 import { prepareBuildManifests } from 'build';
-import { mockEvent } from './utils';
+import { createRequiredServerFilesMock, mockEvent } from './utils';
 
 describe('Default handler (basepath + i18n)', () => {
   let pagesManifest: { [key: string]: string };
@@ -104,6 +104,7 @@ describe('Default handler (basepath + i18n)', () => {
       pagesManifest,
       prerenderManifest,
       publicFiles,
+      createRequiredServerFilesMock(),
     );
     manifest = manifests.pageManifest;
   });

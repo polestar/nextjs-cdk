@@ -35,6 +35,7 @@ const createPlatformClient = (manifest: BuildManifest) => {
     bucketRegion,
     regenerationQueueName,
     regenerationQueueRegion,
+    manifest.namespace,
   );
 };
 /**

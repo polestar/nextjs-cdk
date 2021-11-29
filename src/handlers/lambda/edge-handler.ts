@@ -50,6 +50,7 @@ export const handler: CloudFrontRequestHandler = async (event) => {
         regionHeader.value,
         manifest.queueName,
         manifest.queueRegion,
+        manifest.namespace,
       ),
     });
 

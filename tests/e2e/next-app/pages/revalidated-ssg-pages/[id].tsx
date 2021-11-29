@@ -42,7 +42,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     paths.push({ params: { id: newUser.id.toString() } });
   }
 
-  return { paths, fallback: 'blocking' };
+  return await Promise.resolve({ paths, fallback: 'blocking' });
 };
 
 export async function getStaticProps(
@@ -52,11 +52,11 @@ export async function getStaticProps(
   const user = users.find(
     ({ id }) => context.params?.id.toString() === id.toString(),
   );
-  return {
+  return await Promise.resolve({
     revalidate: 10,
     props: {
       date: new Date().toJSON(),
       user,
     },
-  };
+  });
 }
