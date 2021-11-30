@@ -65,7 +65,7 @@ export class NextJSAPIGateway extends cdk.Construct {
 
     this.region = process.env.CDK_DEFAULT_REGION!; //cdk.Stack.of(this).region;
 
-    this.bucket = new s3.Bucket(this, 'PublicAssets', {
+    this.bucket = new s3.Bucket(this, `public-assets-${id}`, {
       publicReadAccess: false, // CloudFront/Lambdas are granted access so we don't want it publicly available
 
       // Given this resource is created internally and also should only contain
@@ -88,7 +88,7 @@ export class NextJSAPIGateway extends cdk.Construct {
     );
 
     if (hasISRPages || hasDynamicISRPages) {
-      this.regenerationQueue = new sqs.Queue(this, 'RegenerationQueue', {
+      this.regenerationQueue = new sqs.Queue(this, `regeneration-queue-${id}`, {
         // We call the queue the same name as the bucket so that we can easily
         // reference it from within the Lambda, given we can't use env vars
         // in a lambda
@@ -99,8 +99,9 @@ export class NextJSAPIGateway extends cdk.Construct {
 
       this.regenerationFunction = new lambda.Function(
         this,
-        'RegenerationFunction',
+        `regeneration-lambda-${id}`,
         {
+          functionName: `regeneration-lambda-${id}`,
           handler: 'index.handler',
           description: `SQS Regeneration Lambda for NextJS`,
           runtime: lambda.Runtime.NODEJS_14_X,
@@ -120,21 +121,21 @@ export class NextJSAPIGateway extends cdk.Construct {
       );
     }
 
-    this.edgeLambdaRole = new Role(this, 'NextLambdaRole', {
+    this.edgeLambdaRole = new Role(this, `next-lambda-role-${id}`, {
       assumedBy: new CompositePrincipal(
         new ServicePrincipal('lambda.amazonaws.com'),
       ),
       managedPolicies: [
         ManagedPolicy.fromManagedPolicyArn(
           this,
-          'NextLambdaPolicy',
+          `next-lambda-policy-${id}`,
           'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole',
         ),
       ],
     });
 
-    this.defaultNextLambda = new lambda.Function(this, 'NextLambda', {
-      functionName: 'DefaultLambda',
+    this.defaultNextLambda = new lambda.Function(this, `default-lambda-${id}`, {
+      functionName: `default-lambda-${id}`,
       description: `Default Lambda for NextJS`,
       handler: 'index.handler',
       currentVersionOptions: {
@@ -166,9 +167,9 @@ export class NextJSAPIGateway extends cdk.Construct {
     this.nextImageLambda = null;
 
     if (this.imageManifest) {
-      this.nextImageLambda = new lambda.Function(this, 'NextImageLambda', {
-        functionName: 'ImageLambda',
-        description: `Default Lambda for Next Image services`,
+      this.nextImageLambda = new lambda.Function(this, `iamge-lambda-${id}`, {
+        functionName: `image-lambda-${id}`,
+        description: `Lambda for Next Image services`,
         handler: 'index.handler',
         currentVersionOptions: {
           removalPolicy: RemovalPolicy.DESTROY, // destroy old versions
@@ -186,7 +187,7 @@ export class NextJSAPIGateway extends cdk.Construct {
       this.nextImageLambda.currentVersion.addAlias('live');
     }
 
-    this.restAPI = new apigateway.LambdaRestApi(this, 'NextAPIGateway', {
+    this.restAPI = new apigateway.LambdaRestApi(this, `next-apigateway-${id}`, {
       handler: this.defaultNextLambda,
       proxy: true,
       binaryMediaTypes: ['*/*'],
@@ -201,9 +202,9 @@ export class NextJSAPIGateway extends cdk.Construct {
     if (!this.isChina()) {
       this.nextStaticsCachePolicy = new cloudfront.CachePolicy(
         this,
-        'NextStaticsCache',
+        `next-statics-cache-${id}`,
         {
-          cachePolicyName: 'next-statics-cache',
+          cachePolicyName: `next-statics-cache-${id}`,
           queryStringBehavior: cloudfront.CacheQueryStringBehavior.none(),
           headerBehavior: cloudfront.CacheHeaderBehavior.none(),
           cookieBehavior: cloudfront.CacheCookieBehavior.none(),
@@ -217,9 +218,9 @@ export class NextJSAPIGateway extends cdk.Construct {
 
       this.nextImageCachePolicy = new cloudfront.CachePolicy(
         this,
-        'NextImageCache',
+        `next-image-cache-${id}`,
         {
-          cachePolicyName: 'next-image-cache',
+          cachePolicyName: `next-image-cache-${id}`,
           queryStringBehavior: cloudfront.CacheQueryStringBehavior.all(),
           headerBehavior: cloudfront.CacheHeaderBehavior.allowList('Accept'),
           cookieBehavior: cloudfront.CacheCookieBehavior.none(),
@@ -233,9 +234,9 @@ export class NextJSAPIGateway extends cdk.Construct {
 
       this.nextLambdaCachePolicy = new cloudfront.CachePolicy(
         this,
-        'NextLambdaCache',
+        `next-lambda-cache-${id}`,
         {
-          cachePolicyName: 'next-lambda-cache',
+          cachePolicyName: `next-lambda-cache-${id}`,
           queryStringBehavior: cloudfront.CacheQueryStringBehavior.all(),
           headerBehavior: cloudfront.CacheHeaderBehavior.none(),
           cookieBehavior: {
@@ -267,7 +268,7 @@ export class NextJSAPIGateway extends cdk.Construct {
 
     this.distribution = new cloudfront.Distribution(
       this,
-      'NextJSDistribution',
+      `next-distribution-${id}`,
       {
         defaultRootObject: '',
         enableIpv6: this.isChina() ? false : true,
@@ -345,7 +346,7 @@ export class NextJSAPIGateway extends cdk.Construct {
     // use the BUILD_ID file at runtime, however in this case we use it as a
     // file to allow us to create an invalidation of all the routes as evaluated
     // in the function `readInvalidationPathsFromManifest`.
-    new s3Deploy.BucketDeployment(this, `AssetDeploymentBuildID`, {
+    new s3Deploy.BucketDeployment(this, `asset-deployment-buildid-${id}`, {
       destinationBucket: this.bucket,
       sources: [
         s3Deploy.Source.asset(assetsDirectory, {
@@ -370,7 +371,7 @@ export class NextJSAPIGateway extends cdk.Construct {
 
       logger.debug(`will upload ${key} to : ${targetPath}`);
 
-      new s3Deploy.BucketDeployment(this, `AssetDeployment_${key}`, {
+      new s3Deploy.BucketDeployment(this, `asset-deployment-${id}-${key}`, {
         destinationBucket: this.bucket,
         sources: [s3Deploy.Source.asset(assetPath)],
         cacheControl: [s3Deploy.CacheControl.fromString(cacheControl)],
