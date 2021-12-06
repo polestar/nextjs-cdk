@@ -8,17 +8,19 @@ import * as lambda from '@aws-cdk/aws-lambda';
 import * as logs from '@aws-cdk/aws-logs';
 import path from 'path';
 
-import { NextJSConstruct } from '.';
+import { NextJSConstruct } from './NextJSConstruct';
 import { Props } from '../props';
 import { CustomHeaders, LambdaHandler, logger } from '../../common';
 
 export class NextJSAtEdge extends NextJSConstruct {
-  protected edgeLambdaRole?: Role;
+  public edgeLambdaRole?: Role;
+  public nextStaticsCachePolicy?: cloudfront.CachePolicy;
+  public nextImageCachePolicy?: cloudfront.CachePolicy;
+  public nextLambdaCachePolicy?: cloudfront.CachePolicy;
 
   constructor(scope: cdk.Construct, id: string, props: Props) {
     super(scope, id, props);
 
-    const assetsBucket = this.createAssetsBucket(`public-assets-${id}`);
     const isISR = this.hasISRPages() || this.hasDynamicISRPages();
 
     if (isISR) {
@@ -34,16 +36,16 @@ export class NextJSAtEdge extends NextJSConstruct {
       'handles all server-side reqs for nextjs',
     );
 
-    assetsBucket.grantReadWrite(edgeLambda);
+    this.bucket.grantReadWrite(edgeLambda);
     edgeLambda.currentVersion.addAlias('live');
 
     if (isISR && this.regenerationFunction && this.regenerationQueue) {
-      assetsBucket.grantReadWrite(this.regenerationFunction);
+      this.bucket.grantReadWrite(this.regenerationFunction);
       this.regenerationQueue.grantSendMessages(edgeLambda);
       this.regenerationFunction.grantInvoke(edgeLambda);
     }
 
-    this.createEdgeDistribution();
+    this.createEdgeDistribution(id);
     this.uploadNextAssets();
 
     // cache policies (next, static, lambda)
@@ -88,7 +90,7 @@ export class NextJSAtEdge extends NextJSConstruct {
     return this.edgeLambdaRole;
   }
 
-  private createEdgeDistribution() {
+  private createEdgeDistribution(id: string) {
     if (!this.bucket || !this.defaultNextLambda) return;
 
     this.bucket.grantRead(
@@ -107,9 +109,59 @@ export class NextJSAtEdge extends NextJSConstruct {
       `uploading assets in bucket using assetPrefix: ${s3AssetPrefix}`,
     );
 
+    this.nextStaticsCachePolicy = new cloudfront.CachePolicy(
+      this,
+      `next-statics-cache-${id}`,
+      {
+        cachePolicyName: `next-statics-cache-${id}`,
+        queryStringBehavior: cloudfront.CacheQueryStringBehavior.none(),
+        headerBehavior: cloudfront.CacheHeaderBehavior.none(),
+        cookieBehavior: cloudfront.CacheCookieBehavior.none(),
+        defaultTtl: Duration.days(30),
+        maxTtl: Duration.days(30),
+        minTtl: Duration.days(30),
+        enableAcceptEncodingBrotli: true,
+        enableAcceptEncodingGzip: true,
+      },
+    );
+
+    this.nextImageCachePolicy = new cloudfront.CachePolicy(
+      this,
+      `next-image-cache-${id}`,
+      {
+        cachePolicyName: `next-image-cache-${id}`,
+        queryStringBehavior: cloudfront.CacheQueryStringBehavior.all(),
+        headerBehavior: cloudfront.CacheHeaderBehavior.allowList('Accept'),
+        cookieBehavior: cloudfront.CacheCookieBehavior.none(),
+        defaultTtl: Duration.days(1),
+        maxTtl: Duration.days(365),
+        minTtl: Duration.days(0),
+        enableAcceptEncodingBrotli: true,
+        enableAcceptEncodingGzip: true,
+      },
+    );
+
+    this.nextLambdaCachePolicy = new cloudfront.CachePolicy(
+      this,
+      `next-lambda-cache-${id}`,
+      {
+        cachePolicyName: `next-lambda-cache-${id}`,
+        queryStringBehavior: cloudfront.CacheQueryStringBehavior.all(),
+        headerBehavior: cloudfront.CacheHeaderBehavior.none(),
+        cookieBehavior: {
+          behavior: 'all',
+        },
+        defaultTtl: Duration.seconds(0),
+        maxTtl: Duration.days(365),
+        minTtl: Duration.seconds(0),
+        enableAcceptEncodingBrotli: true,
+        enableAcceptEncodingGzip: true,
+      },
+    );
+
     this.distribution = new cloudfront.Distribution(
       this,
-      'NextJSDistributionEdge',
+      `next-distribution-${id}`,
       {
         defaultRootObject: '',
         defaultBehavior: {
@@ -120,6 +172,8 @@ export class NextJSAtEdge extends NextJSConstruct {
               functionVersion: this.defaultNextLambda.currentVersion,
             },
           ],
+          compress: true,
+          cachePolicy: this.nextLambdaCachePolicy,
         },
         additionalBehaviors: {
           [this.pathPattern(`${s3AssetPrefix}_next/static/*`)]: {
@@ -129,6 +183,7 @@ export class NextJSAtEdge extends NextJSConstruct {
             allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
             cachedMethods: cloudfront.CachedMethods.CACHE_GET_HEAD_OPTIONS,
             compress: true,
+            cachePolicy: this.nextStaticsCachePolicy,
           },
           [this.pathPattern(`${s3AssetPrefix}static/*`)]: {
             viewerProtocolPolicy:
@@ -137,6 +192,7 @@ export class NextJSAtEdge extends NextJSConstruct {
             allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
             cachedMethods: cloudfront.CachedMethods.CACHE_GET_HEAD_OPTIONS,
             compress: true,
+            cachePolicy: this.nextStaticsCachePolicy,
           },
         },
       },

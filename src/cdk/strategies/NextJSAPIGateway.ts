@@ -1,15 +1,11 @@
 import * as cdk from '@aws-cdk/core';
 import * as lambda from '@aws-cdk/aws-lambda';
-import * as lambdaEventSources from '@aws-cdk/aws-lambda-event-sources';
-import * as s3 from '@aws-cdk/aws-s3';
 import * as s3Deploy from '@aws-cdk/aws-s3-deployment';
-import * as sqs from '@aws-cdk/aws-sqs';
 import * as logs from '@aws-cdk/aws-logs';
 import * as apigateway from '@aws-cdk/aws-apigateway';
 import * as cloudfront from '@aws-cdk/aws-cloudfront';
 import * as origins from '@aws-cdk/aws-cloudfront-origins';
 import { Duration, RemovalPolicy } from '@aws-cdk/core';
-import * as fs from 'fs-extra';
 import * as path from 'path';
 import {
   Role,
@@ -19,12 +15,6 @@ import {
 } from '@aws-cdk/aws-iam';
 import { logger } from '../../common';
 
-import {
-  PreRenderedManifest,
-  ImageBuildManifest,
-  BuildManifest,
-  RoutesManifest,
-} from '../../types';
 import { Props } from '../props';
 export * from '../props';
 import { LambdaHandler } from '../../common';
@@ -35,90 +25,30 @@ import {
   readInvalidationPathsFromManifest,
 } from '../utils';
 import { pathToPosix } from '../../build/lib';
+import { NextJSConstruct } from './NextJSConstruct';
 import { EndpointType } from '@aws-cdk/aws-apigateway';
 
-export class NextJSAPIGateway extends cdk.Construct {
-  private defaultManifest: BuildManifest;
-  private prerenderManifest: PreRenderedManifest;
-  private imageManifest: ImageBuildManifest | null;
-  private routesManifest: RoutesManifest | null;
-  private region: string;
-
-  public bucket: s3.Bucket;
-  public regenerationQueue?: sqs.Queue;
-  public regenerationFunction?: lambda.Function;
-  public defaultNextLambda: lambda.Function;
-  public nextImageLambda: lambda.Function | null;
-  public edgeLambdaRole: Role;
+export class NextJSAPIGateway extends NextJSConstruct {
   public restAPI: apigateway.RestApi;
   public nextStaticsCachePolicy?: cloudfront.CachePolicy;
   public nextImageCachePolicy?: cloudfront.CachePolicy;
   public nextLambdaCachePolicy?: cloudfront.CachePolicy;
   public distribution: cloudfront.Distribution;
+  public edgeLambdaRole?: Role;
 
-  constructor(scope: cdk.Construct, id: string, private props: Props) {
-    super(scope, id);
+  constructor(scope: cdk.Construct, id: string, props: Props) {
+    super(scope, id, props);
     this.routesManifest = this.readRoutesManifest();
     this.prerenderManifest = this.readPrerenderManifest();
     this.imageManifest = this.readImageBuildManifest();
     this.defaultManifest = this.readDefaultBuildManifest();
 
-    this.region = process.env.CDK_DEFAULT_REGION!; //cdk.Stack.of(this).region;
-
-    this.bucket = new s3.Bucket(this, `public-assets-${id}`, {
-      publicReadAccess: false, // CloudFront/Lambdas are granted access so we don't want it publicly available
-
-      // Given this resource is created internally and also should only contain
-      // assets uploaded by this library we should be able to safely delete all
-      // contents along with the bucket its self upon stack deletion.
-      autoDeleteObjects: true,
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
-    });
-
-    const hasISRPages = Object.keys(this.prerenderManifest.routes).some(
-      (key) =>
-        typeof this.prerenderManifest.routes[key].initialRevalidateSeconds ===
-        'number',
-    );
-
-    const hasDynamicISRPages = Object.keys(
-      this.prerenderManifest.dynamicRoutes,
-    ).some(
-      (key) => this.prerenderManifest.dynamicRoutes[key].fallback !== false,
-    );
+    const hasISRPages = this.hasISRPages();
+    const hasDynamicISRPages = this.hasDynamicISRPages();
 
     if (hasISRPages || hasDynamicISRPages) {
-      this.regenerationQueue = new sqs.Queue(this, `regeneration-queue-${id}`, {
-        // We call the queue the same name as the bucket so that we can easily
-        // reference it from within the Lambda, given we can't use env vars
-        // in a lambda
-        queueName: `${this.bucket.bucketName}.fifo`,
-        fifo: true,
-        removalPolicy: cdk.RemovalPolicy.DESTROY,
-      });
-
-      this.regenerationFunction = new lambda.Function(
-        this,
-        `regeneration-lambda-${id}`,
-        {
-          functionName: `regeneration-lambda-${id}`,
-          handler: 'index.handler',
-          description: `SQS Regeneration Lambda for NextJS`,
-          runtime: lambda.Runtime.NODEJS_14_X,
-          timeout: Duration.seconds(30),
-          code: lambda.Code.fromAsset(
-            path.join(this.props.nextjsCDKBuildOutDir, LambdaHandler.DEFAULT),
-          ),
-          environment: {
-            BUCKET_NAME: this.bucket.bucketName,
-            BUCKET_REGION: this.region,
-          },
-        },
-      );
-
-      this.regenerationFunction.addEventSource(
-        new lambdaEventSources.SqsEventSource(this.regenerationQueue),
-      );
+      this.createRegenerationQueue(`regeneration-queue-${id}`);
+      this.createRegenerationLambda(`regeneration-lambda-${id}`);
     }
 
     this.edgeLambdaRole = new Role(this, `next-lambda-role-${id}`, {
@@ -387,75 +317,5 @@ export class NextJSAPIGateway extends cdk.Construct {
         prune: true,
       });
     });
-  }
-
-  private pathPattern(pattern: string): string {
-    const { basePath } = this.routesManifest || {};
-    return basePath && basePath.length > 0
-      ? `${basePath.slice(1)}/${pattern}`
-      : pattern;
-  }
-
-  private readRoutesManifest(): RoutesManifest {
-    return fs.readJSONSync(
-      path.join(
-        this.props.nextjsCDKBuildOutDir,
-        LambdaHandler.DEFAULT,
-        'routes-manifest.json',
-      ),
-    );
-  }
-
-  private readPrerenderManifest(): PreRenderedManifest {
-    return fs.readJSONSync(
-      path.join(
-        this.props.nextjsCDKBuildOutDir,
-        LambdaHandler.DEFAULT,
-        'prerender-manifest.json',
-      ),
-    );
-  }
-
-  private readDefaultBuildManifest(): BuildManifest {
-    return fs.readJSONSync(
-      path.join(
-        this.props.nextjsCDKBuildOutDir,
-        LambdaHandler.DEFAULT,
-        'manifest.json',
-      ),
-    );
-  }
-
-  private readRequiredServerFile(): {
-    config: {
-      assetPrefix: string;
-    };
-  } {
-    return fs.readJSONSync(
-      path.join(
-        this.props.nextjsCDKBuildOutDir,
-        'assets',
-        'required-server-files.json',
-      ),
-    );
-  }
-
-  private readImageBuildManifest(): ImageBuildManifest | null {
-    const imageLambdaPath = path.join(
-      this.props.nextjsCDKBuildOutDir,
-      LambdaHandler.IMAGE,
-      'manifest.json',
-    );
-
-    return fs.existsSync(imageLambdaPath)
-      ? fs.readJSONSync(imageLambdaPath)
-      : null;
-  }
-
-  private isChina() {
-    // Perhaps a naive check to see if we are in china
-    return this.region !== undefined
-      ? this.region.toLowerCase().startsWith('cn-')
-      : false;
   }
 }

@@ -600,7 +600,7 @@ Object {
               "Principal": Object {
                 "CanonicalUser": Object {
                   "Fn::GetAtt": Array [
-                    "testedgeconstructNextJSDistributionEdgeOrigin1S3OriginF0DB88A3",
+                    "testedgeconstructnextdistributiontestedgeconstructOrigin1S3Origin83D76C99",
                     "S3CanonicalUserId",
                   ],
                 },
@@ -678,7 +678,7 @@ Object {
           "Ref": "publicassetstestedgeconstruct0CB03104",
         },
         "DistributionId": Object {
-          "Ref": "testedgeconstructNextJSDistributionEdge0211C3BF",
+          "Ref": "testedgeconstructnextdistributiontestedgeconstructF80F5AFE",
         },
         "DistributionPaths": Array [
           "/404",
@@ -749,111 +749,6 @@ Object {
       },
       "Type": "Custom::CDKBucketDeployment",
       "UpdateReplacePolicy": "Delete",
-    },
-    "testedgeconstructNextJSDistributionEdge0211C3BF": Object {
-      "Properties": Object {
-        "DistributionConfig": Object {
-          "CacheBehaviors": Array [
-            Object {
-              "AllowedMethods": Array [
-                "GET",
-                "HEAD",
-                "OPTIONS",
-              ],
-              "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
-              "CachedMethods": Array [
-                "GET",
-                "HEAD",
-                "OPTIONS",
-              ],
-              "Compress": true,
-              "PathPattern": "manual-testing-edge/_next/static/*",
-              "TargetOriginId": "testedgeconstructNextJSDistributionEdgeOrigin15D65E736",
-              "ViewerProtocolPolicy": "redirect-to-https",
-            },
-            Object {
-              "AllowedMethods": Array [
-                "GET",
-                "HEAD",
-                "OPTIONS",
-              ],
-              "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
-              "CachedMethods": Array [
-                "GET",
-                "HEAD",
-                "OPTIONS",
-              ],
-              "Compress": true,
-              "PathPattern": "manual-testing-edge/static/*",
-              "TargetOriginId": "testedgeconstructNextJSDistributionEdgeOrigin15D65E736",
-              "ViewerProtocolPolicy": "redirect-to-https",
-            },
-          ],
-          "DefaultCacheBehavior": Object {
-            "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
-            "Compress": true,
-            "LambdaFunctionAssociations": Array [
-              Object {
-                "EventType": "origin-request",
-                "LambdaFunctionARN": Object {
-                  "Ref": "testedgeconstructdefaultlambdatestedgeconstructCurrentVersionE0B5A4A0ca0685e9ff6ca5ff96dd655cbb515d07",
-                },
-              },
-            ],
-            "TargetOriginId": "testedgeconstructNextJSDistributionEdgeOrigin15D65E736",
-            "ViewerProtocolPolicy": "allow-all",
-          },
-          "DefaultRootObject": "",
-          "Enabled": true,
-          "HttpVersion": "http2",
-          "IPV6Enabled": true,
-          "Origins": Array [
-            Object {
-              "DomainName": Object {
-                "Fn::GetAtt": Array [
-                  "publicassetstestedgeconstruct0CB03104",
-                  "RegionalDomainName",
-                ],
-              },
-              "Id": "testedgeconstructNextJSDistributionEdgeOrigin15D65E736",
-              "OriginCustomHeaders": Array [
-                Object {
-                  "HeaderName": "x-nextjs-cdk-s3-bucket",
-                  "HeaderValue": Object {
-                    "Ref": "publicassetstestedgeconstruct0CB03104",
-                  },
-                },
-                Object {
-                  "HeaderName": "x-nextjs-cdk-region",
-                  "HeaderValue": "us-east-1",
-                },
-              ],
-              "S3OriginConfig": Object {
-                "OriginAccessIdentity": Object {
-                  "Fn::Join": Array [
-                    "",
-                    Array [
-                      "origin-access-identity/cloudfront/",
-                      Object {
-                        "Ref": "testedgeconstructNextJSDistributionEdgeOrigin1S3OriginF0DB88A3",
-                      },
-                    ],
-                  ],
-                },
-              },
-            },
-          ],
-        },
-      },
-      "Type": "AWS::CloudFront::Distribution",
-    },
-    "testedgeconstructNextJSDistributionEdgeOrigin1S3OriginF0DB88A3": Object {
-      "Properties": Object {
-        "CloudFrontOriginAccessIdentityConfig": Object {
-          "Comment": "Identity for testedgeconstructNextJSDistributionEdgeOrigin15D65E736",
-        },
-      },
-      "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
     },
     "testedgeconstructcdnbucketreadC13AE162": Object {
       "Properties": Object {
@@ -970,6 +865,168 @@ Object {
       },
       "Type": "Custom::LogRetention",
     },
+    "testedgeconstructnextdistributiontestedgeconstructF80F5AFE": Object {
+      "Properties": Object {
+        "DistributionConfig": Object {
+          "CacheBehaviors": Array [
+            Object {
+              "AllowedMethods": Array [
+                "GET",
+                "HEAD",
+                "OPTIONS",
+              ],
+              "CachePolicyId": Object {
+                "Ref": "testedgeconstructnextstaticscachetestedgeconstruct53CCFFF8",
+              },
+              "CachedMethods": Array [
+                "GET",
+                "HEAD",
+                "OPTIONS",
+              ],
+              "Compress": true,
+              "PathPattern": "manual-testing-edge/_next/static/*",
+              "TargetOriginId": "testedgeconstructnextdistributiontestedgeconstructOrigin175CE060A",
+              "ViewerProtocolPolicy": "redirect-to-https",
+            },
+            Object {
+              "AllowedMethods": Array [
+                "GET",
+                "HEAD",
+                "OPTIONS",
+              ],
+              "CachePolicyId": Object {
+                "Ref": "testedgeconstructnextstaticscachetestedgeconstruct53CCFFF8",
+              },
+              "CachedMethods": Array [
+                "GET",
+                "HEAD",
+                "OPTIONS",
+              ],
+              "Compress": true,
+              "PathPattern": "manual-testing-edge/static/*",
+              "TargetOriginId": "testedgeconstructnextdistributiontestedgeconstructOrigin175CE060A",
+              "ViewerProtocolPolicy": "redirect-to-https",
+            },
+          ],
+          "DefaultCacheBehavior": Object {
+            "CachePolicyId": Object {
+              "Ref": "testedgeconstructnextlambdacachetestedgeconstruct14A2AD2C",
+            },
+            "Compress": true,
+            "LambdaFunctionAssociations": Array [
+              Object {
+                "EventType": "origin-request",
+                "LambdaFunctionARN": Object {
+                  "Ref": "testedgeconstructdefaultlambdatestedgeconstructCurrentVersionE0B5A4A0ca0685e9ff6ca5ff96dd655cbb515d07",
+                },
+              },
+            ],
+            "TargetOriginId": "testedgeconstructnextdistributiontestedgeconstructOrigin175CE060A",
+            "ViewerProtocolPolicy": "allow-all",
+          },
+          "DefaultRootObject": "",
+          "Enabled": true,
+          "HttpVersion": "http2",
+          "IPV6Enabled": true,
+          "Origins": Array [
+            Object {
+              "DomainName": Object {
+                "Fn::GetAtt": Array [
+                  "publicassetstestedgeconstruct0CB03104",
+                  "RegionalDomainName",
+                ],
+              },
+              "Id": "testedgeconstructnextdistributiontestedgeconstructOrigin175CE060A",
+              "OriginCustomHeaders": Array [
+                Object {
+                  "HeaderName": "x-nextjs-cdk-s3-bucket",
+                  "HeaderValue": Object {
+                    "Ref": "publicassetstestedgeconstruct0CB03104",
+                  },
+                },
+                Object {
+                  "HeaderName": "x-nextjs-cdk-region",
+                  "HeaderValue": "us-east-1",
+                },
+              ],
+              "S3OriginConfig": Object {
+                "OriginAccessIdentity": Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "origin-access-identity/cloudfront/",
+                      Object {
+                        "Ref": "testedgeconstructnextdistributiontestedgeconstructOrigin1S3Origin83D76C99",
+                      },
+                    ],
+                  ],
+                },
+              },
+            },
+          ],
+        },
+      },
+      "Type": "AWS::CloudFront::Distribution",
+    },
+    "testedgeconstructnextdistributiontestedgeconstructOrigin1S3Origin83D76C99": Object {
+      "Properties": Object {
+        "CloudFrontOriginAccessIdentityConfig": Object {
+          "Comment": "Identity for testedgeconstructnextdistributiontestedgeconstructOrigin175CE060A",
+        },
+      },
+      "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
+    },
+    "testedgeconstructnextimagecachetestedgeconstructE6CDDF16": Object {
+      "Properties": Object {
+        "CachePolicyConfig": Object {
+          "DefaultTTL": 86400,
+          "MaxTTL": 31536000,
+          "MinTTL": 0,
+          "Name": "next-image-cache-test-edge-construct",
+          "ParametersInCacheKeyAndForwardedToOrigin": Object {
+            "CookiesConfig": Object {
+              "CookieBehavior": "none",
+            },
+            "EnableAcceptEncodingBrotli": true,
+            "EnableAcceptEncodingGzip": true,
+            "HeadersConfig": Object {
+              "HeaderBehavior": "whitelist",
+              "Headers": Array [
+                "Accept",
+              ],
+            },
+            "QueryStringsConfig": Object {
+              "QueryStringBehavior": "all",
+            },
+          },
+        },
+      },
+      "Type": "AWS::CloudFront::CachePolicy",
+    },
+    "testedgeconstructnextlambdacachetestedgeconstruct14A2AD2C": Object {
+      "Properties": Object {
+        "CachePolicyConfig": Object {
+          "DefaultTTL": 0,
+          "MaxTTL": 31536000,
+          "MinTTL": 0,
+          "Name": "next-lambda-cache-test-edge-construct",
+          "ParametersInCacheKeyAndForwardedToOrigin": Object {
+            "CookiesConfig": Object {
+              "CookieBehavior": "all",
+            },
+            "EnableAcceptEncodingBrotli": true,
+            "EnableAcceptEncodingGzip": true,
+            "HeadersConfig": Object {
+              "HeaderBehavior": "none",
+            },
+            "QueryStringsConfig": Object {
+              "QueryStringBehavior": "all",
+            },
+          },
+        },
+      },
+      "Type": "AWS::CloudFront::CachePolicy",
+    },
     "testedgeconstructnextlambdaroletestedgeconstructDefaultPolicy6273C547": Object {
       "Properties": Object {
         "PolicyDocument": Object {
@@ -1070,6 +1127,30 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
+    "testedgeconstructnextstaticscachetestedgeconstruct53CCFFF8": Object {
+      "Properties": Object {
+        "CachePolicyConfig": Object {
+          "DefaultTTL": 2592000,
+          "MaxTTL": 2592000,
+          "MinTTL": 2592000,
+          "Name": "next-statics-cache-test-edge-construct",
+          "ParametersInCacheKeyAndForwardedToOrigin": Object {
+            "CookiesConfig": Object {
+              "CookieBehavior": "none",
+            },
+            "EnableAcceptEncodingBrotli": true,
+            "EnableAcceptEncodingGzip": true,
+            "HeadersConfig": Object {
+              "HeaderBehavior": "none",
+            },
+            "QueryStringsConfig": Object {
+              "QueryStringBehavior": "none",
+            },
+          },
+        },
+      },
+      "Type": "AWS::CloudFront::CachePolicy",
+    },
     "testedgeconstructregenerationlambdatestedgeconstruct30CAA057": Object {
       "DependsOn": Array [
         "testedgeconstructregenerationlambdatestedgeconstructServiceRoleDefaultPolicy8E40CF57",
@@ -1114,6 +1195,7 @@ Object {
             ],
           },
         },
+        "Description": "SQS Regeneration Lambda for NextJS",
         "FunctionName": "regeneration-lambda-test-edge-construct",
         "Handler": "index.handler",
         "Role": Object {
