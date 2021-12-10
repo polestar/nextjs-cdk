@@ -39,6 +39,7 @@
     "@aws-cdk/aws-lambda": "1.132.0",
     "@aws-cdk/aws-lambda-event-sources": "1.132.0",
     "@aws-cdk/aws-logs": "1.132.0",
+    "@aws-cdk/aws-route53-targets": "1.132.0",
     "@aws-cdk/aws-s3": "1.132.0",
     "@aws-cdk/aws-s3-deployment": "1.132.0",
     "@aws-cdk/aws-sqs": "1.132.0",
@@ -116,17 +117,19 @@
     "sharp": "0.29.1"
   },
   "peerDependencies": {
-    "@aws-cdk/aws-apigateway": "1.131.0",
-    "@aws-cdk/aws-cloudfront": "1.131.0",
-    "@aws-cdk/aws-cloudfront-origins": "1.131.0",
-    "@aws-cdk/aws-iam": "1.131.0",
-    "@aws-cdk/aws-lambda": "1.131.0",
-    "@aws-cdk/aws-lambda-event-sources": "1.131.0",
-    "@aws-cdk/aws-logs": "1.131.0",
-    "@aws-cdk/aws-s3": "1.131.0",
-    "@aws-cdk/aws-s3-deployment": "1.131.0",
-    "@aws-cdk/aws-sqs": "1.131.0",
-    "@aws-cdk/core": "1.131.0"
+    "@aws-cdk/aws-apigateway": "1.132.0",
+    "@aws-cdk/aws-cloudfront": "1.132.0",
+    "@aws-cdk/aws-cloudfront-origins": "1.132.0",
+    "@aws-cdk/aws-iam": "1.132.0",
+    "@aws-cdk/aws-lambda": "1.132.0",
+    "@aws-cdk/aws-lambda-event-sources": "1.132.0",
+    "@aws-cdk/aws-logs": "1.132.0",
+    "@aws-cdk/aws-route53": "1.132.0",
+    "@aws-cdk/aws-route53-targets": "1.132.0",
+    "@aws-cdk/aws-s3": "1.132.0",
+    "@aws-cdk/aws-s3-deployment": "1.132.0",
+    "@aws-cdk/aws-sqs": "1.132.0",
+    "@aws-cdk/core": "1.132.0"
   },
   "lint-staged": {
     "**/*.{js,mjs,ts}": [

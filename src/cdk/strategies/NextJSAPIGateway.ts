@@ -1,12 +1,14 @@
+import * as path from 'path';
+
 import * as cdk from '@aws-cdk/core';
+import { Duration, RemovalPolicy } from '@aws-cdk/core';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as s3Deploy from '@aws-cdk/aws-s3-deployment';
 import * as logs from '@aws-cdk/aws-logs';
 import * as apigateway from '@aws-cdk/aws-apigateway';
 import * as cloudfront from '@aws-cdk/aws-cloudfront';
+import * as acm from '@aws-cdk/aws-certificatemanager';
 import * as origins from '@aws-cdk/aws-cloudfront-origins';
-import { Duration, RemovalPolicy } from '@aws-cdk/core';
-import * as path from 'path';
 import {
   Role,
   ManagedPolicy,
@@ -196,10 +198,26 @@ export class NextJSAPIGateway extends NextJSConstruct {
       `uploading assets in bucket using assetPrefix: ${s3AssetPrefix}`,
     );
 
+    let fqdn, cert;
+
+    if (props.domain) {
+      fqdn = props.domain.fqdn;
+    }
+
+    if (props.domain?.certificateArn) {
+      cert = acm.Certificate.fromCertificateArn(
+        this,
+        'dist-certificate',
+        props.domain.certificateArn,
+      );
+    }
+
     this.distribution = new cloudfront.Distribution(
       this,
       `next-distribution-${id}`,
       {
+        certificate: cert,
+        domainNames: fqdn,
         defaultRootObject: '',
         enableIpv6: this.isChina() ? false : true,
         defaultBehavior: {
