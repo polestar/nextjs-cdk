@@ -19,6 +19,15 @@ export class NextjsCdkTestStack extends cdk.Stack {
         region: process.env.CDK_DEFAULT_REGION,
         account: process.env.CDK_DEFAULT_ACCOUNT,
       },
+      // domain: {
+      //   fqdn: ['<sub.my-app.com>'],
+      //   subDomain: '<sub>',
+      //   zone: {
+      //     zoneName: '<domain-name.com>',
+      //     hostedZoneId: '<id>',
+      //   },
+      //   certificateArn: <arn>
+      // },
     });
 
     new cdk.CfnOutput(this, 'Domain', {
