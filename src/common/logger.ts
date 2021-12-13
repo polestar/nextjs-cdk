@@ -16,10 +16,9 @@ class Logger {
   }
 
   log(label: string, message: string, data: unknown = '') {
-    const now = new Date().toISOString();
     const body = typeof data === 'string' ? data : JSON.stringify(data);
 
-    console.log(`${now} ${`[${label}]`}: ${message + body}`);
+    console.log(`${`[${label}]`}: ${message + body}`);
   }
 }
 
