@@ -9,18 +9,16 @@ import * as apigateway from '@aws-cdk/aws-apigateway';
 import * as cloudfront from '@aws-cdk/aws-cloudfront';
 import * as acm from '@aws-cdk/aws-certificatemanager';
 import * as origins from '@aws-cdk/aws-cloudfront-origins';
+import { EndpointType } from '@aws-cdk/aws-apigateway';
 import {
   Role,
   ManagedPolicy,
   ServicePrincipal,
   CompositePrincipal,
 } from '@aws-cdk/aws-iam';
-import { logger } from '../../common';
 
 import { Props } from '../props';
-export * from '../props';
-import { LambdaHandler } from '../../common';
-
+import { LambdaHandler, logger } from '../../common';
 import {
   readAssetsDirectory,
   reduceInvalidationPaths,
@@ -28,7 +26,6 @@ import {
 } from '../utils';
 import { pathToPosix } from '../../build/lib';
 import { NextJSConstruct } from './NextJSConstruct';
-import { EndpointType } from '@aws-cdk/aws-apigateway';
 
 export class NextJSAPIGateway extends NextJSConstruct {
   public restAPI: apigateway.RestApi;
@@ -252,7 +249,7 @@ export class NextJSAPIGateway extends NextJSConstruct {
       },
     );
 
-    this.createHostedZone(props.domain);
+    this.createHostedZone(id, props.domain);
 
     if (this.isChina()) {
       const cfnDist = this.distribution.node

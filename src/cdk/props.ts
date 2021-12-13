@@ -14,9 +14,6 @@ export interface Domain {
   // example: "demo.example.com"
   fqdn: string[];
 
-  // example: "demo"
-  subDomain: string;
-
   // Certificate that supports given fqdn (*.example.com)
   certificateArn?: string;
 
@@ -25,6 +22,9 @@ export interface Domain {
 
 export interface HostedZone {
   hostedZoneId: string;
+
+  // example: "demo"
+  subDomain: string;
 
   // example-domain.com
   zoneName: string;
