@@ -32,8 +32,9 @@ export class NextJSConstruct extends cdk.Construct {
   protected regenerationQueue?: sqs.Queue;
   protected regenerationFunction?: lambda.Function;
   protected scope: cdk.Construct;
-  protected bucket?: s3.Bucket;
+  protected bucket: s3.Bucket;
   protected defaultNextLambda?: lambda.Function;
+  protected nextImageLambda?: lambda.Function | null;
   protected region: string;
   public distribution?: Distribution;
 
@@ -41,11 +42,13 @@ export class NextJSConstruct extends cdk.Construct {
     super(scope, id);
 
     this.scope = scope;
-    this.region = cdk.Stack.of(this).region;
+    this.region = process.env.CDK_DEFAULT_REGION!; //cdk.Stack.of(this).region;
     this.routesManifest = this.readRoutesManifest();
     this.prerenderManifest = this.readPrerenderManifest();
     this.imageManifest = this.readImageBuildManifest();
     this.defaultManifest = this.readDefaultBuildManifest();
+
+    this.bucket = this.createAssetsBucket(`public-assets-${id}`);
   }
 
   protected createAssetsBucket(id: string) {
@@ -87,6 +90,7 @@ export class NextJSConstruct extends cdk.Construct {
     this.regenerationFunction = new lambda.Function(this, id, {
       functionName: id,
       handler: 'index.handler',
+      description: `SQS Regeneration Lambda for NextJS`,
       runtime: lambda.Runtime.NODEJS_14_X,
       timeout: Duration.seconds(30),
       code: lambda.Code.fromAsset(
@@ -226,5 +230,12 @@ export class NextJSConstruct extends cdk.Construct {
 
   protected getNamespace() {
     return this.defaultManifest.namespace.replace('/', '');
+  }
+
+  protected isChina() {
+    // Perhaps a naive check to see if we are in china
+    return this.region !== undefined
+      ? this.region.toLowerCase().startsWith('cn-')
+      : false;
   }
 }
