@@ -10,8 +10,9 @@ import * as s3Deploy from '@aws-cdk/aws-s3-deployment';
 import * as lambdaEventSources from '@aws-cdk/aws-lambda-event-sources';
 import * as route53 from '@aws-cdk/aws-route53';
 import * as targets from '@aws-cdk/aws-route53-targets';
+import { Distribution } from '@aws-cdk/aws-cloudfront';
 
-import { Props, Domain } from '.';
+import { Props, Domain } from '../props';
 import {
   PreRenderedManifest,
   ImageBuildManifest,
@@ -24,7 +25,6 @@ import {
   readInvalidationPathsFromManifest,
 } from '../utils';
 import { pathToPosix } from '../../build';
-import { Distribution } from '@aws-cdk/aws-cloudfront';
 import { LambdaHandler, logger } from '../../common';
 
 export class NextJSConstruct extends cdk.Construct {
@@ -242,24 +242,25 @@ export class NextJSConstruct extends cdk.Construct {
       : false;
   }
 
-  protected createHostedZone(domain?: Domain) {
+  protected createHostedZone(id: string, domain?: Domain) {
     if (!domain?.zone || !this.distribution) return;
 
     const hostedZone = route53.HostedZone.fromHostedZoneAttributes(
       this,
-      'fqdn-zone',
+      `fqdn-zone-${id}`,
       {
         hostedZoneId: domain.zone.hostedZoneId,
         zoneName: domain.zone.zoneName,
       },
     );
 
-    new route53.ARecord(this, 'zone-record', {
+    new route53.ARecord(this, `zone-record-${id}`, {
       target: route53.RecordTarget.fromAlias(
         new targets.CloudFrontTarget(this.distribution),
       ),
+
       zone: hostedZone,
-      recordName: domain.subDomain,
+      recordName: domain.zone.subDomain,
     });
   }
 }

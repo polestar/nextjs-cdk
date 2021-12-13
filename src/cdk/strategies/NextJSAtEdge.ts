@@ -48,7 +48,7 @@ export class NextJSAtEdge extends NextJSConstruct {
     }
 
     this.createEdgeDistribution(id, props.domain);
-    this.createHostedZone(props.domain);
+    this.createHostedZone(id, props.domain);
     this.uploadNextAssets();
 
     // cache policies (next, static, lambda)
