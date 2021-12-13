@@ -1,3 +1,5 @@
+import path from 'path';
+
 import { CompositePrincipal, Role, ServicePrincipal } from '@aws-cdk/aws-iam';
 import * as cdk from '@aws-cdk/core';
 import { Duration } from '@aws-cdk/core';
@@ -6,10 +8,10 @@ import * as cloudfront from '@aws-cdk/aws-cloudfront';
 import * as origins from '@aws-cdk/aws-cloudfront-origins';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as logs from '@aws-cdk/aws-logs';
-import path from 'path';
+import * as acm from '@aws-cdk/aws-certificatemanager';
 
 import { NextJSConstruct } from './NextJSConstruct';
-import { Props } from '../props';
+import { Props, Domain } from '../props';
 import { CustomHeaders, LambdaHandler, logger } from '../../common';
 
 export class NextJSAtEdge extends NextJSConstruct {
@@ -45,7 +47,8 @@ export class NextJSAtEdge extends NextJSConstruct {
       this.regenerationFunction.grantInvoke(edgeLambda);
     }
 
-    this.createEdgeDistribution(id);
+    this.createEdgeDistribution(id, props.domain);
+    this.createHostedZone(props.domain);
     this.uploadNextAssets();
 
     // cache policies (next, static, lambda)
@@ -90,7 +93,7 @@ export class NextJSAtEdge extends NextJSConstruct {
     return this.edgeLambdaRole;
   }
 
-  private createEdgeDistribution(id: string) {
+  private createEdgeDistribution(id: string, domain?: Domain) {
     if (!this.bucket || !this.defaultNextLambda) return;
 
     this.bucket.grantRead(
@@ -159,10 +162,26 @@ export class NextJSAtEdge extends NextJSConstruct {
       },
     );
 
+    let fqdn, cert;
+
+    if (domain) {
+      fqdn = domain.fqdn;
+    }
+
+    if (domain?.certificateArn) {
+      cert = acm.Certificate.fromCertificateArn(
+        this,
+        `dist-certificate-${id}`,
+        domain.certificateArn,
+      );
+    }
+
     this.distribution = new cloudfront.Distribution(
       this,
       `next-distribution-${id}`,
       {
+        certificate: cert,
+        domainNames: fqdn,
         defaultRootObject: '',
         defaultBehavior: {
           origin: bucketOrigin,

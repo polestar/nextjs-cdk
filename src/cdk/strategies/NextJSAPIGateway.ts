@@ -252,6 +252,8 @@ export class NextJSAPIGateway extends NextJSConstruct {
       },
     );
 
+    this.createHostedZone(props.domain);
+
     if (this.isChina()) {
       const cfnDist = this.distribution.node
         .defaultChild as cloudfront.CfnDistribution;
