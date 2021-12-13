@@ -62,7 +62,7 @@ export class NextJSConstruct extends cdk.Construct {
     return this.bucket;
   }
 
-  protected createRegenerationSqsAndLambda(id: string) {
+  protected createRegenerationQueue(id: string) {
     if (!this.bucket) {
       throw Error('a bucket must be configured before an sqs may be created');
     }
@@ -75,19 +75,24 @@ export class NextJSConstruct extends cdk.Construct {
       fifo: true,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
+  }
 
-    this.regenerationFunction = new lambda.Function(
-      this,
-      'RegenerationFunction',
-      {
-        handler: 'index.handler',
-        runtime: lambda.Runtime.NODEJS_14_X,
-        timeout: Duration.seconds(30),
-        code: lambda.Code.fromAsset(
-          path.join(this.props.nextjsCDKBuildOutDir, LambdaHandler.DEFAULT),
-        ),
-      },
-    );
+  protected createRegenerationLambda(id: string) {
+    if (!this.regenerationQueue) {
+      throw Error(
+        'regeneration sqs must exist before a regeneration lambda can be created',
+      );
+    }
+
+    this.regenerationFunction = new lambda.Function(this, id, {
+      functionName: id,
+      handler: 'index.handler',
+      runtime: lambda.Runtime.NODEJS_14_X,
+      timeout: Duration.seconds(30),
+      code: lambda.Code.fromAsset(
+        path.join(this.props.nextjsCDKBuildOutDir, LambdaHandler.DEFAULT),
+      ),
+    });
 
     this.regenerationFunction.addEventSource(
       new lambdaEventSources.SqsEventSource(this.regenerationQueue),

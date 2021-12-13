@@ -18,18 +18,19 @@ export class NextJSAtEdge extends NextJSConstruct {
   constructor(scope: cdk.Construct, id: string, props: Props) {
     super(scope, id, props);
 
-    const assetsBucket = this.createAssetsBucket('demo-edge-bucket');
+    const assetsBucket = this.createAssetsBucket(`public-assets-${id}`);
     const isISR = this.hasISRPages() || this.hasDynamicISRPages();
 
     if (isISR) {
-      this.createRegenerationSqsAndLambda('regeneration-queue');
+      this.createRegenerationQueue(`regeneration-queue-${id}`);
+      this.createRegenerationLambda(`regeneration-lambda-${id}`);
     }
 
-    const role = this.createEdgeRole();
+    const role = this.createEdgeRole(`next-lambda-role-${id}`);
     const edgeLambda = this.createEdgeLambda(
-      'default-lambda-demo',
+      `default-lambda-${id}`,
       role,
-      'default-lambda-edge-demo',
+      `default-lambda-${id}`,
       'handles all server-side reqs for nextjs',
     );
 
@@ -76,8 +77,8 @@ export class NextJSAtEdge extends NextJSConstruct {
     return this.defaultNextLambda;
   }
 
-  private createEdgeRole() {
-    this.edgeLambdaRole = new Role(this, 'next-edge-lambda-role', {
+  private createEdgeRole(id: string) {
+    this.edgeLambdaRole = new Role(this, id, {
       assumedBy: new CompositePrincipal(
         new ServicePrincipal('lambda.amazonaws.com'),
         new ServicePrincipal('edgelambda.amazonaws.com'),
