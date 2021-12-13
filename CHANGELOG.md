@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/polestar/nextjs-cdk/compare/v1.2.0...v1.2.1) (2021-12-13)
+
+
+### Bug Fixes
+
+* unique resource names ([7a5c53e](https://github.com/polestar/nextjs-cdk/commit/7a5c53e71c2684b23f1475e4405f1c72c44e78ba))
+
 # [1.2.0](https://github.com/polestar/nextjs-cdk/compare/v1.1.4...v1.2.0) (2021-11-29)
 
 
