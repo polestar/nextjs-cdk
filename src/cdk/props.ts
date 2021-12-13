@@ -11,10 +11,10 @@ export interface Props extends StackProps {
 }
 
 export interface Domain {
-  // example: "demo.example.com"
+  // example: "demo.my-domain.com"
   fqdn: string[];
 
-  // Certificate that supports given fqdn (*.example.com)
+  // Certificate that supports given fqdn (*.my-domain.com)
   certificateArn?: string;
 
   zone?: HostedZone;
@@ -26,6 +26,6 @@ export interface HostedZone {
   // example: "demo"
   subDomain: string;
 
-  // example-domain.com
+  // example: my-domain.com
   zoneName: string;
 }
