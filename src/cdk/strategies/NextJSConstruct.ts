@@ -1,3 +1,6 @@
+import fs from 'fs-extra';
+import path from 'path';
+
 import * as cdk from '@aws-cdk/core';
 import * as s3 from '@aws-cdk/aws-s3';
 import * as lambda from '@aws-cdk/aws-lambda';
@@ -5,10 +8,10 @@ import * as sqs from '@aws-cdk/aws-sqs';
 import { Duration } from '@aws-cdk/core';
 import * as s3Deploy from '@aws-cdk/aws-s3-deployment';
 import * as lambdaEventSources from '@aws-cdk/aws-lambda-event-sources';
-import fs from 'fs-extra';
-import path from 'path';
+import * as route53 from '@aws-cdk/aws-route53';
+import * as targets from '@aws-cdk/aws-route53-targets';
 
-import { Props } from '.';
+import { Props, Domain } from '.';
 import {
   PreRenderedManifest,
   ImageBuildManifest,
@@ -237,5 +240,26 @@ export class NextJSConstruct extends cdk.Construct {
     return this.region !== undefined
       ? this.region.toLowerCase().startsWith('cn-')
       : false;
+  }
+
+  protected createHostedZone(domain?: Domain) {
+    if (!domain?.zone || !this.distribution) return;
+
+    const hostedZone = route53.HostedZone.fromHostedZoneAttributes(
+      this,
+      'fqdn-zone',
+      {
+        hostedZoneId: domain.zone.hostedZoneId,
+        zoneName: domain.zone.zoneName,
+      },
+    );
+
+    new route53.ARecord(this, 'zone-record', {
+      target: route53.RecordTarget.fromAlias(
+        new targets.CloudFrontTarget(this.distribution),
+      ),
+      zone: hostedZone,
+      recordName: domain.subDomain,
+    });
   }
 }
