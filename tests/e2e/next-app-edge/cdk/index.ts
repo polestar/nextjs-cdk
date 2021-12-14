@@ -13,7 +13,18 @@ export class NextjsCdkTestStack extends cdk.Stack {
   ) {
     super(scope, id, props);
 
-    const app = new NextJSAtEdge(this, id, props);
+    const app = new NextJSAtEdge(this, id, {
+      ...props,
+      // domain: {
+      //   fqdn: ['sub.example.com'],
+      //   zone: {
+      //     subDomain: 'sub',
+      //     zoneName: 'example.com',
+      //     hostedZoneId: '<id>',
+      //   },
+      //   certificateArn:
+      //     'arn:aws:acm:us-east:certificate/example',
+    });
 
     new cdk.CfnOutput(this, 'Domain', {
       value: app.distribution?.domainName || 'n/a',
@@ -22,6 +33,10 @@ export class NextjsCdkTestStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'ID', {
       value: app.distribution?.distributionId || 'n/a',
       description: 'DistributionID',
+    });
+    new cdk.CfnOutput(this, 'url', {
+      value: app.fqdn?.join('\n') || 'n/a',
+      description: 'url',
     });
   }
 }

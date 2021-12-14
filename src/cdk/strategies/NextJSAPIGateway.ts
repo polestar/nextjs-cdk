@@ -1,24 +1,24 @@
+import * as path from 'path';
+
 import * as cdk from '@aws-cdk/core';
+import { Duration, RemovalPolicy } from '@aws-cdk/core';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as s3Deploy from '@aws-cdk/aws-s3-deployment';
 import * as logs from '@aws-cdk/aws-logs';
 import * as apigateway from '@aws-cdk/aws-apigateway';
 import * as cloudfront from '@aws-cdk/aws-cloudfront';
+import * as acm from '@aws-cdk/aws-certificatemanager';
 import * as origins from '@aws-cdk/aws-cloudfront-origins';
-import { Duration, RemovalPolicy } from '@aws-cdk/core';
-import * as path from 'path';
+import { EndpointType } from '@aws-cdk/aws-apigateway';
 import {
   Role,
   ManagedPolicy,
   ServicePrincipal,
   CompositePrincipal,
 } from '@aws-cdk/aws-iam';
-import { logger } from '../../common';
 
 import { Props } from '../props';
-export * from '../props';
-import { LambdaHandler } from '../../common';
-
+import { LambdaHandler, logger } from '../../common';
 import {
   readAssetsDirectory,
   reduceInvalidationPaths,
@@ -26,7 +26,6 @@ import {
 } from '../utils';
 import { pathToPosix } from '../../build/lib';
 import { NextJSConstruct } from './NextJSConstruct';
-import { EndpointType } from '@aws-cdk/aws-apigateway';
 
 export class NextJSAPIGateway extends NextJSConstruct {
   public restAPI: apigateway.RestApi;
@@ -42,6 +41,7 @@ export class NextJSAPIGateway extends NextJSConstruct {
     this.prerenderManifest = this.readPrerenderManifest();
     this.imageManifest = this.readImageBuildManifest();
     this.defaultManifest = this.readDefaultBuildManifest();
+    this.fqdn = props.domain?.fqdn;
 
     const hasISRPages = this.hasISRPages();
     const hasDynamicISRPages = this.hasDynamicISRPages();
@@ -196,10 +196,14 @@ export class NextJSAPIGateway extends NextJSConstruct {
       `uploading assets in bucket using assetPrefix: ${s3AssetPrefix}`,
     );
 
+    this.createCert(id, props.domain);
+
     this.distribution = new cloudfront.Distribution(
       this,
       `next-distribution-${id}`,
       {
+        certificate: this.cert,
+        domainNames: this.fqdn,
         defaultRootObject: '',
         enableIpv6: this.isChina() ? false : true,
         defaultBehavior: {
@@ -233,6 +237,8 @@ export class NextJSAPIGateway extends NextJSConstruct {
         },
       },
     );
+
+    this.createHostedZone(id, props.domain);
 
     if (this.isChina()) {
       const cfnDist = this.distribution.node

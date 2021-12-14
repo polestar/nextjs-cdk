@@ -1,3 +1,6 @@
+import fs from 'fs-extra';
+import path from 'path';
+
 import * as cdk from '@aws-cdk/core';
 import * as s3 from '@aws-cdk/aws-s3';
 import * as lambda from '@aws-cdk/aws-lambda';
@@ -5,10 +8,12 @@ import * as sqs from '@aws-cdk/aws-sqs';
 import { Duration } from '@aws-cdk/core';
 import * as s3Deploy from '@aws-cdk/aws-s3-deployment';
 import * as lambdaEventSources from '@aws-cdk/aws-lambda-event-sources';
-import fs from 'fs-extra';
-import path from 'path';
+import * as route53 from '@aws-cdk/aws-route53';
+import * as targets from '@aws-cdk/aws-route53-targets';
+import { Distribution } from '@aws-cdk/aws-cloudfront';
+import * as acm from '@aws-cdk/aws-certificatemanager';
 
-import { Props } from '.';
+import { Props, Domain } from '../props';
 import {
   PreRenderedManifest,
   ImageBuildManifest,
@@ -21,7 +26,6 @@ import {
   readInvalidationPathsFromManifest,
 } from '../utils';
 import { pathToPosix } from '../../build';
-import { Distribution } from '@aws-cdk/aws-cloudfront';
 import { LambdaHandler, logger } from '../../common';
 
 export class NextJSConstruct extends cdk.Construct {
@@ -36,6 +40,8 @@ export class NextJSConstruct extends cdk.Construct {
   protected defaultNextLambda?: lambda.Function;
   protected nextImageLambda?: lambda.Function | null;
   protected region: string;
+  public fqdn?: string[];
+  protected cert?: acm.ICertificate;
   public distribution?: Distribution;
 
   constructor(scope: cdk.Construct, id: string, protected props: Props) {
@@ -237,5 +243,37 @@ export class NextJSConstruct extends cdk.Construct {
     return this.region !== undefined
       ? this.region.toLowerCase().startsWith('cn-')
       : false;
+  }
+
+  protected createHostedZone(id: string, domain?: Domain) {
+    if (!domain?.zone || !this.distribution) return;
+
+    const hostedZone = route53.HostedZone.fromHostedZoneAttributes(
+      this,
+      `fqdn-zone-${id}`,
+      {
+        hostedZoneId: domain.zone.hostedZoneId,
+        zoneName: domain.zone.zoneName,
+      },
+    );
+
+    new route53.ARecord(this, `zone-record-${id}`, {
+      target: route53.RecordTarget.fromAlias(
+        new targets.CloudFrontTarget(this.distribution),
+      ),
+
+      zone: hostedZone,
+      recordName: domain.zone.subDomain,
+    });
+  }
+
+  protected createCert(id: string, domain?: Domain) {
+    if (!domain?.certificateArn) return;
+
+    this.cert = acm.Certificate.fromCertificateArn(
+      this,
+      `dist-certificate-${id}`,
+      domain.certificateArn,
+    );
   }
 }

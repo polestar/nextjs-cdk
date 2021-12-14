@@ -1,3 +1,5 @@
+import path from 'path';
+
 import { CompositePrincipal, Role, ServicePrincipal } from '@aws-cdk/aws-iam';
 import * as cdk from '@aws-cdk/core';
 import { Duration } from '@aws-cdk/core';
@@ -6,10 +8,9 @@ import * as cloudfront from '@aws-cdk/aws-cloudfront';
 import * as origins from '@aws-cdk/aws-cloudfront-origins';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as logs from '@aws-cdk/aws-logs';
-import path from 'path';
 
 import { NextJSConstruct } from './NextJSConstruct';
-import { Props } from '../props';
+import { Props, Domain } from '../props';
 import { CustomHeaders, LambdaHandler, logger } from '../../common';
 
 export class NextJSAtEdge extends NextJSConstruct {
@@ -20,6 +21,8 @@ export class NextJSAtEdge extends NextJSConstruct {
 
   constructor(scope: cdk.Construct, id: string, props: Props) {
     super(scope, id, props);
+
+    this.fqdn = props.domain?.fqdn;
 
     const isISR = this.hasISRPages() || this.hasDynamicISRPages();
 
@@ -45,7 +48,9 @@ export class NextJSAtEdge extends NextJSConstruct {
       this.regenerationFunction.grantInvoke(edgeLambda);
     }
 
-    this.createEdgeDistribution(id);
+    this.createCert(id, props.domain);
+    this.createEdgeDistribution(id, props.domain);
+    this.createHostedZone(id, props.domain);
     this.uploadNextAssets();
 
     // cache policies (next, static, lambda)
@@ -90,7 +95,7 @@ export class NextJSAtEdge extends NextJSConstruct {
     return this.edgeLambdaRole;
   }
 
-  private createEdgeDistribution(id: string) {
+  private createEdgeDistribution(id: string, domain?: Domain) {
     if (!this.bucket || !this.defaultNextLambda) return;
 
     this.bucket.grantRead(
@@ -163,6 +168,8 @@ export class NextJSAtEdge extends NextJSConstruct {
       this,
       `next-distribution-${id}`,
       {
+        certificate: this.cert,
+        domainNames: this.fqdn,
         defaultRootObject: '',
         defaultBehavior: {
           origin: bucketOrigin,

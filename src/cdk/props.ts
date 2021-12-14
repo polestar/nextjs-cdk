@@ -7,4 +7,25 @@ export interface Props extends StackProps {
    * i.e. `nextjsCDKBuildOutDir: new Builder(entry, outDir, {...}).outputDir`
    */
   nextjsCDKBuildOutDir: string;
+  domain?: Domain;
+}
+
+export interface Domain {
+  // example: "demo.my-domain.com"
+  fqdn: string[];
+
+  // Certificate that supports given fqdn (*.my-domain.com)
+  certificateArn?: string;
+
+  zone?: HostedZone;
+}
+
+export interface HostedZone {
+  hostedZoneId: string;
+
+  // example: "demo"
+  subDomain: string;
+
+  // example: my-domain.com
+  zoneName: string;
 }
