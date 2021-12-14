@@ -8,7 +8,6 @@ import * as cloudfront from '@aws-cdk/aws-cloudfront';
 import * as origins from '@aws-cdk/aws-cloudfront-origins';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as logs from '@aws-cdk/aws-logs';
-import * as acm from '@aws-cdk/aws-certificatemanager';
 
 import { NextJSConstruct } from './NextJSConstruct';
 import { Props, Domain } from '../props';
@@ -49,10 +48,10 @@ export class NextJSAtEdge extends NextJSConstruct {
       this.regenerationFunction.grantInvoke(edgeLambda);
     }
 
+    this.createCert(id, props.domain);
     this.createEdgeDistribution(id, props.domain);
     this.createHostedZone(id, props.domain);
     this.uploadNextAssets();
-    this.createCert(id, props.domain);
 
     // cache policies (next, static, lambda)
     // DNS / domain / cloudfront + s3 origin

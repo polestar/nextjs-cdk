@@ -40,7 +40,7 @@ export class NextJSConstruct extends cdk.Construct {
   protected defaultNextLambda?: lambda.Function;
   protected nextImageLambda?: lambda.Function | null;
   protected region: string;
-  protected fqdn?: string[];
+  public fqdn?: string[];
   protected cert?: acm.ICertificate;
   public distribution?: Distribution;
 

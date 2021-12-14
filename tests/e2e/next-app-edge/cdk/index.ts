@@ -24,7 +24,6 @@ export class NextjsCdkTestStack extends cdk.Stack {
       //   },
       //   certificateArn:
       //     'arn:aws:acm:us-east:certificate/example',
-      // },
     });
 
     new cdk.CfnOutput(this, 'Domain', {
@@ -34,6 +33,10 @@ export class NextjsCdkTestStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'ID', {
       value: app.distribution?.distributionId || 'n/a',
       description: 'DistributionID',
+    });
+    new cdk.CfnOutput(this, 'url', {
+      value: app.fqdn?.join('\n') || 'n/a',
+      description: 'url',
     });
   }
 }
