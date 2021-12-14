@@ -11,6 +11,7 @@ import * as lambdaEventSources from '@aws-cdk/aws-lambda-event-sources';
 import * as route53 from '@aws-cdk/aws-route53';
 import * as targets from '@aws-cdk/aws-route53-targets';
 import { Distribution } from '@aws-cdk/aws-cloudfront';
+import * as acm from '@aws-cdk/aws-certificatemanager';
 
 import { Props, Domain } from '../props';
 import {
@@ -39,6 +40,8 @@ export class NextJSConstruct extends cdk.Construct {
   protected defaultNextLambda?: lambda.Function;
   protected nextImageLambda?: lambda.Function | null;
   protected region: string;
+  protected fqdn?: string[];
+  protected cert?: acm.ICertificate;
   public distribution?: Distribution;
 
   constructor(scope: cdk.Construct, id: string, protected props: Props) {
@@ -262,5 +265,15 @@ export class NextJSConstruct extends cdk.Construct {
       zone: hostedZone,
       recordName: domain.zone.subDomain,
     });
+  }
+
+  protected createCert(id: string, domain?: Domain) {
+    if (!domain?.certificateArn) return;
+
+    this.cert = acm.Certificate.fromCertificateArn(
+      this,
+      `dist-certificate-${id}`,
+      domain.certificateArn,
+    );
   }
 }

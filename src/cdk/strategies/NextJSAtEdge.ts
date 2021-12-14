@@ -23,6 +23,8 @@ export class NextJSAtEdge extends NextJSConstruct {
   constructor(scope: cdk.Construct, id: string, props: Props) {
     super(scope, id, props);
 
+    this.fqdn = props.domain?.fqdn;
+
     const isISR = this.hasISRPages() || this.hasDynamicISRPages();
 
     if (isISR) {
@@ -50,6 +52,7 @@ export class NextJSAtEdge extends NextJSConstruct {
     this.createEdgeDistribution(id, props.domain);
     this.createHostedZone(id, props.domain);
     this.uploadNextAssets();
+    this.createCert(id, props.domain);
 
     // cache policies (next, static, lambda)
     // DNS / domain / cloudfront + s3 origin
@@ -162,26 +165,12 @@ export class NextJSAtEdge extends NextJSConstruct {
       },
     );
 
-    let fqdn, cert;
-
-    if (domain) {
-      fqdn = domain.fqdn;
-    }
-
-    if (domain?.certificateArn) {
-      cert = acm.Certificate.fromCertificateArn(
-        this,
-        `dist-certificate-${id}`,
-        domain.certificateArn,
-      );
-    }
-
     this.distribution = new cloudfront.Distribution(
       this,
       `next-distribution-${id}`,
       {
-        certificate: cert,
-        domainNames: fqdn,
+        certificate: this.cert,
+        domainNames: this.fqdn,
         defaultRootObject: '',
         defaultBehavior: {
           origin: bucketOrigin,

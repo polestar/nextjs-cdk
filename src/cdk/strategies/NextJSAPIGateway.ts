@@ -41,6 +41,7 @@ export class NextJSAPIGateway extends NextJSConstruct {
     this.prerenderManifest = this.readPrerenderManifest();
     this.imageManifest = this.readImageBuildManifest();
     this.defaultManifest = this.readDefaultBuildManifest();
+    this.fqdn = props.domain?.fqdn;
 
     const hasISRPages = this.hasISRPages();
     const hasDynamicISRPages = this.hasDynamicISRPages();
@@ -195,26 +196,14 @@ export class NextJSAPIGateway extends NextJSConstruct {
       `uploading assets in bucket using assetPrefix: ${s3AssetPrefix}`,
     );
 
-    let fqdn, cert;
-
-    if (props.domain) {
-      fqdn = props.domain.fqdn;
-    }
-
-    if (props.domain?.certificateArn) {
-      cert = acm.Certificate.fromCertificateArn(
-        this,
-        'dist-certificate',
-        props.domain.certificateArn,
-      );
-    }
+    this.createCert(id, props.domain);
 
     this.distribution = new cloudfront.Distribution(
       this,
       `next-distribution-${id}`,
       {
-        certificate: cert,
-        domainNames: fqdn,
+        certificate: this.cert,
+        domainNames: this.fqdn,
         defaultRootObject: '',
         enableIpv6: this.isChina() ? false : true,
         defaultBehavior: {
