@@ -18,7 +18,7 @@ class Logger {
   log(label: string, message: string, data: unknown = '') {
     const body = typeof data === 'string' ? data : JSON.stringify(data);
 
-    console.log(`${`[${label}]`}: ${message + body}`);
+    console.log(`${`[${label}]`}: ${message}  ${body}`);
   }
 }
 
