@@ -1,3 +1,18 @@
+# [1.3.0](https://github.com/polestar/nextjs-cdk/compare/v1.2.1...v1.3.0) (2021-12-14)
+
+
+### Bug Fixes
+
+* **cdk:** adds url to cdk output ([ee5aa61](https://github.com/polestar/nextjs-cdk/commit/ee5aa61747af372674a3d4ad0ef9f70be0e6b4bf))
+* **logger:** removes time from output ([d4623bb](https://github.com/polestar/nextjs-cdk/commit/d4623bb3879628676a7135c8bf18aaf1b2049cb2))
+
+
+### Features
+
+* **cdk:** adds cert & record install for edge ([ee8a4b6](https://github.com/polestar/nextjs-cdk/commit/ee8a4b6911d3e4b11b8ae70f08df01ccd1319eec))
+* **cdk:** adds domain support for edge ([0f81473](https://github.com/polestar/nextjs-cdk/commit/0f81473d8c8f63218047bf630b500766b7359414))
+* **next-js-api-gateway:** adds cert & fqdn support ([5efde67](https://github.com/polestar/nextjs-cdk/commit/5efde673147ad8a2248a10c7667a125397142207))
+
 ## [1.2.1](https://github.com/polestar/nextjs-cdk/compare/v1.2.0...v1.2.1) (2021-12-13)
 
 
