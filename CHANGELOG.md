@@ -1,3 +1,11 @@
+## [1.3.1](https://github.com/polestar/nextjs-cdk/compare/v1.3.0...v1.3.1) (2022-01-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency next to v12.0.5 [security] ([99dc172](https://github.com/polestar/nextjs-cdk/commit/99dc172194819e8e053e05441e9f4c898c1108b3))
+* **deps:** update dependency node-fetch to v2.6.6 ([658e7c3](https://github.com/polestar/nextjs-cdk/commit/658e7c3482a540101c9805ee8c8457a1222e223a))
+
 # [1.3.0](https://github.com/polestar/nextjs-cdk/compare/v1.2.1...v1.3.0) (2021-12-14)
 
 
