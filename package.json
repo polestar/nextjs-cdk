@@ -83,7 +83,7 @@
     "is-ci": "3.0.1",
     "jest": "27.4.7",
     "lint-staged": "11.2.6",
-    "prettier": "2.4.1",
+    "prettier": "2.5.1",
     "rimraf": "3.0.2",
     "rollup": "2.58.3",
     "rollup-plugin-delete": "2.0.0",
