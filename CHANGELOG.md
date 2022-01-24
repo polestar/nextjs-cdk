@@ -1,3 +1,10 @@
+## [1.3.2](https://github.com/polestar/nextjs-cdk/compare/v1.3.1...v1.3.2) (2022-01-24)
+
+
+### Bug Fixes
+
+* **regeneration:** missing bucket env ([fbd5db1](https://github.com/polestar/nextjs-cdk/commit/fbd5db1c1867b38bd8acc68698d20db44de0beff))
+
 ## [1.3.1](https://github.com/polestar/nextjs-cdk/compare/v1.3.0...v1.3.1) (2022-01-15)
 
 
