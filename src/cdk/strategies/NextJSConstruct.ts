@@ -102,6 +102,10 @@ export class NextJSConstruct extends cdk.Construct {
       code: lambda.Code.fromAsset(
         path.join(this.props.nextjsCDKBuildOutDir, LambdaHandler.DEFAULT),
       ),
+      environment: {
+        BUCKET_NAME: this.bucket.bucketName,
+        BUCKET_REGION: this.region,
+      },
     });
 
     this.regenerationFunction.addEventSource(

@@ -1196,6 +1196,13 @@ Object {
           },
         },
         "Description": "SQS Regeneration Lambda for NextJS",
+        "Environment": Object {
+          "Variables": Object {
+            "BUCKET_NAME": Object {
+              "Ref": "publicassetstestedgeconstruct0CB03104",
+            },
+          },
+        },
         "FunctionName": "regeneration-lambda-test-edge-construct",
         "Handler": "index.handler",
         "Role": Object {
