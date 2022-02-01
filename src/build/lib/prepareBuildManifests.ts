@@ -273,7 +273,9 @@ export const prepareBuildManifests = (
     domainRedirects: domainRedirects,
   };
 
-  pageManifest.namespace = requiredServerFilesFiles.config.assetPrefix;
+  if (requiredServerFilesFiles.config?.assetPrefix) {
+    pageManifest.namespace = requiredServerFilesFiles.config.assetPrefix;
+  }
 
   return {
     pageManifest,

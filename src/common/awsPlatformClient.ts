@@ -55,7 +55,10 @@ export class AwsPlatformClient implements PlatformClient {
     });
     // S3 Body is stream per: https://github.com/aws/aws-sdk-js-v3/issues/1096
     const getStream = await import('get-stream');
-    const targetObject = path.join(this.namespace.replace('/', ''), pageKey);
+    const targetObject =
+      this.namespace !== ''
+        ? path.join(this.namespace.replace('/', ''), pageKey)
+        : pageKey;
     const s3Params = {
       Bucket: this.bucketName,
       Key: targetObject,

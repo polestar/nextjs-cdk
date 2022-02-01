@@ -304,8 +304,8 @@ export type NextConfig = {
 };
 
 export type RequiredServerFilesFiles = {
-  config: {
-    assetPrefix: string;
+  config?: {
+    assetPrefix?: string;
   };
 };
 

@@ -190,10 +190,12 @@ export class NextJSAPIGateway extends NextJSConstruct {
     });
 
     const s3Origin = new origins.S3Origin(this.bucket);
-    const s3AssetPrefix = this.defaultManifest.namespace.replace('/', '') + '/';
+    const s3AssetPrefix = this.defaultManifest.namespace
+      ? this.defaultManifest.namespace.replace('/', '') + '/'
+      : '';
 
     logger.debug(
-      `uploading assets in bucket using assetPrefix: ${s3AssetPrefix}`,
+      `uploading assets in bucket using assetPrefix: [${s3AssetPrefix}]`,
     );
 
     this.createCert(id, props.domain);
