@@ -8,7 +8,6 @@ module.exports = {
   images: {
     domains: ['raw.githubusercontent.com'],
   },
-  assetPrefix: isProd ? `/${APP_NAMESPACE}` : '',
   async redirects() {
     return [
       {

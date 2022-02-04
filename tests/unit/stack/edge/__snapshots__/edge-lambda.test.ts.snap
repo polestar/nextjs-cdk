@@ -758,32 +758,7 @@ Object {
       },
       "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
     },
-    "testedgeconstructdefaultlambdatestedgeconstructCurrentVersionAliaslive637F5FF7": Object {
-      "Properties": Object {
-        "FunctionName": Object {
-          "Ref": "testedgeconstructdefaultlambdatestedgeconstructD8AD4FF1",
-        },
-        "FunctionVersion": Object {
-          "Fn::GetAtt": Array [
-            "testedgeconstructdefaultlambdatestedgeconstructCurrentVersionE0B5A4A0ca0685e9ff6ca5ff96dd655cbb515d07",
-            "Version",
-          ],
-        },
-        "Name": "live",
-      },
-      "Type": "AWS::Lambda::Alias",
-    },
-    "testedgeconstructdefaultlambdatestedgeconstructCurrentVersionE0B5A4A0ca0685e9ff6ca5ff96dd655cbb515d07": Object {
-      "DeletionPolicy": "Delete",
-      "Properties": Object {
-        "FunctionName": Object {
-          "Ref": "testedgeconstructdefaultlambdatestedgeconstructD8AD4FF1",
-        },
-      },
-      "Type": "AWS::Lambda::Version",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "testedgeconstructdefaultlambdatestedgeconstructD8AD4FF1": Object {
+    "testedgeconstructdefaultedgelambdatestedgeconstructA7E9BA1F": Object {
       "DependsOn": Array [
         "testedgeconstructnextlambdaroletestedgeconstructDefaultPolicy6273C547",
         "testedgeconstructnextlambdaroletestedgeconstructEFD49724",
@@ -828,7 +803,7 @@ Object {
           },
         },
         "Description": "handles all server-side reqs for nextjs",
-        "FunctionName": "default-lambda-test-edge-construct",
+        "FunctionName": "default-edge-lambda-test-edge-construct",
         "Handler": "index.handler",
         "MemorySize": 512,
         "Role": Object {
@@ -842,7 +817,32 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "testedgeconstructdefaultlambdatestedgeconstructLogRetention61011120": Object {
+    "testedgeconstructdefaultedgelambdatestedgeconstructCurrentVersion3C45AD489a5ebf1225c0145c0d58ad3c576dbcae": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "FunctionName": Object {
+          "Ref": "testedgeconstructdefaultedgelambdatestedgeconstructA7E9BA1F",
+        },
+      },
+      "Type": "AWS::Lambda::Version",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "testedgeconstructdefaultedgelambdatestedgeconstructCurrentVersionAliaslive08671766": Object {
+      "Properties": Object {
+        "FunctionName": Object {
+          "Ref": "testedgeconstructdefaultedgelambdatestedgeconstructA7E9BA1F",
+        },
+        "FunctionVersion": Object {
+          "Fn::GetAtt": Array [
+            "testedgeconstructdefaultedgelambdatestedgeconstructCurrentVersion3C45AD489a5ebf1225c0145c0d58ad3c576dbcae",
+            "Version",
+          ],
+        },
+        "Name": "live",
+      },
+      "Type": "AWS::Lambda::Alias",
+    },
+    "testedgeconstructdefaultedgelambdatestedgeconstructLogRetention8A15FCB9": Object {
       "Properties": Object {
         "LogGroupName": Object {
           "Fn::Join": Array [
@@ -850,7 +850,7 @@ Object {
             Array [
               "/aws/lambda/",
               Object {
-                "Ref": "testedgeconstructdefaultlambdatestedgeconstructD8AD4FF1",
+                "Ref": "testedgeconstructdefaultedgelambdatestedgeconstructA7E9BA1F",
               },
             ],
           ],
@@ -917,7 +917,7 @@ Object {
               Object {
                 "EventType": "origin-request",
                 "LambdaFunctionARN": Object {
-                  "Ref": "testedgeconstructdefaultlambdatestedgeconstructCurrentVersionE0B5A4A0ca0685e9ff6ca5ff96dd655cbb515d07",
+                  "Ref": "testedgeconstructdefaultedgelambdatestedgeconstructCurrentVersion3C45AD489a5ebf1225c0145c0d58ad3c576dbcae",
                 },
               },
             ],
@@ -1073,7 +1073,7 @@ Object {
               "Effect": "Allow",
               "Resource": Object {
                 "Fn::GetAtt": Array [
-                  "testedgeconstructregenerationqueuetestedgeconstruct926F4BF0",
+                  "testedgeconstructregenerationedgequeuetestedgeconstruct66354220",
                   "Arn",
                 ],
               },
@@ -1083,7 +1083,7 @@ Object {
               "Effect": "Allow",
               "Resource": Object {
                 "Fn::GetAtt": Array [
-                  "testedgeconstructregenerationlambdatestedgeconstruct30CAA057",
+                  "testedgeconstructregenerationedgelambdatestedgeconstruct659F82FF",
                   "Arn",
                 ],
               },
@@ -1151,10 +1151,10 @@ Object {
       },
       "Type": "AWS::CloudFront::CachePolicy",
     },
-    "testedgeconstructregenerationlambdatestedgeconstruct30CAA057": Object {
+    "testedgeconstructregenerationedgelambdatestedgeconstruct659F82FF": Object {
       "DependsOn": Array [
-        "testedgeconstructregenerationlambdatestedgeconstructServiceRoleDefaultPolicy8E40CF57",
-        "testedgeconstructregenerationlambdatestedgeconstructServiceRole23B9CBF4",
+        "testedgeconstructregenerationedgelambdatestedgeconstructServiceRoleDefaultPolicy3EEC4139",
+        "testedgeconstructregenerationedgelambdatestedgeconstructServiceRole67BD3B00",
       ],
       "Properties": Object {
         "Code": Object {
@@ -1203,11 +1203,11 @@ Object {
             },
           },
         },
-        "FunctionName": "regeneration-lambda-test-edge-construct",
+        "FunctionName": "regeneration-edge-lambda-test-edge-construct",
         "Handler": "index.handler",
         "Role": Object {
           "Fn::GetAtt": Array [
-            "testedgeconstructregenerationlambdatestedgeconstructServiceRole23B9CBF4",
+            "testedgeconstructregenerationedgelambdatestedgeconstructServiceRole67BD3B00",
             "Arn",
           ],
         },
@@ -1216,7 +1216,7 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "testedgeconstructregenerationlambdatestedgeconstructServiceRole23B9CBF4": Object {
+    "testedgeconstructregenerationedgelambdatestedgeconstructServiceRole67BD3B00": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -1247,7 +1247,7 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "testedgeconstructregenerationlambdatestedgeconstructServiceRoleDefaultPolicy8E40CF57": Object {
+    "testedgeconstructregenerationedgelambdatestedgeconstructServiceRoleDefaultPolicy3EEC4139": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
@@ -1262,7 +1262,7 @@ Object {
               "Effect": "Allow",
               "Resource": Object {
                 "Fn::GetAtt": Array [
-                  "testedgeconstructregenerationqueuetestedgeconstruct926F4BF0",
+                  "testedgeconstructregenerationedgequeuetestedgeconstruct66354220",
                   "Arn",
                 ],
               },
@@ -1303,30 +1303,30 @@ Object {
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "testedgeconstructregenerationlambdatestedgeconstructServiceRoleDefaultPolicy8E40CF57",
+        "PolicyName": "testedgeconstructregenerationedgelambdatestedgeconstructServiceRoleDefaultPolicy3EEC4139",
         "Roles": Array [
           Object {
-            "Ref": "testedgeconstructregenerationlambdatestedgeconstructServiceRole23B9CBF4",
+            "Ref": "testedgeconstructregenerationedgelambdatestedgeconstructServiceRole67BD3B00",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "testedgeconstructregenerationlambdatestedgeconstructSqsEventSourcetestedgeconstructregenerationqueuetestedgeconstruct1632ADD6AC0B3995": Object {
+    "testedgeconstructregenerationedgelambdatestedgeconstructSqsEventSourcetestedgeconstructregenerationedgequeuetestedgeconstruct5ADAF72E80283464": Object {
       "Properties": Object {
         "EventSourceArn": Object {
           "Fn::GetAtt": Array [
-            "testedgeconstructregenerationqueuetestedgeconstruct926F4BF0",
+            "testedgeconstructregenerationedgequeuetestedgeconstruct66354220",
             "Arn",
           ],
         },
         "FunctionName": Object {
-          "Ref": "testedgeconstructregenerationlambdatestedgeconstruct30CAA057",
+          "Ref": "testedgeconstructregenerationedgelambdatestedgeconstruct659F82FF",
         },
       },
       "Type": "AWS::Lambda::EventSourceMapping",
     },
-    "testedgeconstructregenerationqueuetestedgeconstruct926F4BF0": Object {
+    "testedgeconstructregenerationedgequeuetestedgeconstruct66354220": Object {
       "DeletionPolicy": "Delete",
       "Properties": Object {
         "FifoQueue": true,

@@ -27,15 +27,15 @@ export class NextJSAtEdge extends NextJSConstruct {
     const isISR = this.hasISRPages() || this.hasDynamicISRPages();
 
     if (isISR) {
-      this.createRegenerationQueue(`regeneration-queue-${id}`);
-      this.createRegenerationLambda(`regeneration-lambda-${id}`);
+      this.createRegenerationQueue(`regeneration-edge-queue-${id}`);
+      this.createRegenerationLambda(`regeneration-edge-lambda-${id}`);
     }
 
     const role = this.createEdgeRole(`next-lambda-role-${id}`);
     const edgeLambda = this.createEdgeLambda(
-      `default-lambda-${id}`,
+      `default-edge-lambda-${id}`,
       role,
-      `default-lambda-${id}`,
+      `default-edge-lambda-${id}`,
       'handles all server-side reqs for nextjs',
     );
 
