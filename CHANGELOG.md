@@ -1,3 +1,11 @@
+## [1.3.3](https://github.com/polestar/nextjs-cdk/compare/v1.3.2...v1.3.3) (2022-02-14)
+
+
+### Bug Fixes
+
+* name clash edge and apigw lambda ([0a71004](https://github.com/polestar/nextjs-cdk/commit/0a71004f336a390ea0eb6e86941be024f1526542))
+* use existing upstream cache-control if present ([af875f7](https://github.com/polestar/nextjs-cdk/commit/af875f7463f488ce6d9219b4db44522c7a57d65c))
+
 ## [1.3.2](https://github.com/polestar/nextjs-cdk/compare/v1.3.1...v1.3.2) (2022-01-24)
 
 
