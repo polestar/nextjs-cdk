@@ -12,11 +12,13 @@ import { logger } from '../../../common';
 /*
  * Get page name from data route
  */
-const normaliseDataUri = (uri: string, buildId: string) => {
-  const prefix = `/_next/data/${buildId}`;
+const normaliseDataUri = (uri: string, buildId: string, namespace = '') => {
+  const prefix = `${namespace}/_next/data/${buildId}`;
+
   if (!uri.startsWith(prefix)) {
     return uri;
   }
+
   return uri
     .slice(prefix.length)
     .replace(/\.json$/, '')
@@ -47,9 +49,10 @@ export const handleDataReq = (
 
   const { buildId, pages } = manifest;
   const localeUri = addDefaultLocaleToPath(
-    normaliseDataUri(uri, buildId),
+    normaliseDataUri(uri, buildId, manifest.namespace),
     routesManifest,
   );
+
   if (pages.ssg.nonDynamic[localeUri] && !isPreview) {
     const ssg = pages.ssg.nonDynamic[localeUri];
     const route = ssg.srcRoute ?? localeUri;
