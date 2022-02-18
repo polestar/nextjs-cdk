@@ -1,3 +1,10 @@
+## [1.3.4](https://github.com/polestar/nextjs-cdk/compare/v1.3.3...v1.3.4) (2022-02-18)
+
+
+### Bug Fixes
+
+* **route/data:** now also removes namespaces from url on data-page lookup ([d014bde](https://github.com/polestar/nextjs-cdk/commit/d014bdea563652ccc7b7ce16e807375a9441a504))
+
 ## [1.3.3](https://github.com/polestar/nextjs-cdk/compare/v1.3.2...v1.3.3) (2022-02-14)
 
 
