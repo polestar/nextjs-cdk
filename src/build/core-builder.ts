@@ -21,6 +21,8 @@ import {
   RequiredServerFilesFiles,
 } from '../types';
 import { logger } from '../common';
+import readAndReplace from './lib/readAndReplace';
+import ensureSlash from './lib/ensureSlash';
 
 export const ASSETS_DIR = 'assets';
 
@@ -453,6 +455,18 @@ export default abstract class CoreBuilder {
       path.join(dotNextDirectory, 'static'),
       ignorePatterns,
     );
+
+    const mainChunk = buildStaticFiles.find((f) => f.name.includes('main'));
+
+    if (mainChunk && pageManifest.namespace) {
+      logger.debug(`adds ${pageManifest.namespace} to ${mainChunk.name}`);
+
+      await readAndReplace(
+        mainChunk.path,
+        '/_next/data/',
+        `${ensureSlash(pageManifest.namespace)}/_next/data/`,
+      );
+    }
 
     const staticFileAssets = buildStaticFiles
       .filter(filterOutDirectories)

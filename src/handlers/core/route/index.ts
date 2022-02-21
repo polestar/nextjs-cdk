@@ -24,6 +24,7 @@ import {
   RoutesManifest,
   UnauthorizedRoute,
 } from '../../../types';
+import ensureSlash from '../../../build/lib/ensureSlash';
 
 export const handleAuth = (
   req: Request,
@@ -166,7 +167,9 @@ export const routeDefault = async (
     routesManifest,
   );
   const is404 = uri.endsWith('/404');
-  const isDataReq = uri.startsWith('/_next/data');
+  const isDataReq = uri.startsWith(
+    ensureSlash(`${manifest.namespace}/_next/data`),
+  );
   const publicFile = handlePublicFiles(uri, manifest);
   const isPublicFile = !!publicFile;
   const nextStaticFile = handleNextStaticFiles(uri);
