@@ -1,3 +1,10 @@
+## [1.3.5](https://github.com/polestar/nextjs-cdk/compare/v1.3.4...v1.3.5) (2022-02-21)
+
+
+### Bug Fixes
+
+* **handler:** now handles namespaced data requests ([d1508ef](https://github.com/polestar/nextjs-cdk/commit/d1508efa1270ddd4649a027099d78fc51987dd42))
+
 ## [1.3.4](https://github.com/polestar/nextjs-cdk/compare/v1.3.3...v1.3.4) (2022-02-18)
 
 
