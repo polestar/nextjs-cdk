@@ -1,3 +1,10 @@
+## [1.3.8](https://github.com/polestar/nextjs-cdk/compare/v1.3.7...v1.3.8) (2022-03-07)
+
+
+### Bug Fixes
+
+* **deps:** update aws-sdk-js-v3 monorepo ([906f24a](https://github.com/polestar/nextjs-cdk/commit/906f24a7a64d1c6ef1ad6e46daa184ff04a0cd54))
+
 ## [1.3.7](https://github.com/polestar/nextjs-cdk/compare/v1.3.6...v1.3.7) (2022-03-07)
 
 
