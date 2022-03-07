@@ -101,6 +101,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "3.40.1",
     "@aws-sdk/client-sqs": "3.40.0",
+    "@hapi/accept": "^5.0.2",
     "cookie": "0.4.1",
     "execa": "5.1.1",
     "fresh": "0.5.2",
