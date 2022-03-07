@@ -1,3 +1,10 @@
+## [1.3.7](https://github.com/polestar/nextjs-cdk/compare/v1.3.6...v1.3.7) (2022-03-07)
+
+
+### Bug Fixes
+
+* **deps:** pin dependency @hapi/accept to 5.0.2 ([c8f273e](https://github.com/polestar/nextjs-cdk/commit/c8f273e26fa4ec80c5878b6e91dc18353e65ae2b))
+
 ## [1.3.6](https://github.com/polestar/nextjs-cdk/compare/v1.3.5...v1.3.6) (2022-03-07)
 
 
