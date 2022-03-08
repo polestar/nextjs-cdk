@@ -1,3 +1,10 @@
+## [1.3.10](https://github.com/polestar/nextjs-cdk/compare/v1.3.9...v1.3.10) (2022-03-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency fs-extra to v10.0.1 ([bee084a](https://github.com/polestar/nextjs-cdk/commit/bee084a92026d0315b7a606621e3e18f9a744ea8))
+
 ## [1.3.9](https://github.com/polestar/nextjs-cdk/compare/v1.3.8...v1.3.9) (2022-03-08)
 
 
