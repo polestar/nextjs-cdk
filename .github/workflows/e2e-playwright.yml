@@ -104,8 +104,9 @@ jobs:
         uses: c-hive/gha-yarn-cache@v2
       
       - name: Install Playwright
-        run: npx playwright install-deps
-
+        run: |
+          npx playwright install-deps
+          npx playwright install
       - name: Yarn install
         run: yarn install --frozen-lockfile
 
