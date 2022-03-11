@@ -10796,10 +10796,10 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-zx@4.2.0:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/zx/-/zx-4.2.0.tgz#5f7c15f4446ad33ae23717e5aba4c0199aa90851"
-  integrity sha512-/4f7FaJecA9I655KXKXIHO3CFNYjAz2uSmTz6v2eNlKdrQKyz4VyF3RjqFuP6nQG+Hd3+NjOvrVNBkv8Ne9d4Q==
+zx@4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/zx/-/zx-4.3.0.tgz#6275115c7cc914461a7d77e52abb60c15cb62d9e"
+  integrity sha512-KuEjpu5QFIMx0wWfzknDRhY98s7a3tWNRmYt19XNmB7AfOmz5zISA4+3Q8vlJc2qguxMn89uSxhPDCldPa3YLA==
   dependencies:
     "@types/fs-extra" "^9.0.12"
     "@types/minimist" "^1.2.2"
