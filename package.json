@@ -106,7 +106,7 @@
     "execa": "5.1.1",
     "fresh": "0.5.2",
     "fs-extra": "10.0.1",
-    "is-animated": "2.0.1",
+    "is-animated": "2.0.2",
     "jsonwebtoken": "8.5.1",
     "next": "12.1.0",
     "node-fetch": "2.6.7",
