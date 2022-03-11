@@ -1,3 +1,10 @@
+## [1.3.12](https://github.com/polestar/nextjs-cdk/compare/v1.3.11...v1.3.12) (2022-03-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency is-animated to v2.0.2 ([ef3acd1](https://github.com/polestar/nextjs-cdk/commit/ef3acd1ee0ecf22bb19397595505f64bc4803c2d))
+
 ## [1.3.11](https://github.com/polestar/nextjs-cdk/compare/v1.3.10...v1.3.11) (2022-03-11)
 
 
