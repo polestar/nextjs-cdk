@@ -1,3 +1,10 @@
+## [1.3.11](https://github.com/polestar/nextjs-cdk/compare/v1.3.10...v1.3.11) (2022-03-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency send to v0.17.2 ([1657b64](https://github.com/polestar/nextjs-cdk/commit/1657b645a3c0b5bed9c98b39e1abfdc27cf22069))
+
 ## [1.3.10](https://github.com/polestar/nextjs-cdk/compare/v1.3.9...v1.3.10) (2022-03-08)
 
 
