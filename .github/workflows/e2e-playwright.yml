@@ -26,7 +26,7 @@ jobs:
 
     steps:
       # For non-fork PRs
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         if: ${{ github.event.inputs.pull_request_id == '' }}
         with:
           ref: ${{ github.event.inputs.sha || github.ref }}
@@ -83,7 +83,7 @@ jobs:
 
     steps:
       # For non-fork PRs
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         if: ${{ github.event.inputs.pull_request_id == '' }}
         with:
           ref: ${{ github.event.inputs.sha || github.ref }}
