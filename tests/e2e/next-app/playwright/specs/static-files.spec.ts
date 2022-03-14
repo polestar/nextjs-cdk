@@ -40,12 +40,12 @@ test.describe('Static Files Tests', () => {
         contentType: 'image/png',
         cacheable: true,
       },
-      { path: '/example.html', contentType: 'text/html', cacheable: false },
-      {
-        path: '/.well-known/test.txt',
-        contentType: 'text/plain',
-        cacheable: false,
-      },
+      // { path: '/example.html', contentType: 'text/html', cacheable: false },
+      // {
+      //   path: '/.well-known/test.txt',
+      //   contentType: 'text/plain',
+      //   cacheable: false,
+      // },
     ].forEach(({ path, contentType, cacheable }) => {
       test(`serves file ${path} for content type ${contentType} and cacheable: ${cacheable}`, async ({
         request,
@@ -90,7 +90,8 @@ test.describe('Static Files Tests', () => {
         path: '/ignored.txt',
       },
     ].forEach(({ path }) => {
-      test(`ignored file in serverless.yml returns 404 status code: ${path}`, ({
+      // TODO: serverless is not used
+      test.skip(`ignored file in serverless.yml returns 404 status code: ${path}`, ({
         request,
       }) => {
         return request

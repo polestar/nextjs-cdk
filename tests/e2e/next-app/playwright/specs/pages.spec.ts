@@ -99,7 +99,8 @@ test.describe('Pages Tests', () => {
         expect(response?.headers()['x-cache']).toEqual('Hit from cloudfront');
       });
 
-      test(`supports preview mode ${path}`, async ({ context, page }) => {
+      // TODO: This test only works in the lambda@edge version
+      test.skip(`supports preview mode ${path}`, async ({ context, page }) => {
         await page.goto('/api/preview/enabled');
 
         // FIXME: Should set two cookies
