@@ -1,3 +1,10 @@
+## [1.3.13](https://github.com/polestar/nextjs-cdk/compare/v1.3.12...v1.3.13) (2022-03-15)
+
+
+### Bug Fixes
+
+* **deps:** rolled back node resolve plugin ([f769f14](https://github.com/polestar/nextjs-cdk/commit/f769f14db11c9df6834fd56846a052a857449fb4))
+
 ## [1.3.12](https://github.com/polestar/nextjs-cdk/compare/v1.3.11...v1.3.12) (2022-03-11)
 
 
