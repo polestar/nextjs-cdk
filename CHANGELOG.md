@@ -1,3 +1,10 @@
+## [1.3.14](https://github.com/polestar/nextjs-cdk/compare/v1.3.13...v1.3.14) (2022-03-28)
+
+
+### Bug Fixes
+
+* **cdk:** changed to global invalidation ([ef1c190](https://github.com/polestar/nextjs-cdk/commit/ef1c190634697a162070e072cdf961c4a083c7a1))
+
 ## [1.3.13](https://github.com/polestar/nextjs-cdk/compare/v1.3.12...v1.3.13) (2022-03-15)
 
 
