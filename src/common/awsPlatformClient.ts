@@ -77,7 +77,7 @@ export class AwsPlatformClient implements PlatformClient {
     } catch (e: any) {
       s3StatusCode = e.$metadata ? e?.$metadata?.httpStatusCode ?? 500 : 500;
       logger.error(
-        `Got error response from S3. Will default to returning empty response. Key: [${pageKey}], Error: ${e}`,
+        `Got error response from S3. Will default to returning empty response. Key: [${pageKey}], Error: ${e.message}`,
       );
 
       return {
