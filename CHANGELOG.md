@@ -1,3 +1,11 @@
+## [1.3.15](https://github.com/polestar/nextjs-cdk/compare/v1.3.14...v1.3.15) (2022-03-28)
+
+
+### Bug Fixes
+
+* logging error message ([fb7c304](https://github.com/polestar/nextjs-cdk/commit/fb7c304fd73d6f990c42b2d7513c7855979fc44c))
+* logging key and error message ([7b88fec](https://github.com/polestar/nextjs-cdk/commit/7b88fecb22d7c97ca1c0a03c5800536b5d8e72f7))
+
 ## [1.3.14](https://github.com/polestar/nextjs-cdk/compare/v1.3.13...v1.3.14) (2022-03-28)
 
 
