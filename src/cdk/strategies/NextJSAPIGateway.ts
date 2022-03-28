@@ -296,9 +296,7 @@ export class NextJSAPIGateway extends NextJSConstruct {
       // the root upwards.
       destinationKeyPrefix: '/BUILD_ID',
       distribution: this.distribution,
-      distributionPaths: reduceInvalidationPaths(
-        readInvalidationPathsFromManifest(this.defaultManifest),
-      ),
+      distributionPaths: ['/*'],
     });
 
     Object.keys(assets).forEach((key) => {

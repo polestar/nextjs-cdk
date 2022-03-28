@@ -140,9 +140,7 @@ export class NextJSConstruct extends cdk.Construct {
       // the root upwards.
       destinationKeyPrefix: '/BUILD_ID',
       distribution: this.distribution,
-      distributionPaths: reduceInvalidationPaths(
-        readInvalidationPathsFromManifest(this.defaultManifest),
-      ),
+      distributionPaths: ['/*'],
     });
 
     Object.keys(assets).forEach((key) => {
