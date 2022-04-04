@@ -184,6 +184,13 @@ export const routeDefault = async (
   }
 
   if (isApi) {
+    // This api request handling shouldn't be done here
+    if (!req.hasOwnProperty('originalRequest')) {
+      Object.defineProperty(req, 'originalRequest', {
+        get: () => req,
+      });
+    }
+
     const apiRoute = handleApiReq(
       req,
       uri,
