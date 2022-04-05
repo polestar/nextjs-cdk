@@ -99,6 +99,11 @@ export const handleRegeneration = async (event: SQSEvent): Promise<void> => {
       const res = Object.assign(
         new Stream.Readable(),
         http.ServerResponse.prototype,
+        {
+          end: () => {
+            console.log('end');
+          },
+        },
       );
 
       await regenerationHandler({

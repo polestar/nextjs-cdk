@@ -127,3 +127,5 @@ cdk.out
 cdk-outputs.json
 
 !tests/integration/fixtures/**/*
+
+quokka.ts
