@@ -1,3 +1,10 @@
+## [1.3.17](https://github.com/polestar/nextjs-cdk/compare/v1.3.16...v1.3.17) (2022-04-05)
+
+
+### Bug Fixes
+
+* missing function res.end ([78fed18](https://github.com/polestar/nextjs-cdk/commit/78fed18d2bd654c726bbdb8fa295aefb92e910ba))
+
 ## [1.3.16](https://github.com/polestar/nextjs-cdk/compare/v1.3.15...v1.3.16) (2022-04-04)
 
 
