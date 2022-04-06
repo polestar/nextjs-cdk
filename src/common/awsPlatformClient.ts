@@ -122,9 +122,15 @@ export class AwsPlatformClient implements PlatformClient {
       maxAttempts: 3,
     });
 
-    const s3BasePath = options.basePath
+    let s3BasePath = options.basePath
       ? `${options.basePath.replace(/^\//, '')}/`
       : '';
+
+    s3BasePath =
+      this.namespace !== ''
+        ? path.join(this.namespace.replace('/', ''), s3BasePath)
+        : s3BasePath;
+
     const baseKey = options.uri
       .replace(/^\/$/, 'index')
       .replace(/^\//, '')
