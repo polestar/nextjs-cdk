@@ -147,7 +147,7 @@ export class AwsPlatformClient implements PlatformClient {
 
     const s3JsonParams = {
       Bucket: this.bucketName,
-      Key: `${s3BasePath}${jsonKey}`,
+      Key: `${s3BasePath}/${jsonKey}`,
       Body: JSON.stringify(options.pageData),
       ContentType: 'application/json',
       CacheControl: cacheControl,
@@ -156,7 +156,7 @@ export class AwsPlatformClient implements PlatformClient {
 
     const s3HtmlParams = {
       Bucket: this.bucketName,
-      Key: `${s3BasePath}${htmlKey}`,
+      Key: `${s3BasePath}/${htmlKey}`,
       Body: options.html,
       ContentType: 'text/html',
       CacheControl: cacheControl,
