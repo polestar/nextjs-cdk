@@ -1,3 +1,10 @@
+## [1.3.19](https://github.com/polestar/nextjs-cdk/compare/v1.3.18...v1.3.19) (2022-04-06)
+
+
+### Bug Fixes
+
+* trigger release due to semantic relase failure ([0472722](https://github.com/polestar/nextjs-cdk/commit/0472722ffdedc5d9db7c15859a94937819038240))
+
 ## [1.3.18](https://github.com/polestar/nextjs-cdk/compare/v1.3.17...v1.3.18) (2022-04-06)
 
 
