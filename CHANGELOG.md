@@ -1,3 +1,10 @@
+## [1.3.18](https://github.com/polestar/nextjs-cdk/compare/v1.3.17...v1.3.18) (2022-04-06)
+
+
+### Bug Fixes
+
+* **s3:** add namespace to basepath ([a43e39c](https://github.com/polestar/nextjs-cdk/commit/a43e39c6f3a67c137d6c5028a2c56e44475b4c1a))
+
 ## [1.3.17](https://github.com/polestar/nextjs-cdk/compare/v1.3.16...v1.3.17) (2022-04-05)
 
 
