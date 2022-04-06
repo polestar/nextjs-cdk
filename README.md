@@ -1,4 +1,4 @@
-# Next JS CDK
+# NextJS CDK
 
 [![codecov](https://codecov.io/gh/polestar/nextjs-cdk/branch/main/graph/badge.svg?token=YF0HS06CWJ)](https://codecov.io/gh/polestar/nextjs-cdk)
 [![Build](https://github.com/polestar/nextjs-cdk/actions/workflows/build.yml/badge.svg)](https://github.com/polestar/nextjs-cdk/actions/workflows/build.yml)
