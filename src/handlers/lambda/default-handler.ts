@@ -103,6 +103,9 @@ export const handleRegeneration = async (event: SQSEvent): Promise<void> => {
           end: () => {
             console.log('end');
           },
+          getHeader: () => {
+            console.log('getHeader');
+          },
         },
       );
 
