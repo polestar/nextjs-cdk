@@ -1,3 +1,11 @@
+## [1.3.22](https://github.com/polestar/nextjs-cdk/compare/v1.3.21...v1.3.22) (2022-04-07)
+
+
+### Bug Fixes
+
+* remove namespace from normalisedUri before api lookup ([799f055](https://github.com/polestar/nextjs-cdk/commit/799f0557dadf839aa940bae92de7de8c71bda569))
+* remove word character regex match ([d69e4f0](https://github.com/polestar/nextjs-cdk/commit/d69e4f0b6cd318a5d681f224a9e1859c29438b53))
+
 ## [1.3.21](https://github.com/polestar/nextjs-cdk/compare/v1.3.20...v1.3.21) (2022-04-06)
 
 
