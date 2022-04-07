@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/polestar/nextjs-cdk/compare/v1.3.22...v1.4.0) (2022-04-07)
+
+
+### Features
+
+* **api:** implement support for setting multi value headers ([9092094](https://github.com/polestar/nextjs-cdk/commit/9092094dd6c377761c05e5aad941f54e7b785994))
+
 ## [1.3.22](https://github.com/polestar/nextjs-cdk/compare/v1.3.21...v1.3.22) (2022-04-07)
 
 
