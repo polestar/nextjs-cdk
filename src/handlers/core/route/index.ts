@@ -175,13 +175,9 @@ export const routeDefault = async (
   const nextStaticFile = handleNextStaticFiles(uri);
   const isNextStaticFile = !!nextStaticFile;
 
-  let isApi = uri.startsWith(`/api`);
-
-  if (manifest.namespace) {
-    const namespaceApiMatch = new RegExp(`\\w${manifest.namespace}/api`);
-
-    isApi = namespaceApiMatch.test(uri);
-  }
+  const isApi = manifest.namespace
+    ? uri.startsWith(`${manifest.namespace}/api`)
+    : uri.startsWith(`/api`);
 
   if (isApi) {
     // This api request handling shouldn't be done here
