@@ -27,7 +27,9 @@ export const handleApiReq = (
   );
 
   if (!missingExpectedBasePath) {
-    const nonDynamic = apis.nonDynamic[normalisedUri];
+    // @ts-ignore: manifest is actually a PageManifest cast to an ApiManifest
+    const namespace = manifest.namespace;
+    const nonDynamic = apis.nonDynamic[normalisedUri.replace(namespace, '')];
     if (nonDynamic) {
       return {
         isApi: true,
