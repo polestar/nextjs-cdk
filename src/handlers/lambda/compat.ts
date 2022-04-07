@@ -119,13 +119,18 @@ export const httpCompat = (
       res.writeHead(response.statusCode);
 
       response.headers = {};
+      response.multiValueHeaders = {};
       for (const [key, value] of Object.entries(res.headers) as [
         string,
         string | string[],
       ][]) {
-        response.headers[headerNames[key] || key] = Array.isArray(value)
-          ? value.join(',')
-          : value;
+        const headerName = headerNames[key] || key;
+
+        if (Array.isArray(value)) {
+          response.multiValueHeaders[headerName] = value;
+        } else {
+          response.headers[headerName] = value;
+        }
       }
 
       resolve(response);
