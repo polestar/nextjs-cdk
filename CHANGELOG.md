@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/polestar/nextjs-cdk/compare/v1.4.0...v1.4.1) (2022-04-12)
+
+
+### Bug Fixes
+
+* implement missing function res.getHeader ([e03478f](https://github.com/polestar/nextjs-cdk/commit/e03478f47288dbf4523bd8bf373a0dda1fdd2692))
+
 # [1.4.0](https://github.com/polestar/nextjs-cdk/compare/v1.3.22...v1.4.0) (2022-04-07)
 
 
