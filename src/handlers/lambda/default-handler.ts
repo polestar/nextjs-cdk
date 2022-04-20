@@ -106,6 +106,9 @@ export const handleRegeneration = async (event: SQSEvent): Promise<void> => {
           getHeader: () => {
             console.log('getHeader');
           },
+          setHeader: () => {
+            console.log('setHeader');
+          },
         },
       );
 
