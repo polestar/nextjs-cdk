@@ -1,3 +1,10 @@
+## [1.4.2](https://github.com/polestar/nextjs-cdk/compare/v1.4.1...v1.4.2) (2022-04-20)
+
+
+### Bug Fixes
+
+* implement missing function res.setHeader ([3ee8a94](https://github.com/polestar/nextjs-cdk/commit/3ee8a94fb93661a66425f372ebc62a5a607a824a))
+
 ## [1.4.1](https://github.com/polestar/nextjs-cdk/compare/v1.4.0...v1.4.1) (2022-04-12)
 
 
