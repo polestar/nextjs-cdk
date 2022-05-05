@@ -1001,7 +1001,10 @@ Object {
             "EnableAcceptEncodingBrotli": true,
             "EnableAcceptEncodingGzip": true,
             "HeadersConfig": Object {
-              "HeaderBehavior": "none",
+              "HeaderBehavior": "whitelist",
+              "Headers": Array [
+                "authorization",
+              ],
             },
             "QueryStringsConfig": Object {
               "QueryStringBehavior": "all",
