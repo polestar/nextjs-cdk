@@ -8,6 +8,7 @@ export interface Props extends StackProps {
    */
   nextjsCDKBuildOutDir: string;
   domain?: Domain;
+  customHeaders?: string[];
 }
 
 export interface Domain {

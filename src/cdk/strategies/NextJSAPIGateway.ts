@@ -19,11 +19,7 @@ import {
 
 import { Props } from '../props';
 import { LambdaHandler, logger } from '../../common';
-import {
-  readAssetsDirectory,
-  reduceInvalidationPaths,
-  readInvalidationPathsFromManifest,
-} from '../utils';
+import { readAssetsDirectory } from '../utils';
 import { pathToPosix } from '../../build/lib';
 import { NextJSConstruct } from './NextJSConstruct';
 
@@ -168,7 +164,10 @@ export class NextJSAPIGateway extends NextJSConstruct {
         {
           cachePolicyName: `next-lambda-cache-${id}`,
           queryStringBehavior: cloudfront.CacheQueryStringBehavior.all(),
-          headerBehavior: cloudfront.CacheHeaderBehavior.none(),
+          headerBehavior: cloudfront.CacheHeaderBehavior.allowList(
+            'authorization',
+            ...(props.customHeaders ? props.customHeaders : []),
+          ),
           cookieBehavior: {
             behavior: 'all',
           },

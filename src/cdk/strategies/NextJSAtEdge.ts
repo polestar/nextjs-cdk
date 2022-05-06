@@ -49,7 +49,7 @@ export class NextJSAtEdge extends NextJSConstruct {
     }
 
     this.createCert(id, props.domain);
-    this.createEdgeDistribution(id, props.domain);
+    this.createEdgeDistribution(id, props.domain, props.customHeaders);
     this.createHostedZone(id, props.domain);
     this.uploadNextAssets();
 
@@ -95,7 +95,11 @@ export class NextJSAtEdge extends NextJSConstruct {
     return this.edgeLambdaRole;
   }
 
-  private createEdgeDistribution(id: string, domain?: Domain) {
+  private createEdgeDistribution(
+    id: string,
+    domain?: Domain,
+    customHeaders?: string[],
+  ) {
     if (!this.bucket || !this.defaultNextLambda) return;
 
     this.bucket.grantRead(
@@ -152,7 +156,10 @@ export class NextJSAtEdge extends NextJSConstruct {
       {
         cachePolicyName: `next-lambda-cache-${id}`,
         queryStringBehavior: cloudfront.CacheQueryStringBehavior.all(),
-        headerBehavior: cloudfront.CacheHeaderBehavior.none(),
+        headerBehavior: cloudfront.CacheHeaderBehavior.allowList(
+          'authorization',
+          ...(customHeaders ? customHeaders : []),
+        ),
         cookieBehavior: {
           behavior: 'all',
         },
