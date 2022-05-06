@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/polestar/nextjs-cdk/compare/v1.4.2...v1.5.0) (2022-05-06)
+
+
+### Features
+
+* add custom headers to allow list ([868f1ce](https://github.com/polestar/nextjs-cdk/commit/868f1ce1e05a242a2bc989fe2c67bf7893061ace))
+
 ## [1.4.2](https://github.com/polestar/nextjs-cdk/compare/v1.4.1...v1.4.2) (2022-04-20)
 
 
