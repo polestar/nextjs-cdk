@@ -199,6 +199,12 @@ export class NextJSAPIGateway extends NextJSConstruct {
 
     this.createCert(id, props.domain);
 
+    const keyGroups = [];
+    for (const keyGroupId of props.trustedKeyGroupIds || []) {
+      keyGroups.push(
+        cloudfront.KeyGroup.fromKeyGroupId(this, 'keyGroup', keyGroupId),
+      );
+    }
     this.distribution = new cloudfront.Distribution(
       this,
       `next-distribution-${id}`,
@@ -208,6 +214,7 @@ export class NextJSAPIGateway extends NextJSConstruct {
         defaultRootObject: '',
         enableIpv6: this.isChina() ? false : true,
         defaultBehavior: {
+          trustedKeyGroups: keyGroups,
           viewerProtocolPolicy:
             cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
           origin: defaultOrigin,
@@ -218,6 +225,7 @@ export class NextJSAPIGateway extends NextJSConstruct {
         },
         additionalBehaviors: {
           [this.pathPattern(`${s3AssetPrefix}_next/static/*`)]: {
+            trustedKeyGroups: keyGroups,
             viewerProtocolPolicy:
               cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
             origin: s3Origin,
@@ -227,6 +235,7 @@ export class NextJSAPIGateway extends NextJSConstruct {
             cachePolicy: this.nextStaticsCachePolicy,
           },
           [this.pathPattern(`${s3AssetPrefix}static/*`)]: {
+            trustedKeyGroups: keyGroups,
             viewerProtocolPolicy:
               cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
             origin: s3Origin,

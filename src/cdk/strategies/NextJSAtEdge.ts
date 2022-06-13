@@ -2,7 +2,7 @@ import path from 'path';
 
 import { CompositePrincipal, Role, ServicePrincipal } from '@aws-cdk/aws-iam';
 import * as cdk from '@aws-cdk/core';
-import { Duration } from '@aws-cdk/core';
+import { Construct, Duration } from '@aws-cdk/core';
 import { RemovalPolicy } from '@aws-cdk/core';
 import * as cloudfront from '@aws-cdk/aws-cloudfront';
 import * as origins from '@aws-cdk/aws-cloudfront-origins';
@@ -49,7 +49,12 @@ export class NextJSAtEdge extends NextJSConstruct {
     }
 
     this.createCert(id, props.domain);
-    this.createEdgeDistribution(id, props.domain, props.customHeaders);
+    this.createEdgeDistribution(
+      id,
+      props.domain,
+      props.customHeaders,
+      props.trustedKeyGroupIds,
+    );
     this.createHostedZone(id, props.domain);
     this.uploadNextAssets();
 
@@ -99,6 +104,7 @@ export class NextJSAtEdge extends NextJSConstruct {
     id: string,
     domain?: Domain,
     customHeaders?: string[],
+    trustedKeyGroupIds?: string[],
   ) {
     if (!this.bucket || !this.defaultNextLambda) return;
 
@@ -171,6 +177,13 @@ export class NextJSAtEdge extends NextJSConstruct {
       },
     );
 
+    const keyGroups = [];
+    for (const keyGroupId of trustedKeyGroupIds || []) {
+      keyGroups.push(
+        cloudfront.KeyGroup.fromKeyGroupId(this, 'keyGroup', keyGroupId),
+      );
+    }
+
     this.distribution = new cloudfront.Distribution(
       this,
       `next-distribution-${id}`,
@@ -179,6 +192,7 @@ export class NextJSAtEdge extends NextJSConstruct {
         domainNames: this.fqdn,
         defaultRootObject: '',
         defaultBehavior: {
+          trustedKeyGroups: keyGroups,
           origin: bucketOrigin,
           edgeLambdas: [
             {
@@ -191,6 +205,7 @@ export class NextJSAtEdge extends NextJSConstruct {
         },
         additionalBehaviors: {
           [this.pathPattern(`${s3AssetPrefix}_next/static/*`)]: {
+            trustedKeyGroups: keyGroups,
             viewerProtocolPolicy:
               cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
             origin: bucketOrigin,
@@ -200,6 +215,7 @@ export class NextJSAtEdge extends NextJSConstruct {
             cachePolicy: this.nextStaticsCachePolicy,
           },
           [this.pathPattern(`${s3AssetPrefix}static/*`)]: {
+            trustedKeyGroups: keyGroups,
             viewerProtocolPolicy:
               cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
             origin: bucketOrigin,

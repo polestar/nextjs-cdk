@@ -870,6 +870,7 @@ Object {
               "Compress": true,
               "PathPattern": "manual-testing-edge/_next/static/*",
               "TargetOriginId": "testedgeconstructnextdistributiontestedgeconstructOrigin175CE060A",
+              "TrustedKeyGroups": Array [],
               "ViewerProtocolPolicy": "redirect-to-https",
             },
             Object {
@@ -889,6 +890,7 @@ Object {
               "Compress": true,
               "PathPattern": "manual-testing-edge/static/*",
               "TargetOriginId": "testedgeconstructnextdistributiontestedgeconstructOrigin175CE060A",
+              "TrustedKeyGroups": Array [],
               "ViewerProtocolPolicy": "redirect-to-https",
             },
           ],
@@ -906,6 +908,7 @@ Object {
               },
             ],
             "TargetOriginId": "testedgeconstructnextdistributiontestedgeconstructOrigin175CE060A",
+            "TrustedKeyGroups": Array [],
             "ViewerProtocolPolicy": "allow-all",
           },
           "DefaultRootObject": "",
