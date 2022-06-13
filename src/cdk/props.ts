@@ -9,6 +9,7 @@ export interface Props extends StackProps {
   nextjsCDKBuildOutDir: string;
   domain?: Domain;
   customHeaders?: string[];
+  trustedKeyGroupIds?: string[];
 }
 
 export interface Domain {
