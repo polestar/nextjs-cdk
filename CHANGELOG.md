@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/polestar/nextjs-cdk/compare/v1.5.0...v1.6.0) (2022-06-13)
+
+
+### Features
+
+* add support for trustedKeyGroups ([ea18443](https://github.com/polestar/nextjs-cdk/commit/ea18443326ea74d0181c2a6316819fecd4cf40ad))
+
 # [1.5.0](https://github.com/polestar/nextjs-cdk/compare/v1.4.2...v1.5.0) (2022-05-06)
 
 
