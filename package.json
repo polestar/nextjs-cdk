@@ -99,8 +99,8 @@
     "zx": "4.3.0"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "3.53.1",
-    "@aws-sdk/client-sqs": "3.53.0",
+    "@aws-sdk/client-s3": "3.178.0",
+    "@aws-sdk/client-sqs": "3.178.0",
     "@hapi/accept": "5.0.2",
     "cookie": "0.4.2",
     "execa": "5.1.1",
