@@ -1,3 +1,5 @@
+# DEPRECATED - due to stopped maintainence of upstream project
+
 # NextJS CDK
 
 [![codecov](https://codecov.io/gh/polestar/nextjs-cdk/branch/main/graph/badge.svg?token=YF0HS06CWJ)](https://codecov.io/gh/polestar/nextjs-cdk)
