@@ -30,7 +30,7 @@
     "test:e2e": "ts-node --project tsconfig.scripts.json ./tests/e2e/run-tests.ts"
   },
   "devDependencies": {
-    "@aws-cdk/assert": "1.132.0",
+    "@aws-cdk/assert": "2.43.1",
     "@aws-cdk/assertions": "1.132.0",
     "@aws-cdk/aws-apigateway": "1.132.0",
     "@aws-cdk/aws-cloudfront": "1.132.0",
